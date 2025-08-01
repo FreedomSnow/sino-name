@@ -1,18 +1,53 @@
 "use client";
 
 import React, { useState } from "react";
-import HomePage from "./features/home/HomePage";
+import { useTranslation } from "react-i18next";
+import HomePage from "./features/home/Home";
+import "./i18n-init";
 import "./page.css";
+import { useEffect } from "react";
 
 const TABS = [
-  { key: "home", icon: "/home.svg", title: "Home" },
-  { key: "more", icon: "/more.svg", title: "More" },
+  { key: "home", icon: "/home.svg" },
+  { key: "more", icon: "/more.svg" },
 ];
 
 export default function Home() {
   const [tab, setTab] = useState("home");
   const [langList, setLangList] = useState(false);
-  const [lang, setLang] = useState("zh");
+  // 点击页面其他区域关闭语言下拉
+  useEffect(() => {
+    if (!langList) return;
+    const handleClick = (e: MouseEvent) => {
+      const langBtn = document.querySelector('.lang-btn-v2');
+      const langListDom = document.querySelector('.lang-list-v2');
+      if (
+        langBtn && langBtn.contains(e.target as Node)
+        || langListDom && langListDom.contains(e.target as Node)
+      ) {
+        return;
+      }
+      setLangList(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [langList]);
+  
+  const [mounted, setMounted] = useState(false);
+  const { t, i18n } = useTranslation();
+  useEffect(() => {
+    setMounted(true);
+    if (typeof window !== "undefined") {
+      const cached = localStorage.getItem("sino-lang");
+      const browserLang = navigator.language.startsWith("zh") ? "zh" : "en";
+      const targetLang = cached === "zh" || cached === "en" ? cached : browserLang;
+      if (i18n.language !== targetLang) {
+        i18n.changeLanguage(targetLang);
+      }
+    }
+  }, [i18n]);
   const [collapsed, setCollapsed] = useState(false);
   // 点击 tabbar item 的处理
   const handleTabClick = (key: string) => {
@@ -23,6 +58,18 @@ export default function Home() {
       // 不自动恢复collapsed状态
     }
   };
+
+  // 切换语言时缓存
+  const handleLangChange = (newLang: "zh" | "en") => {
+    i18n.changeLanguage(newLang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sino-lang", newLang);
+    }
+  };
+  if (!mounted) {
+    // SSR 或 hydration 前只渲染空白，避免 mismatch
+    return null;
+  }
   return (
     <div className="layout-root-v2">
       {/* 顶部栏 */}
@@ -32,24 +79,23 @@ export default function Home() {
           <span className="header-title">Sino Name</span>
         </div>
         <div className="header-center">
-          <div className="panda-anim-area">
-            {/* 熊猫动画区域，可用gif或svg sprite或canvas等实现 */}
+          <div className="panda-anim-area">=
             <img src="/panda-icon.gif" alt="Panda Animation" className="panda-anim" />
           </div>
         </div>
         <div className="header-right">
           <div className="lang-switcher-v2">
             <button className="lang-btn-v2" onClick={() => setLangList((v) => !v)}>
-              {lang === "zh" ? "中文" : "English"}
+              {i18n.language === "zh" ? t("langZh") : t("langEn")}
             </button>
             {langList && (
               <ul className="lang-list-v2">
-                <li className={lang === "zh" ? "selected" : ""} onClick={() => { setLang("zh"); setLangList(false); }}>中文</li>
-                <li className={lang === "en" ? "selected" : ""} onClick={() => { setLang("en"); setLangList(false); }}>English</li>
+                <li className={i18n.language === "zh" ? "selected" : ""} onClick={() => { handleLangChange("zh"); setLangList(false); }}>{t("langZh")}</li>
+                <li className={i18n.language === "en" ? "selected" : ""} onClick={() => { handleLangChange("en"); setLangList(false); }}>{t("langEn")}</li>
               </ul>
             )}
           </div>
-          <button className="contact-btn-v2">联系我们</button>
+          <button className="contact-btn-v2">{t("contact")}</button>
         </div>
       </header>
       {/* 下半部分 */}
@@ -57,14 +103,14 @@ export default function Home() {
         <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
           style={{ transition: 'width 0.3s cubic-bezier(.4,0,.2,1)', width: collapsed ? 60 : 180 }}>
           <div className="tabbar-list">
-            {TABS.map((t) => (
+            {TABS.map((tabItem) => (
               <div
-                key={t.key}
-                className={"tabbar-item" + (tab === t.key ? " active" : "")}
-                onClick={() => handleTabClick(t.key)}
+                key={tabItem.key}
+                className={"tabbar-item" + (tab === tabItem.key ? " active" : "")}
+                onClick={() => handleTabClick(tabItem.key)}
               >
                 <div className="tabbar-item-inner">
-                  <img src={t.icon} alt={t.title} className="tabbar-icon" />
+                  <img src={tabItem.icon} alt={tabItem.key === "home" ? t("tabHome") : t("tabMore")} className="tabbar-icon" />
                   <span
                     className="tabbar-title"
                     style={{
@@ -74,7 +120,7 @@ export default function Home() {
                       marginLeft: collapsed ? 0 : 8,
                       pointerEvents: collapsed ? 'none' : 'auto',
                     }}
-                  >{t.title}</span>
+                  >{tabItem.key === "home" ? t("tabHome") : t("tabMore")}</span>
                 </div>
               </div>
             ))}
@@ -84,7 +130,7 @@ export default function Home() {
               onClick={() => handleTabClick("settings")}
             >
               <div className="tabbar-item-inner">
-                <img src="/settings.svg" alt="Settings" className="tabbar-icon" />
+                <img src="/settings.svg" alt={t("settings")} className="tabbar-icon" />
                 <span
                   className="tabbar-title"
                   style={{
@@ -94,7 +140,7 @@ export default function Home() {
                     marginLeft: collapsed ? 0 : 8,
                     pointerEvents: collapsed ? 'none' : 'auto',
                   }}
-                >Settings</span>
+                >{t("settings")}</span>
               </div>
             </div>
           </div>
@@ -104,13 +150,14 @@ export default function Home() {
             <HomePage />
           )}
           {tab === "more" && (
-            <div className="tab-panel">更多</div>
+            <div className="tab-panel">{t("more")}</div>
           )}
           {tab === "settings" && (
-            <div className="tab-panel">设置</div>
+            <div className="tab-panel">{t("settings")}</div>
           )}
         </section>
       </div>
     </div>
   );
 }
+
