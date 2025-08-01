@@ -12,6 +12,16 @@ export default function Home() {
   const [tab, setTab] = useState("home");
   const [langList, setLangList] = useState(false);
   const [lang, setLang] = useState("zh");
+  const [collapsed, setCollapsed] = useState(false);
+  // 点击 tabbar item 的处理
+  const handleTabClick = (key: string) => {
+    if (tab === key) {
+      setCollapsed((v) => !v);
+    } else {
+      setTab(key);
+      // 不自动恢复collapsed状态
+    }
+  };
   return (
     <div className="layout-root-v2">
       {/* 顶部栏 */}
@@ -43,25 +53,48 @@ export default function Home() {
       </header>
       {/* 下半部分 */}
       <div className="main-v2">
-        <aside className="tabbar-v2">
+        <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
+          style={{ transition: 'width 0.3s cubic-bezier(.4,0,.2,1)', width: collapsed ? 60 : 180 }}>
           <div className="tabbar-list">
             {TABS.map((t) => (
               <div
                 key={t.key}
                 className={"tabbar-item" + (tab === t.key ? " active" : "")}
-                onClick={() => setTab(t.key)}
+                onClick={() => handleTabClick(t.key)}
               >
-                <img src={t.icon} alt={t.title} className="tabbar-icon" />
-                <span className="tabbar-title">{t.title}</span>
+                <div className="tabbar-item-inner">
+                  <img src={t.icon} alt={t.title} className="tabbar-icon" />
+                  <span
+                    className="tabbar-title"
+                    style={{
+                      transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
+                      opacity: collapsed ? 0 : 1,
+                      width: collapsed ? 0 : 'auto',
+                      marginLeft: collapsed ? 0 : 8,
+                      pointerEvents: collapsed ? 'none' : 'auto',
+                    }}
+                  >{t.title}</span>
+                </div>
               </div>
             ))}
           </div>
           <div className="tabbar-bottom">
             <div className={"tabbar-item" + (tab === "settings" ? " active" : "")}
-              onClick={() => setTab("settings")}
+              onClick={() => handleTabClick("settings")}
             >
-              <img src="/settings.svg" alt="Settings" className="tabbar-icon" />
-              <span className="tabbar-title">Settings</span>
+              <div className="tabbar-item-inner">
+                <img src="/settings.svg" alt="Settings" className="tabbar-icon" />
+                <span
+                  className="tabbar-title"
+                  style={{
+                    transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
+                    opacity: collapsed ? 0 : 1,
+                    width: collapsed ? 0 : 'auto',
+                    marginLeft: collapsed ? 0 : 8,
+                    pointerEvents: collapsed ? 'none' : 'auto',
+                  }}
+                >Settings</span>
+              </div>
             </div>
           </div>
         </aside>
