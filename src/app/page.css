@@ -148,22 +148,17 @@ body {
 
 /* 左侧tab栏 */
 .tabbar-v2 {
-  width: 150px;
   margin: 0 0 20px 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 24px 0 16px 0;
+  padding: 20px 0 16px 0;
   box-sizing: border-box;
   border-radius: 20px;
   background: rgba(245, 245, 245, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 2px 8px rgba(37,99,235,0.04);
-}
-/* 收缩时宽度略大，保证icon显示 */
-.tabbar-v2.collapsed {
-  width: 84px !important;
 }
 .tabbar-list {
   display: flex;
@@ -173,8 +168,8 @@ body {
 .tabbar-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 20px;
+  /* gap: 12px; */
+  padding: 10px;
   font-size: 1rem;
   color: #141414;
   cursor: pointer;
