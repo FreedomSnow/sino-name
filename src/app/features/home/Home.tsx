@@ -7,7 +7,11 @@ export default function HomePage() {
   return (
     <div className="home-page-container">
       <h2>{t("welcome")}</h2>
-      <p>{t("homepageDesc")}</p>
+      <div
+        className="homepage-subtext"
+        dangerouslySetInnerHTML={{ __html: t("homepageDesc") }}
+      />
+      <button className="homepage-action-btn">{t("homepageStart")}</button>
     </div>
   );
 }

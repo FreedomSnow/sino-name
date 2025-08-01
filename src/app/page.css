@@ -230,17 +230,17 @@ body {
 /* 右侧内容区 */
 .tab-content-v2 {
   flex: 1;
-  padding: 40px 48px;
   min-width: 0;
-  background: transparent;
   overflow-y: auto;
   margin: 0px 40px 20px 10px;
   border-radius: 20px;
   background: rgba(245, 245, 245, 0.7);
+  /* background: yellow; */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 2px 8px rgba(37,99,235,0.04);
 }
+
 .tab-panel {
   background: transparent;
   padding: 48px 32px;
