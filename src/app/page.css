@@ -95,7 +95,8 @@ body {
 .lang-list-v2 {
   position: absolute;
   top: 110%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: #fff;
   border: 1px solid #eee;
   border-radius: 8px;
@@ -111,11 +112,18 @@ body {
   cursor: pointer;
   font-size: 1rem;
 }
-.lang-list-v2 li.selected,
-.lang-list-v2 li:hover {
-  background: #f0f0f0;
+.lang-list-v2 li.selected {
+  color: #036aff;
   font-weight: bold;
+  pointer-events: none;
 }
+/* .lang-list-v2 li:hover {
+  color: rgb(190,215,240);
+}
+.lang-list-v2 li.selected:hover {
+  background: #fff;
+  color: #036aff;
+} */
 .contact-btn-v2 {
   background: #036aff;
   color: #fff;
