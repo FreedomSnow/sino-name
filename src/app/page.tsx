@@ -15,26 +15,6 @@ const TABS = [
 export default function Home() {
   const [tab, setTab] = useState("home");
   const [langList, setLangList] = useState(false);
-  // 点击页面其他区域关闭语言下拉
-  useEffect(() => {
-    if (!langList) return;
-    const handleClick = (e: MouseEvent) => {
-      const langBtn = document.querySelector('.lang-btn-v2');
-      const langListDom = document.querySelector('.lang-list-v2');
-      if (
-        langBtn && langBtn.contains(e.target as Node)
-        || langListDom && langListDom.contains(e.target as Node)
-      ) {
-        return;
-      }
-      setLangList(false);
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => {
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [langList]);
-  
   const [mounted, setMounted] = useState(false);
   const { t, i18n } = useTranslation();
   useEffect(() => {
@@ -101,7 +81,7 @@ export default function Home() {
       {/* 下半部分 */}
       <div className="main-v2">
         <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
-          style={{ transition: 'width 0.3s cubic-bezier(.4,0,.2,1)', width: collapsed ? 60 : 180 }}>
+          style={{ transition: 'width 0.3s cubic-bezier(.4,0,.2,1)', width: collapsed ? 60 : 130 }}>
           <div className="tabbar-list">
             {TABS.map((tabItem) => (
               <div
