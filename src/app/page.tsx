@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import HomePage from "./features/home/HomePage";
 import "./page.css";
 
 const TABS = [
@@ -100,7 +101,7 @@ export default function Home() {
         </aside>
         <section className="tab-content-v2">
           {tab === "home" && (
-            <div className="tab-panel">首页</div>
+            <HomePage />
           )}
           {tab === "more" && (
             <div className="tab-panel">更多</div>
