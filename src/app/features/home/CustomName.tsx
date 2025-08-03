@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./CustomName.css";
 
@@ -16,6 +16,26 @@ export default function CustomName({ onBack }: CustomNameProps) {
     '施','张','孔','严','华','金'
   ];
   const [activeSurname, setActiveSurname] = React.useState<string|null>(null);
+  const [selectedSurname, setSelectedSurname] = useState<string|null>(null);
+  const [userSurname, setUserSurname] = useState<string|null>(null);
+  // Mike定制按钮点击
+  const handleMikePick = () => {
+    if (commonSurnames.length > 0) {
+      const idx = Math.floor(Math.random() * commonSurnames.length);
+      const surname = commonSurnames[idx];
+      setSelectedSurname(surname);
+      setActiveSurname(surname);
+    }
+  };
+
+  // 发送按钮点击
+  const handleSend = () => {
+    if (selectedSurname) {
+      setUserSurname(selectedSurname);
+      setSelectedSurname(null);
+    }
+    // 这里可扩展发送逻辑
+  };
   const writerRef = useRef<HTMLDivElement>(null);
 
   // 姓氏弹窗每次打开都自动播放动画
@@ -48,6 +68,7 @@ export default function CustomName({ onBack }: CustomNameProps) {
 
   const handleCellClick = (surname: string) => {
     setActiveSurname(surname);
+    setSelectedSurname(surname);
   };
 
   const handleOverlayClose = () => {
@@ -90,29 +111,74 @@ export default function CustomName({ onBack }: CustomNameProps) {
       <div className="custom-name-chat-area">
         <div
           className="custom-name-chat-left-msg"
-          dangerouslySetInnerHTML={{ __html: t("customNameFirstChatMsg").replace(/\n/g, "<br />") }}
+          dangerouslySetInnerHTML={{ __html: t("welcomeChatMsg").replace(/\n/g, "<br />") }}
         />
         <div
           className="custom-name-chat-left-msg"
-          dangerouslySetInnerHTML={{ __html: t("customNameSecondChatMsg").replace(/\n/g, "<br />") }}
+          dangerouslySetInnerHTML={{ __html: t("surnameChatMsg").replace(/\n/g, "<br />") }}
         />
-        <div className="custom-name-surnames-grid">
-          {commonSurnames.map((surname) => (
-            <div
-              className="custom-name-surname-cell"
-              key={surname}
-              onClick={() => handleCellClick(surname)}
-              tabIndex={0}
-              style={{ cursor: 'pointer' }}
-            >
-              <span className="custom-name-surname-text">{surname}</span>
-            </div>
-          ))}
-          <button className="custom-name-surname-cell custom-name-surname-more-btn" title="查看更多姓氏">
-            <span className="custom-name-surname-text">…</span>
+        <div className="custom-name-chat-left-msg">
+          <div className="custom-name-surnames-grid">
+            {commonSurnames.map((surname) => (
+              <div key={surname} className="custom-name-surname-radio-wrapper">
+                <div
+                  className={`custom-name-surname-cell${selectedSurname === surname ? ' custom-name-surname-cell-selected' : ''}`}
+                  tabIndex={0}
+                  onClick={() => handleCellClick(surname)}
+                >
+                  <span className="custom-name-surname-text">{surname}</span>
+                </div>
+                <button
+                  className={`custom-name-surname-radio-btn${selectedSurname === surname ? ' selected' : ''}`}
+                  tabIndex={-1}
+                  aria-label="选中"
+                  onClick={e => {
+                    e.stopPropagation();
+                    setSelectedSurname(surname);
+                  }}
+                />
+              </div>
+            ))}
+            <button className="custom-name-surname-cell custom-name-surname-more-btn" title="查看更多姓氏">
+              <span className="custom-name-surname-text">…</span>
+            </button>
+          </div>
+          <button
+            className="custom-name-mike-pick-btn"
+            style={{ marginTop: 20, marginLeft: 8 }}
+            onClick={handleMikePick}
+          >
+            {t("mikeCustomSurname")}
           </button>
         </div>
+        {/* 用户发送的右侧气泡 */}
+        {userSurname && (
+          <>
+            <div 
+              className="user-surname custom-name-chat-right-msg" 
+              style={{ whiteSpace: 'pre-line' }}
+              dangerouslySetInnerHTML={{ __html: t('selectedUserSurname', { surname: userSurname }).replace(/\n/g, '<br />') }}
+            />
+            <div
+              className="custom-name-chat-left-msg"
+              style={{ whiteSpace: 'pre-line' }}
+              dangerouslySetInnerHTML={{ __html: t('nameChatMsg', { surname: userSurname }).replace(/\n/g, '<br />') }}
+            />
+          </>
+        )}
       </div>
+
+      {/* 底部只读输入框和发送按钮 */}
+        {selectedSurname && (
+          <div className="custom-name-bottom-bar">
+            <div
+              className="custom-name-bottom-input"
+              style={{ whiteSpace: 'pre-line' }}
+              dangerouslySetInnerHTML={{ __html: t('inputSelectedSurnameTip', { surname: selectedSurname }).replace(/\n/g, '<br />') }}
+            />
+            <button className="custom-name-bottom-send-btn" onClick={handleSend}>发送</button>
+          </div>
+        )}
 
       {/* 全屏放大姓氏卡片和遮罩层 */}
       {activeSurname && (
@@ -140,9 +206,6 @@ export default function CustomName({ onBack }: CustomNameProps) {
               </button>
               <button className="custom-name-surname-popup-btn" title="编辑" onClick={handleWriteClick}>
                 <img src="/pencil.svg" alt="编辑" />
-              </button>
-              <button className="custom-name-surname-popup-btn custom-name-surname-popup-btn-selected" title="选中">
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#036aff"/><polyline points="6,11 9,14 14,7" fill="none" stroke="#fff" strokeWidth="2"/></svg>
               </button>
             </div>
           </div>
