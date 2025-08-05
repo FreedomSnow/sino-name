@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./CustomName.css";
+import UserInfoForm from "./UserInfoForm";
 
 interface CustomNameProps {
   onBack: () => void;
@@ -117,7 +118,7 @@ export default function CustomName({ onBack }: CustomNameProps) {
           className="custom-name-chat-left-msg"
           dangerouslySetInnerHTML={{ __html: t("surnameChatMsg").replace(/\n/g, "<br />") }}
         />
-        <div className="custom-name-chat-left-msg">
+        {/* <div className="custom-name-chat-left-msg"> */}
           <div className="custom-name-surnames-grid">
             {commonSurnames.map((surname) => (
               <div key={surname} className="custom-name-surname-radio-wrapper">
@@ -150,7 +151,7 @@ export default function CustomName({ onBack }: CustomNameProps) {
           >
             {t("mikeCustomSurname")}
           </button>
-        </div>
+        {/* </div> */}
         {/* 用户发送的右侧气泡 */}
         {userSurname && (
           <>
@@ -160,10 +161,13 @@ export default function CustomName({ onBack }: CustomNameProps) {
               dangerouslySetInnerHTML={{ __html: t('selectedUserSurname', { surname: userSurname }).replace(/\n/g, '<br />') }}
             />
             <div
-              className="custom-name-chat-left-msg"
+              className="name-msg custom-name-chat-left-msg"
               style={{ whiteSpace: 'pre-line' }}
               dangerouslySetInnerHTML={{ __html: t('nameChatMsg', { surname: userSurname }).replace(/\n/g, '<br />') }}
             />
+            <div className="user-info-form">
+              <UserInfoForm onSubmit={() => {}} />
+            </div>
           </>
         )}
       </div>
