@@ -1,0 +1,123 @@
+import React, { useState } from 'react';
+import { DatePicker, ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
+import enUS from 'antd/es/locale/en_US';
+import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
+import './UserInfoForm.css';
+
+interface UserInfoFormProps {
+  onSubmit: (data: UserInfoData) => void;
+}
+
+export interface UserInfoData {
+  name: string;
+  gender: '男' | '女' | '保密';
+  birth: string;
+  classic: '随意' | '诗经' | '古诗词';
+  note: string;
+}
+
+const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit }) => {
+  const { t, i18n } = useTranslation();
+  const [form, setForm] = useState<UserInfoData>({
+    name: '',
+    gender: '保密',
+    birth: '',
+    classic: '随意',
+    note: '',
+  });
+  const [birthDate, setBirthDate] = useState<dayjs.Dayjs | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBirthChange = (date: Date | null) => {
+    if (date) {
+      const d = dayjs(date);
+      setBirthDate(d);
+      setForm(prev => ({ ...prev, birth: d.format('YYYY-MM-DD') }));
+    } else {
+      setBirthDate(null);
+      setForm(prev => ({ ...prev, birth: '' }));
+    }
+  };
+
+  const handleRadioChange = (name: keyof UserInfoData, value: any) => {
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(form);
+  };
+
+  return (
+    <ConfigProvider locale={i18n.language === 'zh' ? zhCN : enUS}>
+      <form className="user-info-form" onSubmit={handleSubmit}>
+      <div className="user-info-form-group">
+        <label htmlFor="name">{t('formNameLabel')}</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={form.name}
+          onChange={handleChange}
+          placeholder={t('formNamePlaceholder')}
+          required
+        />
+      </div>
+      <div className="user-info-form-group">
+        <label>{t('formGenderLabel')}</label>
+        <div className="user-info-form-radio-group">
+          <label><input type="radio" name="gender" value="男" checked={form.gender === '男'} onChange={() => handleRadioChange('gender', '男')} /> {t('formGenderMale')}</label>
+          <label><input type="radio" name="gender" value="女" checked={form.gender === '女'} onChange={() => handleRadioChange('gender', '女')} /> {t('formGenderFemale')}</label>
+          <label><input type="radio" name="gender" value="保密" checked={form.gender === '保密'} onChange={() => handleRadioChange('gender', '保密')} /> {t('formGenderSecret')}</label>
+        </div>
+      </div>
+      <div className="birth user-info-form-group" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
+          <label className="birth-title" htmlFor="birth" style={{ minWidth: 80, textAlign: 'left' }}>{t('formBirthLabel')}</label>
+          <div style={{ flex: 1 }}>
+            <DatePicker
+              id="birth"
+              className="user-info-form-datepicker"
+              value={birthDate}
+              onChange={handleBirthChange as (date: dayjs.Dayjs | null) => void}
+              format="YYYY-MM-DD"
+              placeholder={t('formBirthPlaceholder')}
+              disabledDate={(current: dayjs.Dayjs) => current && current > dayjs()}
+              allowClear
+            />
+          </div>
+        </div>
+        <span className="user-info-form-desc">{t('formBirthDesc')}</span>
+      </div>
+      <div className="user-info-form-group">
+        <label>{t('formClassicLabel')}</label>
+        <div className="user-info-form-radio-group">
+          <label><input type="radio" name="classic" value="随意" checked={form.classic === '随意'} onChange={() => handleRadioChange('classic', '随意')} /> {t('formClassicAny')}</label>
+          <label><input type="radio" name="classic" value="诗经" checked={form.classic === '诗经'} onChange={() => handleRadioChange('classic', '诗经')} /> {t('formClassicShijing')}</label>
+          <label><input type="radio" name="classic" value="古诗词" checked={form.classic === '古诗词'} onChange={() => handleRadioChange('classic', '古诗词')} /> {t('formClassicPoetry')}</label>
+        </div>
+      </div>
+      <div className="user-info-form-group">
+        <label htmlFor="note">{t('formNoteLabel')}</label>
+        <textarea
+          id="note"
+          name="note"
+          value={form.note}
+          onChange={handleChange}
+          placeholder={t('formNotePlaceholder')}
+          rows={3}
+        />
+      </div>
+      <button className="user-info-form-submit" type="submit">{t('formSubmitBtn')}</button>
+      </form>
+    </ConfigProvider>
+  );
+};
+
+export default UserInfoForm;

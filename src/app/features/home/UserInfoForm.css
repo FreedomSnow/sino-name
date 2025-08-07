@@ -1,0 +1,108 @@
+.user-info-form {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 24px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+   /* box-shadow: 0 2px 16px 0 rgba(3,106,255,0.08); */
+  background: #fff;
+}
+
+.user-info-form-group {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.user-info-form-group label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #222;
+  min-width: 80px;
+  text-align: left;
+}
+
+.user-info-form-desc {
+  font-size: 13px;
+  color: #888;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.user-info-form input[type="text"],
+.user-info-form input[type="month"],
+.user-info-form textarea {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1.5px solid #b3d1ff;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fafdff;
+  color: #222;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.user-info-form input[type="text"]:focus,
+.user-info-form input[type="month"]:focus,
+.user-info-form textarea:focus {
+  border-color: #036aff;
+}
+
+.user-info-form-radio-group {
+  display: flex;
+  gap: 24px;
+  margin-top: 0;
+}
+.user-info-form-radio-group label {
+  font-weight: 400;
+  font-size: 15px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.user-info-form-radio-group input[type="radio"] {
+  accent-color: #036aff;
+  margin-right: 2px;
+}
+
+.user-info-form textarea {
+  resize: vertical;
+  min-height: 48px;
+  max-height: 120px;
+}
+
+/* 日期选择器样式，保证与表单风格一致 */
+.user-info-form-datepicker {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #b3d1ff;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  background: #fafdff;
+  /* transition: border-color 0.2s; */
+}
+
+.user-info-form-submit {
+  width: 100%;
+  padding: 12px 0;
+  background: #036aff;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s;
+}
+.user-info-form-submit:hover {
+  background: #005be4;
+}
