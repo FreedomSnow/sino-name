@@ -46,6 +46,8 @@ export default function Home() {
       localStorage.setItem("sino-lang", newLang);
     }
   };
+  const [showContactUs, setShowContactUs] = useState(false);
+  const ContactUs = mounted ? require('./features/contact-us/ContactUs.jsx').default : null;
   if (!mounted) {
     // SSR 或 hydration 前只渲染空白，避免 mismatch
     return null;
@@ -75,9 +77,13 @@ export default function Home() {
               </ul>
             )}
           </div>
-          <button className="contact-btn-v2">{t("contact")}</button>
+          <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
         </div>
       </header>
+      {/* ContactUs 弹窗 */}
+      {ContactUs && (
+        <ContactUs isOpen={showContactUs} onClose={() => setShowContactUs(false)} lang={i18n.language} />
+      )}
       {/* 下半部分 */}
       <div className="main-v2">
         <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
