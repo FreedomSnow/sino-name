@@ -1,3 +1,4 @@
+import { log } from "console";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -8,6 +9,7 @@ const resources = {
       langZh: "中文",
       langEn: "英文",
       contact: "联系我们",
+      login: "登录",
       tabHome: "首页",
       tabMore: "更多",
       settings: "设置",
@@ -37,7 +39,27 @@ const resources = {
       formClassicPoetry: "古诗词",
       formNoteLabel: "其他说明",
       formNotePlaceholder: "如有特殊需求请填写",
-      formSubmitBtn: "提交"
+      formSubmitBtn: "提交",
+      // ContactUs
+      contactus_title: "联系我们",
+      contactus_name: "姓名",
+      contactus_namePlaceholder: "请输入您的姓名",
+      contactus_email: "邮箱",
+      contactus_emailPlaceholder: "请输入您的邮箱地址",
+      contactus_subject: "主题",
+      contactus_subjectPlaceholder: "请输入反馈主题",
+      contactus_message: "消息内容",
+      contactus_messagePlaceholder: "请详细描述您的问题或建议...",
+      contactus_contactInfo: "联系信息",
+      contactus_emailInfo: "邮箱：example@email.com",
+      contactus_responseTime: "我们会在24小时内回复您的消息",
+      contactus_cancel: "取消",
+      contactus_submit: "提交",
+      contactus_submitSuccess: "感谢您的反馈！我们会尽快回复您。",
+      contactus_submitError: "提交失败，请稍后重试",
+      // Login
+      login_title: "三方登录",
+      login_with: "使用{{provider}}登录",
     }
   },
   en: {
@@ -45,6 +67,7 @@ const resources = {
       langZh: "Chinese",
       langEn: "English",
       contact: "Contact Us",
+      login: "Login",
       tabHome: "Home",
       tabMore: "More",
       settings: "Settings",
@@ -74,7 +97,27 @@ const resources = {
       formClassicPoetry: "Ancient Poetry",
       formNoteLabel: "Other Notes",
       formNotePlaceholder: "Please fill in if you have special requirements",
-      formSubmitBtn: "Submit"
+      formSubmitBtn: "Submit",
+      // ContactUs
+      contactus_title: "Contact Us",
+      contactus_name: "Name",
+      contactus_namePlaceholder: "Enter your name",
+      contactus_email: "Email",
+      contactus_emailPlaceholder: "Enter your email address",
+      contactus_subject: "Subject",
+      contactus_subjectPlaceholder: "Enter feedback subject",
+      contactus_message: "Message",
+      contactus_messagePlaceholder: "Please describe your issue or suggestion in detail...",
+      contactus_contactInfo: "Contact Information",
+      contactus_emailInfo: "Email: example@email.com",
+      contactus_responseTime: "We will respond to your message within 24 hours",
+      contactus_cancel: "Cancel",
+      contactus_submit: "Submit",
+      contactus_submitSuccess: "Thank you for your feedback! We will get back to you soon.",
+      contactus_submitError: "Submission failed, please try again later",
+      // Login
+      login_title: "Social Login",
+      login_with: "Login with {{provider}}",
     }
   }
 };
