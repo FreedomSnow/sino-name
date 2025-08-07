@@ -1,3 +1,4 @@
+import { log } from "console";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -8,6 +9,7 @@ const resources = {
       langZh: "中文",
       langEn: "英文",
       contact: "联系我们",
+      login: "登录",
       tabHome: "首页",
       tabMore: "更多",
       settings: "设置",
@@ -54,7 +56,10 @@ const resources = {
       contactus_cancel: "取消",
       contactus_submit: "提交",
       contactus_submitSuccess: "感谢您的反馈！我们会尽快回复您。",
-      contactus_submitError: "提交失败，请稍后重试"
+      contactus_submitError: "提交失败，请稍后重试",
+      // Login
+      login_title: "三方登录",
+      login_with: "使用{{provider}}登录",
     }
   },
   en: {
@@ -62,6 +67,7 @@ const resources = {
       langZh: "Chinese",
       langEn: "English",
       contact: "Contact Us",
+      login: "Login",
       tabHome: "Home",
       tabMore: "More",
       settings: "Settings",
@@ -108,7 +114,10 @@ const resources = {
       contactus_cancel: "Cancel",
       contactus_submit: "Submit",
       contactus_submitSuccess: "Thank you for your feedback! We will get back to you soon.",
-      contactus_submitError: "Submission failed, please try again later"
+      contactus_submitError: "Submission failed, please try again later",
+      // Login
+      login_title: "Social Login",
+      login_with: "Login with {{provider}}",
     }
   }
 };

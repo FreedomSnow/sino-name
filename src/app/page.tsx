@@ -47,7 +47,10 @@ export default function Home() {
     }
   };
   const [showContactUs, setShowContactUs] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [user, setUser] = useState(null);
   const ContactUs = mounted ? require('./features/contact-us/ContactUs.jsx').default : null;
+  const Login = mounted ? require('./features/login/Login.tsx').default : null;
   if (!mounted) {
     // SSR 或 hydration 前只渲染空白，避免 mismatch
     return null;
@@ -78,6 +81,33 @@ export default function Home() {
             )}
           </div>
           <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
+          {user ? (
+            <button className="login-btn-v2 user-avatar-btn" style={{ padding: 0, border: 'none', background: 'none', marginLeft: 12 }}>
+              {user.avatar ? (
+                <img src={user.avatar} alt={user.name} style={{ width: 32, height: 32, borderRadius: '50%', background: '#eee' }} />
+              ) : (
+                <span style={{
+                  width: 32,
+                  height: 32,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  background: '#6c7ae0',
+                  color: '#fff',
+                  fontWeight: 600,
+                  fontSize: 18,
+                  userSelect: 'none',
+                }}>{user.name ? user.name[0].toUpperCase() : '?'}</span>
+              )}
+            </button>
+          ) : (
+            <button className="login-btn-v2" onClick={() => setShowLogin(true)}>{t("login")}</button>
+          )}
+      {/* Login 弹窗 */}
+      {Login && (
+        <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={setUser} />
+      )}
         </div>
       </header>
       {/* ContactUs 弹窗 */}
