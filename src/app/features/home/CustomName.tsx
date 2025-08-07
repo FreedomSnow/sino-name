@@ -1,8 +1,7 @@
-
-
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./CustomName.css";
+import UserInfoForm from "./UserInfoForm";
 
 interface CustomNameProps {
   onBack: () => void;
@@ -11,13 +10,20 @@ interface CustomNameProps {
 export default function CustomName({ onBack }: CustomNameProps) {
   const { t } = useTranslation();
   const commonSurnames = [
-    '王','李','赵','吴','周','郑','冯','陈','卫',
-    '蒋','沈','杨','朱','尤','许','何','吕',
-    '施','张','孔','严','华','金'
+    '王', '李', '赵', '吴', '周', '郑', '冯', '陈', '卫', '许',
+    '何', '吕', '孙', '林', '叶', '宋', '杨', '朱', '张', '洪'
   ];
   const [activeSurname, setActiveSurname] = React.useState<string|null>(null);
   const [selectedSurname, setSelectedSurname] = useState<string|null>(null);
   const [userSurname, setUserSurname] = useState<string|null>(null);
+
+  // 聊天动画相关状态
+  const [showWelcomeMsg, setShowWelcomeMsg] = useState(false);
+  const [showSurnameMsg, setShowSurnameMsg] = useState(false);
+  const [showSurnamesGrid, setShowSurnamesGrid] = useState(false);
+  const [showUserSurname, setShowUserSurname] = useState(false);
+  const [showNameMsg, setShowNameMsg] = useState(false);
+  const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   // Mike定制按钮点击
   const handleMikePick = () => {
     if (commonSurnames.length > 0) {
@@ -26,7 +32,7 @@ export default function CustomName({ onBack }: CustomNameProps) {
       setSelectedSurname(surname);
       setActiveSurname(surname);
     }
-  };
+  } 
 
   // 发送按钮点击
   const handleSend = () => {
@@ -34,8 +40,20 @@ export default function CustomName({ onBack }: CustomNameProps) {
       setUserSurname(selectedSurname);
       setSelectedSurname(null);
     }
-    // 这里可扩展发送逻辑
-  };
+    // 聊天动画：用户发送后依次显示右侧气泡和后续内容
+    setShowUserSurname(false);
+    setShowNameMsg(false);
+    setShowUserInfoForm(false);
+    setTimeout(() => {
+      setShowUserSurname(true);
+      setTimeout(() => {
+        setShowNameMsg(true);
+        setTimeout(() => {
+          setShowUserInfoForm(true);
+        }, 700);
+      }, 700);
+    }, 0);
+  } 
   const writerRef = useRef<HTMLDivElement>(null);
 
   // 姓氏弹窗每次打开都自动播放动画
@@ -66,9 +84,30 @@ export default function CustomName({ onBack }: CustomNameProps) {
     }
   }, [activeSurname]);
 
+  // 聊天动画：初始依次显示welcome-msg、surname-msg、姓氏选择区和按钮
+  useEffect(() => {
+    setShowWelcomeMsg(false);
+    setShowSurnameMsg(false);
+    setShowSurnamesGrid(false);
+    setShowUserSurname(false);
+    setShowNameMsg(false);
+    setShowUserInfoForm(false);
+    setTimeout(() => {
+      setShowWelcomeMsg(true);
+      setTimeout(() => {
+        setShowSurnameMsg(true);
+        setTimeout(() => {
+          setShowSurnamesGrid(true);
+        }, 700);
+      }, 1000);
+    }, 0);
+  }, []);
+
+  // 用户发送后，动画已在handleSend中处理
+
   const handleCellClick = (surname: string) => {
     setActiveSurname(surname);
-    setSelectedSurname(surname);
+    // setSelectedSurname(surname);
   };
 
   const handleOverlayClose = () => {
@@ -109,61 +148,80 @@ export default function CustomName({ onBack }: CustomNameProps) {
         <div className="custom-name-title">{t("customNameTitle")}</div>
       </div>
       <div className="custom-name-chat-area">
-        <div
-          className="custom-name-chat-left-msg"
-          dangerouslySetInnerHTML={{ __html: t("welcomeChatMsg").replace(/\n/g, "<br />") }}
-        />
-        <div
-          className="custom-name-chat-left-msg"
-          dangerouslySetInnerHTML={{ __html: t("surnameChatMsg").replace(/\n/g, "<br />") }}
-        />
-        <div className="custom-name-chat-left-msg">
-          <div className="custom-name-surnames-grid">
-            {commonSurnames.map((surname) => (
-              <div key={surname} className="custom-name-surname-radio-wrapper">
-                <div
-                  className={`custom-name-surname-cell${selectedSurname === surname ? ' custom-name-surname-cell-selected' : ''}`}
-                  tabIndex={0}
-                  onClick={() => handleCellClick(surname)}
-                >
-                  <span className="custom-name-surname-text">{surname}</span>
+        {/* welcome-msg 动画显示 */}
+        {showWelcomeMsg && (
+          <div
+            className="welcome-msg custom-name-chat-left-msg"
+            dangerouslySetInnerHTML={{ __html: t("welcomeChatMsg").replace(/\n/g, "<br />") }}
+          />
+        )}
+        {/* surname-msg 动画显示 */}
+        {showSurnameMsg && (
+          <div
+            className="surname-msg custom-name-chat-left-msg"
+            dangerouslySetInnerHTML={{ __html: t("surnameChatMsg").replace(/\n/g, "<br />") }}
+          />
+        )}
+        {/* 姓氏选择区和按钮动画显示 */}
+        {showSurnamesGrid && (
+          <div className="custom-name-surnames-block">
+            <div className="custom-name-surnames-grid">
+              {commonSurnames.map((surname) => (
+                <div key={surname} className="custom-name-surname-radio-wrapper">
+                  <div
+                    className={`custom-name-surname-cell${selectedSurname === surname ? ' custom-name-surname-cell-selected' : ''}`}
+                    tabIndex={0}
+                    onClick={() => handleCellClick(surname)}
+                  >
+                    <span className="custom-name-surname-text">{surname}</span>
+                  </div>
+                  <button
+                    className={`custom-name-surname-radio-btn${selectedSurname === surname ? ' selected' : ''}`}
+                    tabIndex={-1}
+                    aria-label="选中"
+                    onClick={e => {
+                      e.stopPropagation();
+                      if (selectedSurname === surname) {
+                        setSelectedSurname(null);
+                      } else {
+                        setSelectedSurname(surname);
+                      }
+                    }}
+                  />
                 </div>
-                <button
-                  className={`custom-name-surname-radio-btn${selectedSurname === surname ? ' selected' : ''}`}
-                  tabIndex={-1}
-                  aria-label="选中"
-                  onClick={e => {
-                    e.stopPropagation();
-                    setSelectedSurname(surname);
-                  }}
-                />
-              </div>
-            ))}
-            <button className="custom-name-surname-cell custom-name-surname-more-btn" title="查看更多姓氏">
-              <span className="custom-name-surname-text">…</span>
+              ))}
+            </div>
+            <button
+              className="custom-name-mike-pick-btn"
+              style={{ marginTop: 20 }}
+              onClick={handleMikePick}
+            >
+              {t("mikeCustomSurname")}
             </button>
           </div>
-          <button
-            className="custom-name-mike-pick-btn"
-            style={{ marginTop: 20, marginLeft: 8 }}
-            onClick={handleMikePick}
-          >
-            {t("mikeCustomSurname")}
-          </button>
-        </div>
-        {/* 用户发送的右侧气泡 */}
+        )}
+        {/* 用户发送的右侧气泡及后续内容动画显示 */}
         {userSurname && (
           <>
-            <div 
-              className="user-surname custom-name-chat-right-msg" 
-              style={{ whiteSpace: 'pre-line' }}
-              dangerouslySetInnerHTML={{ __html: t('selectedUserSurname', { surname: userSurname }).replace(/\n/g, '<br />') }}
-            />
-            <div
-              className="custom-name-chat-left-msg"
-              style={{ whiteSpace: 'pre-line' }}
-              dangerouslySetInnerHTML={{ __html: t('nameChatMsg', { surname: userSurname }).replace(/\n/g, '<br />') }}
-            />
+            {showUserSurname && (
+              <div 
+                className="user-surname custom-name-chat-right-msg" 
+                style={{ whiteSpace: 'pre-line' }}
+                dangerouslySetInnerHTML={{ __html: t('selectedUserSurname', { surname: userSurname }).replace(/\n/g, '<br />') }}
+              />
+            )}
+            {showNameMsg && (
+              <div
+                className="name-msg custom-name-chat-left-msg"
+                style={{ whiteSpace: 'pre-line' }}
+                dangerouslySetInnerHTML={{ __html: t('nameChatMsg', { surname: userSurname }).replace(/\n/g, '<br />') }}
+              />
+            )}
+            {showUserInfoForm && (
+              <div className="user-info-form">
+                <UserInfoForm onSubmit={() => {}} />
+              </div>
+            )}
           </>
         )}
       </div>

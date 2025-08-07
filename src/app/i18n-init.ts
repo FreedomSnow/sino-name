@@ -21,7 +21,23 @@ const resources = {
       mikeCustomSurname: "Mike为您定制姓氏",
       inputSelectedSurnameTip: `选中“{{surname}}”为您的姓氏，确认无误后请发送给Mike`,
       selectedUserSurname:`我选中“{{surname}}”作为姓氏`,
-      nameChatMsg: `恭喜您拥有了正宗的中国姓氏“{{surname}}”，接下来让我们来定制名吧。\n请您填写下列信息并发送给我`
+      nameChatMsg: `恭喜您拥有了正宗的中国姓氏“{{surname}}”，接下来让我们来定制名吧。\n请您填写下列信息并发送给我`,
+      formNameLabel: "姓名",
+      formNamePlaceholder: "请输入姓名",
+      formGenderLabel: "性别",
+      formGenderMale: "男",
+      formGenderFemale: "女",
+      formGenderSecret: "保密",
+      formBirthLabel: "出生年月",
+      formBirthPlaceholder: "请选择出生日期",
+      formBirthDesc: "出生日期便于我们推算出您的中国生肖，中国八字，幸运石，守护神等信息",
+      formClassicLabel: "借鉴古籍",
+      formClassicAny: "随意",
+      formClassicShijing: "诗经",
+      formClassicPoetry: "古诗词",
+      formNoteLabel: "其他说明",
+      formNotePlaceholder: "如有特殊需求请填写",
+      formSubmitBtn: "提交"
     }
   },
   en: {
@@ -42,7 +58,23 @@ const resources = {
       mikeCustomSurname: "Mike Custom Surname",
       inputSelectedSurnameTip: `You have selected "{{surname}}" as your surname. Please send it to Mike for confirmation.`,
       selectedUserSurname: `I have selected "{{surname}}" as my surname`,
-      nameChatMsg:`Congratulations on acquiring the authentic Chinese surname "{{surname}}". \nNow, let's proceed to customize your given name.\nPlease fill out the following information and send it to me.`
+      nameChatMsg:`Congratulations on acquiring the authentic Chinese surname "{{surname}}". \nNow, let's proceed to customize your given name.\nPlease fill out the following information and send it to me.`,
+      formNameLabel: "Name",
+      formNamePlaceholder: "Please enter your name",
+      formGenderLabel: "Gender",
+      formGenderMale: "Male",
+      formGenderFemale: "Female",
+      formGenderSecret: "Secret",
+      formBirthLabel: "Date of Birth",
+      formBirthPlaceholder: "Please select your birth date",
+      formBirthDesc: "Birth helps us calculate your Chinese zodiac, Bazi, lucky stone, guardian deity, etc.",
+      formClassicLabel: "Classic Reference",
+      formClassicAny: "Any",
+      formClassicShijing: "Shijing",
+      formClassicPoetry: "Ancient Poetry",
+      formNoteLabel: "Other Notes",
+      formNotePlaceholder: "Please fill in if you have special requirements",
+      formSubmitBtn: "Submit"
     }
   }
 };
