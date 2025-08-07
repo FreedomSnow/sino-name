@@ -75,7 +75,7 @@ body {
 }
 .header-right button {
   border-radius: 999px !important;
-  min-width: 110px;
+  min-width: 100px;
   box-sizing: border-box;
 }
 .lang-switcher-v2 {
@@ -138,6 +138,22 @@ body {
 }
 .contact-btn-v2:hover {
   background: #1d4ed8;
+}
+
+.login-btn-v2 {
+  background: #f3f4f6;
+  color: #141414;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border: 1.5px solid #036aff;
+}
+.login-btn-v2:hover {
+  background: #1d4ed8;
+  color: #fff;
 }
 
 /* 下半部分主区 */
