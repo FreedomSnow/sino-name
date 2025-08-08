@@ -281,25 +281,6 @@
 .custom-name-surname-popup-btn-selected svg {
   display: block;
 }
-/* 更多按钮样式 */
-.custom-name-surname-more-btn {
-  background: #fafdff;
-  border: 1.5px dashed #b3d1ff;
-  color: #036aff;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  transition: background 0.2s, border-color 0.2s;
-  margin: 0 auto;
-}
-.custom-name-surname-more-btn:hover {
-  background: #eaf2ff;
-  border-color: #036aff;
-}
 
 /* 姓氏cell+单选按钮外层包裹器 */
 .custom-name-surname-radio-wrapper {
@@ -311,43 +292,92 @@
 /* 单选按钮样式 */
 .custom-name-surname-radio-btn {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid #bbb;
-  border-radius: 50%;
-  background: #bbb;
-  cursor: pointer;
+  top: -2px;
+  right: -6px;
+  background: none;
+  border: none;
   padding: 0;
-  outline: none;
+  cursor: pointer;
   z-index: 2;
-  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.custom-name-surname-radio-btn.selected {
-  background: #036aff !important;
-  border-color: #036aff;
+
+/* 按钮容器横向排列 */
+.custom-name-btn-row {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 30px;
 }
-.custom-name-surname-cell-selected {
-  /* 可选：为选中的cell添加特殊样式 */
+.custom-name-more-btn {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  padding: 8px 20px;
+  /* height: 38px; */
+  border-radius: 999px;
+  /* border: none; */
+  background: #fafdff;
+  color: #2a3fa0;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(3,106,255,0.08);
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1.5px solid #036aff;
+}
+.custom-name-more-btn:hover {
+  background: #eaf2ff;
+  color: #036aff;
 }
 
 /* Mike为您定制姓氏按钮 */
 .custom-name-mike-pick-btn {
   display: inline-block;
+  margin-top: 20px;
+  margin-bottom: 8px;
   padding: 8px 20px;
   font-size: 16px;
-  border-radius: 8px;
+  border-radius: 999px;
   background: #036aff;
   color: #fff;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
-  margin-bottom: 8px;
   transition: background 0.2s;
 }
 .custom-name-mike-pick-btn:hover {
   background: #005be4;
+}
+
+/* 更多弹窗遮罩和内容样式 */
+.custom-name-more-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 40, 60, 0.38);
+  backdrop-filter: blur(8px);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-name-more-popup {
+  width: 70%;
+  height: 100%;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(3,106,255,0.18);
+  padding: 32px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  animation: popupZoomIn 0.45s cubic-bezier(.22,1.2,.36,1) both;
 }
 
 /* 底部只读输入框和发送按钮 */

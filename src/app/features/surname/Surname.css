@@ -59,6 +59,18 @@
   color: #2a3fa0;
 }
 
+/* 右上角选中按钮样式 */
+.surname-item-check-btn {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
 /* 新增：姓氏项两行样式 */
 .surname-item-content {
   display: flex;
@@ -155,9 +167,10 @@
 }
 .active-surname-popup-actions {
   display: flex;
-  gap: 24px;
+  gap: 40px;
   justify-content: center;
   width: 100%;
+  /* background: red; */
 }
 .active-surname-popup-btn {
   width: 44px;
@@ -173,6 +186,7 @@
   transition: background 0.2s, box-shadow 0.2s;
   font-size: 20px;
   padding: 0;
+  /* background: yellow; */
 }
 .active-surname-popup-btn:hover {
   background: #eaf2ff;
@@ -190,7 +204,7 @@
   font-size: 56px;
   font-weight: 600;
   color: #036aff;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-top: 10px;
   letter-spacing: 2px;
   user-select: text;
