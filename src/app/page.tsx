@@ -3,13 +3,15 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import HomePage from "./features/home/Home";
+import Surname from "./features/surname/Surname";
 import "./i18n-init";
 import "./page.css";
 import { useEffect } from "react";
 
 const TABS = [
-  { key: "home", icon: "/home.svg" },
-  { key: "more", icon: "/more.svg" },
+  { key: "home", icon: "/home.svg", title: "tabHome" },
+  { key: "surname", icon: "/surname.svg", title: "tabSurname" },
+  { key: "more", icon: "/more.svg", title: "tabMore" },
 ];
 
 export default function Home() {
@@ -126,17 +128,16 @@ export default function Home() {
                 onClick={() => handleTabClick(tabItem.key)}
               >
                 <div className="tabbar-item-inner">
-                  <img src={tabItem.icon} alt={tabItem.key === "home" ? t("tabHome") : t("tabMore")} className="tabbar-icon" />
+                  <img src={tabItem.icon} alt={t(tabItem.title)} className="tabbar-icon" />
                   <span
                     className="tabbar-title"
                     style={{
                       transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
                       opacity: collapsed ? 0 : 1,
                       width: collapsed ? 0 : 'auto',
-                      marginLeft: collapsed ? 0 : 8,
                       pointerEvents: collapsed ? 'none' : 'auto',
                     }}
-                  >{tabItem.key === "home" ? t("tabHome") : t("tabMore")}</span>
+                  >{t(tabItem.title)}</span>
                 </div>
               </div>
             ))}
@@ -164,6 +165,9 @@ export default function Home() {
         <section className="tab-content-v2">
           {tab === "home" && (
             <HomePage />
+          )}
+          {tab === "surname" && (
+            <Surname />
           )}
           {tab === "more" && (
             <div className="tab-panel">{t("more")}</div>
