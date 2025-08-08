@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./CustomName.css";
 import UserInfoForm from "./UserInfoForm";
+import Surname from '../surname/Surname';
 
 interface CustomNameProps {
   onBack: () => void;
@@ -33,6 +34,11 @@ export default function CustomName({ onBack }: CustomNameProps) {
       setActiveSurname(surname);
     }
   } 
+
+  // 更多按钮弹窗状态
+  const [showMorePopup, setShowMorePopup] = useState(false);
+  const handleMoreClick = () => setShowMorePopup(true);
+  const handleMoreClose = () => setShowMorePopup(false);
 
   // 发送按钮点击
   const handleSend = () => {
@@ -102,8 +108,6 @@ export default function CustomName({ onBack }: CustomNameProps) {
       }, 1000);
     }, 0);
   }, []);
-
-  // 用户发送后，动画已在handleSend中处理
 
   const handleCellClick = (surname: string) => {
     setActiveSurname(surname);
@@ -176,7 +180,7 @@ export default function CustomName({ onBack }: CustomNameProps) {
                     <span className="custom-name-surname-text">{surname}</span>
                   </div>
                   <button
-                    className={`custom-name-surname-radio-btn${selectedSurname === surname ? ' selected' : ''}`}
+                    className="custom-name-surname-radio-btn"
                     tabIndex={-1}
                     aria-label="选中"
                     onClick={e => {
@@ -187,17 +191,30 @@ export default function CustomName({ onBack }: CustomNameProps) {
                         setSelectedSurname(surname);
                       }
                     }}
-                  />
+                  >
+                    <img
+                      src={selectedSurname === surname ? "/checked.svg" : "/uncheck.svg"}
+                      alt={selectedSurname === surname ? "已选中" : "未选中"}
+                      style={{ width: 22, height: 22 }}
+                    />
+                  </button>
                 </div>
               ))}
             </div>
-            <button
-              className="custom-name-mike-pick-btn"
-              style={{ marginTop: 20 }}
-              onClick={handleMikePick}
-            >
-              {t("mikeCustomSurname")}
-            </button>
+            <div className="custom-name-btn-row">
+              <button
+                className="custom-name-more-btn"
+                onClick={handleMoreClick}
+              >
+                {t('homeMoreSurnames')}
+              </button>
+              <button
+                className="custom-name-mike-pick-btn"
+                onClick={handleMikePick}
+              >
+                {t("mikeCustomSurname")}
+              </button>
+            </div>
           </div>
         )}
         {/* 用户发送的右侧气泡及后续内容动画显示 */}
@@ -238,6 +255,26 @@ export default function CustomName({ onBack }: CustomNameProps) {
           </div>
         )}
 
+      {/* 更多弹窗，显示 Surname 页面 */}
+      {showMorePopup && (
+        <div className="custom-name-more-overlay" onClick={handleMoreClose}>
+          <div className="custom-name-more-popup" onClick={e => e.stopPropagation()}>
+            {/* 直接复用 Surname 页面组件 */}
+            {/* @ts-ignore */}
+            <Surname
+              editable={true}
+              onSelect={item => {
+                if (item) {
+                  setSelectedSurname(item.surname);
+                } else {
+                  setSelectedSurname(null);
+                }
+              }}
+              selectedSurname={selectedSurname}
+            />
+          </div>
+        </div>
+      )}
       {/* 全屏放大姓氏卡片和遮罩层 */}
       {activeSurname && (
         <div className="custom-name-surname-overlay" onClick={handleOverlayClose}>
