@@ -28,6 +28,7 @@ const resources = {
       customNameTitle: "姓名定制",
       welcomeChatMsg: `您好，欢迎来到姓名定制服务！我是您的专属客服 Mike。\n\n在中国，姓名通常是姓氏在前，名字在后。\n姓氏世代相传，名字则由父母选取，通常为一到两个字，\n寄托着美好的愿望，例如希望孩子健康、聪明或幸福。`,
       surnameChatMsg: `现在，我们先来定制您的姓氏吧。\n中国俗称“百家姓”，我将列出一些常见姓氏供您参考，您可以自行选择，或者由我来为您挑选。`,
+      homeMoreSurnames: "更多姓氏",
       mikeCustomSurname: "Mike为您定制姓氏",
       inputSelectedSurnameTip: `选中“{{surname}}”为您的姓氏，确认无误后请发送给Mike`,
       selectedUserSurname:`我选中“{{surname}}”作为姓氏`,
@@ -67,6 +68,7 @@ const resources = {
       contactus_submitError: "提交失败，请稍后重试",
       // Surname
       surname_title: "中国百家姓",
+      active_surname_use: "使用"
     }
   },
   en: {
@@ -93,6 +95,7 @@ const resources = {
       customNameTitle: "Name Customization",
       welcomeChatMsg:`Hello and welcome to the Personalized Name Service! I'm Mike, your dedicated service representative.\n\nIn China, names typically follow the order of surname first, followed by the given name.\n Surnames are passed down through generations, while given names are chosen by parents. \nThey are usually one or two characters long and carry positive wishes, such as hopes for the child's health, intelligence, or happiness.`,
       surnameChatMsg: `Now, let's start by customizing your surname. \nIn China we have the concept of the "Hundred Family Surnames." I will list some common surnames for you. You can choose one yourself, or I can choose one for you.`,
+      homeMoreSurnames: "More Surnames",
       mikeCustomSurname: "Mike Custom Surname",
       inputSelectedSurnameTip: `You have selected "{{surname}}" as your surname. Please send it to Mike for confirmation.`,
       selectedUserSurname: `I have selected "{{surname}}" as my surname`,
@@ -132,6 +135,7 @@ const resources = {
       contactus_submitError: "Submission failed, please try again later",
       // Surname
       surname_title: "Chinese Surnames",
+      active_surname_use: "Use",
     }
   }
 };
