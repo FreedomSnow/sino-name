@@ -1,0 +1,105 @@
+/* 出生日期组件样式 */
+.birthday-root {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.birthday-title {
+  width: 100%;
+  max-width: 400px;
+  margin: 32px auto 0 auto;
+  font-size: 35px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #141414, rgb(154,60,152), #036aff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  /* background: yellow; */
+}
+.birthday-content {
+  width: 80%;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  /* background: yellow; */
+}
+.birthday-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
+  margin: 8px 0;
+  align-items: center;
+  justify-content: flex-start;
+  /* background: red; */
+}
+.birthday-label {
+  font-size: 20px;
+  font-weight: bolder;
+  color: #141414;
+}
+.birthday-picker {
+  flex: 1;
+  height: 40px;
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+}
+.birthday-query-btn {
+  background: #036aff;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.birthday-query-btn:hover {
+  background: #0056c7;
+}
+
+.birthday-lunar-row,
+.birthday-flower-row,
+.birthday-bazi-row,
+.birthday-zodiac-row,
+.birthday-guardian-row,
+.birthday-constellation-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  font-size: 16px;
+  color: #444;
+  justify-content: center;
+}
+.birthday-lunar-label,
+.birthday-flower-label,
+.birthday-bazi-label,
+.birthday-zodiac-label,
+.birthday-guardian-label,
+.birthday-constellation-label {
+  font-weight: 500;
+  color: #141414;
+}
+
+.birthday-lunar-value,
+.birthday-flower-value,
+.birthday-bazi-value,
+.birthday-zodiac-value,
+.birthday-guardian-value,
+.birthday-constellation-value {
+  font-weight: 600;
+  color: #e67e22;
+  /* background: yellow; */
+}

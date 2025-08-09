@@ -7,11 +7,12 @@ import Surname from "./features/surname/Surname";
 import "./i18n-init";
 import "./page.css";
 import { useEffect } from "react";
+import Birthday from "./features/birth/Birthday";
 
 const TABS = [
   { key: "home", icon: "/home.svg", title: "tabHome" },
   { key: "surname", icon: "/surname.svg", title: "tabSurname" },
-  { key: "more", icon: "/more.svg", title: "tabMore" },
+  { key: "birth", icon: "/birthday.svg", title: "tabBirthday" },
 ];
 
 export default function Home() {
@@ -169,8 +170,8 @@ export default function Home() {
           {tab === "surname" && (
             <Surname />
           )}
-          {tab === "more" && (
-            <div className="tab-panel">{t("more")}</div>
+          {tab === "birth" && (
+            <Birthday />
           )}
           {tab === "settings" && (
             <div className="tab-panel">{t("settings")}</div>
