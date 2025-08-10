@@ -12,7 +12,7 @@ const resources = {
       login: "登录",
       tabHome: "首页",
       tabSurname: "姓氏",
-      tabMore: "更多",
+      tabBirthday: "生日",
       settings: "设置",
       // Login
       login_title: "三方登录",
@@ -68,7 +68,17 @@ const resources = {
       contactus_submitError: "提交失败，请稍后重试",
       // Surname
       surname_title: "中国百家姓",
-      active_surname_use: "使用"
+      active_surname_use: "使用",
+      // Birthday
+      birthdayTitle: "出生日期",
+      birthdayPickerPlaceholder: "请选择您的生日",
+      birthdayQueryBtn: "查询",
+      birthdayZodiacLabel: "您的生肖是",
+      birthdayGuardianLabel: "生肖守护神",
+      birthdayConstellationLabel: "您的星座是",
+      birthdayLunarLabel: "农历生日是",
+      birthdayFlowerLabel: "农历生辰花",
+      birthdayBaziLabel: "农历生辰五行八字",
     }
   },
   en: {
@@ -79,7 +89,7 @@ const resources = {
       login: "Login",
       tabHome: "Home",
       tabSurname: "Surname",
-      tabMore: "More",
+      tabBirthday: "Birthday",
       settings: "Settings",
       // Login
       login_title: "Social Login",
@@ -136,6 +146,15 @@ const resources = {
       // Surname
       surname_title: "Chinese Surnames",
       active_surname_use: "Use",
+      // Birthday
+      birthdayTitle: "Birthday",
+      birthdayPickerPlaceholder: "Please select your birthday",
+      birthdayQueryBtn: "Query",
+      birthdayZodiacLabel: "Your zodiac sign is",
+      birthdayConstellationLabel: "Your constellation is",
+      birthdayLunarLabel: "Lunar Date is",
+      birthdayFlowerLabel: "Lunar Birthday Flower",
+      birthdayBaziLabel: "Lunar Bazi (Five Elements & Eight Characters)",
     }
   }
 };
