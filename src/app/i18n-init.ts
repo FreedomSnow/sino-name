@@ -151,6 +151,7 @@ const resources = {
       birthdayPickerPlaceholder: "Please select your birthday",
       birthdayQueryBtn: "Query",
       birthdayZodiacLabel: "Your zodiac sign is",
+      birthdayGuardianLabel: "Zodiac Guardian Deity",
       birthdayConstellationLabel: "Your constellation is",
       birthdayLunarLabel: "Lunar Date is",
       birthdayFlowerLabel: "Lunar Birthday Flower",
