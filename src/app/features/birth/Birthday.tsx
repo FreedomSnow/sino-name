@@ -5,7 +5,9 @@ import enUS from 'antd/es/locale/en_US';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import { useTranslation } from 'react-i18next';
+import solarlunar from 'solarlunar';
 import lunar from 'lunar-javascript';
+const { Lunar, Solar } = lunar;
 import './Birthday.css';
 
 const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) => {
@@ -18,12 +20,22 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
   ];
   // 生肖守护神
   const guardiansZh = [
-    '大黑天（鼠）', '虚空藏（牛）', '文殊菩萨（虎）', '普贤菩萨（兔）', '大势至菩萨（龙）', '青龙（蛇）',
-    '马头明王（马）', '大日如来（羊）', '大圣佛祖（猴）', '不动明王（鸡）', '阿弥陀佛（狗）', '观世音菩萨（猪）'
+    '千手观音菩萨（鼠）', '虚空藏菩萨（牛）', '虚空藏菩萨（虎）', '文殊菩萨（兔）', '普贤菩萨（龙）', '普贤菩萨（蛇）',
+    '大势至菩萨（马）', '大日如来佛（羊）', '大日如来佛（猴）', '不动明王菩萨（鸡）', '阿弥陀佛（狗）', '阿弥陀佛（猪）'
   ];
   const guardiansEn = [
-    'Daheitian (Rat)', 'Xukongzang (Ox)', 'Manjusri Bodhisattva (Tiger)', 'Samantabhadra Bodhisattva (Rabbit)', 'Mahasthamaprapta Bodhisattva (Dragon)', 'Azure Dragon (Snake)',
-    'Hayagriva (Horse)', 'Vairocana (Goat)', 'Great Sage Buddha (Monkey)', 'Acala (Rooster)', 'Amitabha Buddha (Dog)', 'Guanyin Bodhisattva (Pig)'
+    'Thousand-Hand Guanyin Bodhisattva (Rat)',
+    'Akasagarbha Bodhisattva (Ox)',
+    'Akasagarbha Bodhisattva (Tiger)',
+    'Manjushri Bodhisattva (Rabbit)',
+    'Samantabhadra Bodhisattva (Dragon)',
+    'Samantabhadra Bodhisattva (Snake)',
+    'Mahasthamaprapta Bodhisattva (Horse)',
+    'Vairocana Buddha (Goat)',
+    'Vairocana Buddha (Monkey)',
+    'Acala Bodhisattva (Rooster)',
+    'Amitabha Buddha (Dog)',
+    'Amitabha Buddha (Pig)'
   ];
 
   // 星座区间
@@ -110,7 +122,6 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
                 <div className="birthday-zodiac-row">
                     <span className="birthday-zodiac-label">{t('birthdayZodiacLabel')}</span>
                     <span className="birthday-zodiac-value">
-                        {/* <img src={zodiacIcons[zodiacIdx]} alt="生肖" style={{ width: 32, height: 32, verticalAlign: 'middle', marginRight: 8 }} /> */}
                         {i18n.language === 'zh' ? zodiacListZh[zodiacIdx] : zodiacListEn[zodiacIdx]}
                     </span>
                 </div>
@@ -139,9 +150,8 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
                     <span className="birthday-lunar-label">{t('birthdayLunarLabel')}</span>
                     <span className="birthday-lunar-value">
                         {(() => {
-                        const solar = lunar.Solar.fromYmd(birthDate.year(), birthDate.month() + 1, birthDate.date());
-                        const lunarDate = solar.getLunar();
-                        return `${lunarDate.getYear()}-${lunarDate.getMonth()}-${lunarDate.getDay()}`;
+                          const lunarDate = solarlunar.solar2lunar(birthDate.year(), birthDate.month() + 1, birthDate.date());
+                          return `${lunarDate.lYear}-${lunarDate.lMonth}-${lunarDate.lDay}`;
                         })()}
                     </span>
                 </div>
@@ -149,9 +159,10 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
                     <span className="birthday-flower-label">{t('birthdayFlowerLabel')}</span>
                     <span className="birthday-flower-value">
                       {(() => {
-                        const solar = lunar.Solar.fromYmd(birthDate.year(), birthDate.month() + 1, birthDate.date());
-                        const lunarDate = solar.getLunar();
-                        const monthIdx = lunarDate.getMonth() - 1;
+                        if (!birthDate || zodiacIdx === null) return '';
+                        const lunarDate = solarlunar.solar2lunar(birthDate.year(), birthDate.month() + 1, birthDate.date());
+                        let monthIdx = lunarDate.lMonth - 1;
+                        if (monthIdx < 0 || monthIdx > 11) return '';
                         return i18n.language === 'zh'
                           ? birthdayFlowerListZh[monthIdx]
                           : birthdayFlowerListEn[monthIdx];
@@ -162,9 +173,9 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
                   <span className="birthday-bazi-label">{t('birthdayBaziLabel')}</span>
                   <span className="birthday-bazi-value">
                     {(() => {
-                      const solar = lunar.Solar.fromYmd(birthDate.year(), birthDate.month() + 1, birthDate.date());
-                      const lunarDate = solar.getLunar();
-                      const eightChar = lunarDate.getEightChar();
+                      const lunarDate0 = solarlunar.solar2lunar(birthDate.year(), birthDate.month() + 1, birthDate.date());
+                      const lunarDate1 = Lunar.fromYmd(lunarDate0.lYear, lunarDate0.lMonth, lunarDate0.lDay, lunarDate0.isLeapMonth);
+                      const eightChar = lunarDate1.getEightChar();
                       // 获取年、月、日干支和五行
                       const ganzhi = eightChar.getYear() + '年 ' + eightChar.getMonth() + '月 ' + eightChar.getDay() + '日';
                       const wuxing = eightChar.getYearWuXing() + ' ' + eightChar.getMonthWuXing() + ' ' + eightChar.getDayWuXing();
