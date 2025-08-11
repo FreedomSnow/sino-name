@@ -8,6 +8,7 @@ import "./i18n-init";
 import "./page.css";
 import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
+import Welcome from "./features/welcome/Welcome";
 
 const TABS = [
   { key: "home", icon: "/home.svg", title: "tabHome" },
@@ -52,6 +53,7 @@ export default function Home() {
   const [showContactUs, setShowContactUs] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [user, setUser] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(true);
   const ContactUs = mounted ? require('./features/contact-us/ContactUs.jsx').default : null;
   const Login = mounted ? require('./features/login/Login.tsx').default : null;
   if (!mounted) {
@@ -67,7 +69,7 @@ export default function Home() {
           <span className="header-title">Sino Name</span>
         </div>
         <div className="header-center">
-          <div className="panda-anim-area">=
+          <div className="panda-anim-area">
             <img src="/panda-icon.gif" alt="Panda Animation" className="panda-anim" />
           </div>
         </div>
@@ -118,65 +120,71 @@ export default function Home() {
         <ContactUs isOpen={showContactUs} onClose={() => setShowContactUs(false)} lang={i18n.language} />
       )}
       {/* 下半部分 */}
-      <div className="main-v2">
-        <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
-          style={{ transition: 'width 0.3s cubic-bezier(.4,0,.2,1)', width: collapsed ? 60 : 130 }}>
-          <div className="tabbar-list">
-            {TABS.map((tabItem) => (
-              <div
-                key={tabItem.key}
-                className={"tabbar-item" + (tab === tabItem.key ? " active" : "")}
-                onClick={() => handleTabClick(tabItem.key)}
-              >
-                <div className="tabbar-item-inner">
-                  <img src={tabItem.icon} alt={t(tabItem.title)} className="tabbar-icon" />
-                  <span
-                    className="tabbar-title"
-                    style={{
-                      transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
-                      opacity: collapsed ? 0 : 1,
-                      width: collapsed ? 0 : 'auto',
-                      pointerEvents: collapsed ? 'none' : 'auto',
-                    }}
-                  >{t(tabItem.title)}</span>
+      <div className="main-v2" style={{ position: 'relative' }}>
+        {showWelcome ? (
+          <Welcome handleStart={() => setShowWelcome(false)} />
+        ) : (
+          <>
+            <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
+              style={{ transition: 'width 0.3s cubic-bezier(.4,0,.2,1)', width: collapsed ? 60 : 130 }}>
+              <div className="tabbar-list">
+                {TABS.map((tabItem) => (
+                  <div
+                    key={tabItem.key}
+                    className={"tabbar-item" + (tab === tabItem.key ? " active" : "")}
+                    onClick={() => handleTabClick(tabItem.key)}
+                  >
+                    <div className="tabbar-item-inner">
+                      <img src={tabItem.icon} alt={t(tabItem.title)} className="tabbar-icon" />
+                      <span
+                        className="tabbar-title"
+                        style={{
+                          transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
+                          opacity: collapsed ? 0 : 1,
+                          width: collapsed ? 0 : 'auto',
+                          pointerEvents: collapsed ? 'none' : 'auto',
+                        }}
+                      >{t(tabItem.title)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* <div className="tabbar-bottom">
+                <div className={"tabbar-item" + (tab === "settings" ? " active" : "")}
+                  onClick={() => handleTabClick("settings")}
+                >
+                  <div className="tabbar-item-inner">
+                    <img src="/settings.svg" alt={t("settings")} className="tabbar-icon" />
+                    <span
+                      className="tabbar-title"
+                      style={{
+                        transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
+                        opacity: collapsed ? 0 : 1,
+                        width: collapsed ? 0 : 'auto',
+                        marginLeft: collapsed ? 0 : 8,
+                        pointerEvents: collapsed ? 'none' : 'auto',
+                      }}
+                    >{t("settings")}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="tabbar-bottom">
-            <div className={"tabbar-item" + (tab === "settings" ? " active" : "")}
-              onClick={() => handleTabClick("settings")}
-            >
-              <div className="tabbar-item-inner">
-                <img src="/settings.svg" alt={t("settings")} className="tabbar-icon" />
-                <span
-                  className="tabbar-title"
-                  style={{
-                    transition: 'opacity 0.3s cubic-bezier(.4,0,.2,1)',
-                    opacity: collapsed ? 0 : 1,
-                    width: collapsed ? 0 : 'auto',
-                    marginLeft: collapsed ? 0 : 8,
-                    pointerEvents: collapsed ? 'none' : 'auto',
-                  }}
-                >{t("settings")}</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-        <section className="tab-content-v2">
-          {tab === "home" && (
-            <HomePage />
-          )}
-          {tab === "surname" && (
-            <Surname />
-          )}
-          {tab === "birth" && (
-            <Birthday />
-          )}
-          {tab === "settings" && (
-            <div className="tab-panel">{t("settings")}</div>
-          )}
-        </section>
+              </div> */}
+            </aside>
+            <section className="tab-content-v2">
+              {tab === "home" && (
+                <HomePage />
+              )}
+              {tab === "surname" && (
+                <Surname />
+              )}
+              {tab === "birth" && (
+                <Birthday />
+              )}
+              {tab === "settings" && (
+                <div className="tab-panel">{t("settings")}</div>
+              )}
+            </section>
+          </>
+        )}
       </div>
     </div>
   );
