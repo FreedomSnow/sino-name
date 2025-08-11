@@ -2,6 +2,7 @@ import React from "react";
 import "./Home.css";
 import { useTranslation } from "react-i18next";
 import CustomName from "./CustomName";
+import Welcome from "../welcome/Welcome";
 
 
 export default function HomePage() {
@@ -54,20 +55,7 @@ export default function HomePage() {
 
   return (
     <div className="home-page-container">
-      {showCustomName ? (
-        <CustomName onBack={handleBack} />
-      ) : (
-        <>
-          <h2>{t("welcome")}</h2>
-          <div
-            className="homepage-subtext"
-            dangerouslySetInnerHTML={{ __html: t("homepageDesc") }}
-          />
-          <button className="homepage-action-btn" onClick={handleStart}>
-            {t("homepageStart")}
-          </button>
-        </>
-      )}
+      <CustomName onBack={handleBack} />
     </div>
   );
 }
