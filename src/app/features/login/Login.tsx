@@ -63,7 +63,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
             onClick={onClose}
             aria-label="关闭"
           >
-            <img src="/close2.svg" alt="关闭" className="login-closeIcon" />
+            <img src="/close.svg" alt="关闭" className="login-closeIcon" />
           </button>
         </div>
         <div className="socials">
