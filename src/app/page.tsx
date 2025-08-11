@@ -143,7 +143,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div className="tabbar-bottom">
+          {/* <div className="tabbar-bottom">
             <div className={"tabbar-item" + (tab === "settings" ? " active" : "")}
               onClick={() => handleTabClick("settings")}
             >
@@ -161,7 +161,7 @@ export default function Home() {
                 >{t("settings")}</span>
               </div>
             </div>
-          </div>
+          </div> */}
         </aside>
         <section className="tab-content-v2">
           {tab === "home" && (

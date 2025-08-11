@@ -11,6 +11,19 @@ const { Lunar, Solar } = lunar;
 import './Birthday.css';
 
 const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) => {
+  // 页面首次加载时清空 localStorage（仅刷新或重新进入网站时）
+  useEffect(() => {
+    let navType: string | number | undefined;
+    const navEntries = window.performance?.getEntriesByType?.('navigation');
+    if (navEntries && navEntries.length > 0) {
+      navType = (navEntries[0] as any).type;
+    } else if (window.performance?.navigation) {
+      navType = window.performance.navigation.type;
+    }
+    if (navType === 'reload' || navType === 1 || navType === 'navigate') {
+      window.localStorage.removeItem('birthdayState');
+    }
+  }, []);
   // 12生肖列表
   const zodiacListZh = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
   const zodiacListEn = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
@@ -78,8 +91,26 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
     'Narcissus: Blooms in winter, symbolizing reunion and purity.'
   ];
   const { t, i18n } = useTranslation();
-  const [birthDate, setBirthDate] = useState<dayjs.Dayjs | null>(null);
-  const [zodiacIdx, setZodiacIdx] = useState<number | null>(null);
+  const [birthDate, setBirthDate] = useState<dayjs.Dayjs | null>(() => {
+    const saved = window.localStorage.getItem('birthdayState');
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        return state.birthDate ? dayjs(state.birthDate) : null;
+      } catch { return null; }
+    }
+    return null;
+  });
+  const [zodiacIdx, setZodiacIdx] = useState<number | null>(() => {
+    const saved = window.localStorage.getItem('birthdayState');
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        return typeof state.zodiacIdx === 'number' ? state.zodiacIdx : null;
+      } catch { return null; }
+    }
+    return null;
+  });
 
   useEffect(() => {
     dayjs.locale(i18n.language === 'zh' ? 'zh-cn' : 'en');
@@ -88,6 +119,7 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
   const handleDateChange = (date: dayjs.Dayjs | null) => {
     setBirthDate(date);
     setZodiacIdx(null);
+    saveState({ birthDate: date ? date.format('YYYY-MM-DD') : null, zodiacIdx: null });
   };
 
   const handleQuery = () => {
@@ -95,9 +127,38 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
       const year = birthDate.year();
       const idx = (year - 1900) % 12;
       setZodiacIdx(idx);
+      saveState({ birthDate: birthDate.format('YYYY-MM-DD'), zodiacIdx: idx });
       if (onQuery) onQuery(birthDate.format('YYYY-MM-DD'));
     }
   };
+  // 监听 tab 切换或页面恢复时同步状态
+  useEffect(() => {
+    const syncState = () => {
+      const saved = window.localStorage.getItem('birthdayState');
+      if (saved) {
+        try {
+          const state = JSON.parse(saved);
+          setBirthDate(state.birthDate ? dayjs(state.birthDate) : null);
+          setZodiacIdx(typeof state.zodiacIdx === 'number' ? state.zodiacIdx : null);
+        } catch {}
+      }
+    };
+    window.addEventListener('visibilitychange', syncState);
+    return () => {
+      window.removeEventListener('visibilitychange', syncState);
+    };
+  }, []);
+
+  // 保存页面所有相关状态到 localStorage
+  function saveState(partial: any) {
+    const prev = window.localStorage.getItem('birthdayState');
+    let state: any = {};
+    if (prev) {
+      try { state = JSON.parse(prev); } catch { state = {}; }
+    }
+    state = { ...state, birthDate: birthDate ? birthDate.format('YYYY-MM-DD') : null, zodiacIdx, ...partial };
+    window.localStorage.setItem('birthdayState', JSON.stringify(state));
+  }
 
   return (
     <ConfigProvider locale={i18n.language === 'zh' ? zhCN : enUS}>
