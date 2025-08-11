@@ -67,7 +67,7 @@ export default function Home() {
           <span className="header-title">Sino Name</span>
         </div>
         <div className="header-center">
-          <div className="panda-anim-area">=
+          <div className="panda-anim-area">
             <img src="/panda-icon.gif" alt="Panda Animation" className="panda-anim" />
           </div>
         </div>
