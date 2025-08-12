@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import HomePage from "./features/home/Home";
+import NamingPage from "./features/naming/Naming";
 import Surname from "./features/surname/Surname";
 import "./i18n-init";
 import "./page.css";
@@ -11,7 +11,7 @@ import Birthday from "./features/birth/Birthday";
 import Welcome from "./features/welcome/Welcome";
 
 const TABS = [
-  { key: "home", icon: "/home.svg", title: "tabHome" },
+  { key: "naming", icon: "/home.svg", title: "tabNaming" },
   { key: "surname", icon: "/surname.svg", title: "tabSurname" },
   { key: "birth", icon: "/birthday.svg", title: "tabBirthday" },
 ];
@@ -122,7 +122,10 @@ export default function Home() {
       {/* 下半部分 */}
       <div className="main-v2" style={{ position: 'relative' }}>
         {showWelcome ? (
-          <Welcome handleStart={() => setShowWelcome(false)} />
+          <Welcome handleStart={() => {
+            setShowWelcome(false);
+            setTab('naming');
+          }} />
         ) : (
           <>
             <aside className={"tabbar-v2" + (collapsed ? " collapsed" : "")}
@@ -170,8 +173,8 @@ export default function Home() {
               </div> */}
             </aside>
             <section className="tab-content-v2">
-              {tab === "home" && (
-                <HomePage />
+              {tab === "naming" && (
+                <NamingPage />
               )}
               {tab === "surname" && (
                 <Surname />
@@ -179,9 +182,9 @@ export default function Home() {
               {tab === "birth" && (
                 <Birthday />
               )}
-              {tab === "settings" && (
+              {/* {tab === "settings" && (
                 <div className="tab-panel">{t("settings")}</div>
-              )}
+              )} */}
             </section>
           </>
         )}

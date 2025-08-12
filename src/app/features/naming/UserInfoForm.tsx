@@ -8,6 +8,7 @@ import './UserInfoForm.css';
 
 interface UserInfoFormProps {
   onSubmit: (data: UserInfoData) => void;
+  isReadCache?: boolean;
 }
 
 export interface UserInfoData {
@@ -18,29 +19,49 @@ export interface UserInfoData {
   note: string;
 }
 
-const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit }) => {
+
+const FORM_CACHE_KEY = 'userInfoFormCache';
+const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
   const { t, i18n } = useTranslation();
-  const [form, setForm] = useState<UserInfoData>({
+  // 首次加载标志，防止初始化时触发保存
+  const [isInitialMount, setIsInitialMount] = useState(true);
+  const initialForm: UserInfoData = {
     name: '',
     gender: '保密',
     birth: '',
     classic: '随意',
     note: '',
+  };
+  const [form, setForm] = useState<UserInfoData>(() => {
+    const cache = localStorage.getItem(FORM_CACHE_KEY);
+    if (cache) {
+      try {
+        return JSON.parse(cache);
+      } catch {
+        return initialForm;
+      }
+    }
+    return initialForm;
   });
-  const [birthDate, setBirthDate] = useState<dayjs.Dayjs | null>(null);
+
+  // 监听form变化，非首次加载时缓存
+  React.useEffect(() => {
+    if (isInitialMount) {
+      setIsInitialMount(false);
+      return;
+    }
+    localStorage.setItem(FORM_CACHE_KEY, JSON.stringify(form));
+  }, [form, isInitialMount]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleBirthChange = (date: Date | null) => {
+  const handleBirthChange = (date: dayjs.Dayjs | null) => {
     if (date) {
-      const d = dayjs(date);
-      setBirthDate(d);
-      setForm(prev => ({ ...prev, birth: d.format('YYYY-MM-DD') }));
+      setForm(prev => ({ ...prev, birth: date.format('YYYY-MM-DD') }));
     } else {
-      setBirthDate(null);
       setForm(prev => ({ ...prev, birth: '' }));
     }
   };
@@ -84,8 +105,8 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit }) => {
             <DatePicker
               id="birth"
               className="user-info-form-datepicker"
-              value={birthDate}
-              onChange={handleBirthChange as (date: dayjs.Dayjs | null) => void}
+              value={form.birth ? dayjs(form.birth) : null}
+              onChange={handleBirthChange}
               format="YYYY-MM-DD"
               placeholder={t('formBirthPlaceholder')}
               disabledDate={(current: dayjs.Dayjs) => current && current > dayjs()}
