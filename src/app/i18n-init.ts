@@ -101,7 +101,7 @@ const resources = {
       edit: "Edit",
       // Welcome
       welcome: "Welcome to Sino Name!",
-      welcomeDesc: `Longing for a Chinese name with true cultural resonance? \n<strong>「Sino Name」</strong> crafts professionally personalized names for expats, students, and all China enthusiasts. \n\nWe blend your essence with 5,000 years of tradition to create: \n❖ Cultural Integration－Names born from Chinese linguistic soil, not mechanical translation \n❖ Triple-Layer Expertise－Receive 3-5 options featuring:\n    ▸ Poetic meaning breakdown\n    ▸ Tone-perfect pronunciation guide\n    ▸ Calligraphic character artistry\n❖ Timeless Identity－Every syllable echoes your unique spirit \n\nBegin Your Legacy in Characters`,
+      welcomeDesc: `Longing for a Chinese name with true cultural depth? \n<strong>「Sino Name」</strong> crafts professionally personalized names for expats, students, and anyone fascinated by Chinese culture. \n\nWe blend your essence with 5,000 years of tradition to craft: \n❖ Cultural Authenticity－Names rooted from Chinese linguistic, not mechanical translation \n❖ Triple-Layer Expertise－Receive 3-5 options featuring:\n    ▸ Poetic meaning breakdown\n    ▸ Phonetic pronunciation guide\n    ▸ Calligraphic character artistry\n❖ Enduring Identity－Every syllable echoes your individual spirit \n\nBegin Your Legacy in Characters`,
       welcomeStart: "→ Start Your Chinese Naming Journey",
       // Naming
       namingTitle: "Name Customization",
