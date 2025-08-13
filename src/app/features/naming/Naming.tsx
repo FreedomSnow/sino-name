@@ -5,7 +5,7 @@ if (typeof window !== 'undefined') {
   let navType: string | number | undefined;
   const navEntries = window.performance?.getEntriesByType?.('navigation');
   if (navEntries && navEntries.length > 0) {
-    navType = (navEntries[0] as any).type;
+          navType = (navEntries[0] as unknown as { type: string }).type;
   } else if (window.performance?.navigation) {
     navType = window.performance.navigation.type;
   }
@@ -18,11 +18,12 @@ if (typeof window !== 'undefined') {
 }
 
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 import "./Naming.css";
 import UserInfoForm from "./UserInfoForm";
 import Surname from '../surname/Surname';
 
-export default function NamingPage({ onBack }: { onBack?: () => void }) {
+export default function NamingPage() {
   const commonSurnames = [
     '王', '李', '赵', '吴', '周', '郑', '冯', '陈', '卫', '许',
     '何', '吕', '孙', '林', '叶', '宋', '杨', '朱', '张', '洪'
@@ -45,7 +46,7 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
     if (!hasShown) {
       setHasShown(true);
     }
-  }, []);
+  }, [hasShown]);
 
   // 页面卸载时缓存页面数据，包括 hasShown
   useEffect(() => {
@@ -110,22 +111,28 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
       setTimeout(() => {
         if (writerRef.current) {
           import('hanzi-writer').then(HanziWriter => {
-            writerRef.current!.innerHTML = '';
-            HanziWriter.default.create(writerRef.current!, activeSurname, {
-              width: 120,
-              height: 120,
-              padding: 8,
-              showOutline: true,
-              showCharacter: false,
-              strokeAnimationSpeed: 1.1,
-              delayBetweenStrokes: 180,
-              radicalColor: '#036aff',
-              strokeColor: '#036aff',
-              outlineColor: '#b3d1ff',
-              drawingColor: '#036aff',
-              highlightOnComplete: false,
-              strokeFadeDuration: 0,
-            }).animateCharacter();
+            try {
+              writerRef.current!.innerHTML = '';
+              HanziWriter.default.create(writerRef.current!, activeSurname, {
+                width: 120,
+                height: 120,
+                padding: 8,
+                showOutline: true,
+                showCharacter: false,
+                strokeAnimationSpeed: 1.1,
+                delayBetweenStrokes: 180,
+                radicalColor: '#036aff',
+                strokeColor: '#036aff',
+                outlineColor: '#b3d1ff',
+                drawingColor: '#036aff',
+                highlightOnComplete: false,
+                strokeFadeDuration: 0,
+              }).animateCharacter();
+            } catch (error) {
+              console.error('hanzi-writer 初始化失败:', error);
+            }
+          }).catch(error => {
+            console.error('hanzi-writer 模块加载失败:', error);
           });
         }
       }, 0);
@@ -163,7 +170,7 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
         }, timeout2);
       }, timeout1);
     }, 0);
-  }, []);
+  }, [hasShown, userSurname, isShowBottomBar, selectedSurname]);
 
   // 处理姓氏单元格点击事件
   const handleCellClick = (surname: string) => {
@@ -176,22 +183,28 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
   const handleWriteClick = () => {
     if (writerRef.current && activeSurname) {
       import('hanzi-writer').then(HanziWriter => {
-        writerRef.current!.innerHTML = '';
-        HanziWriter.default.create(writerRef.current!, activeSurname, {
-          width: 120,
-          height: 120,
-          padding: 8,
-          showOutline: true,
-          showCharacter: false,
-          strokeAnimationSpeed: 1.1,
-          delayBetweenStrokes: 180,
-          radicalColor: '#036aff',
-          strokeColor: '#036aff',
-          outlineColor: '#b3d1ff',
-          drawingColor: '#036aff',
-          highlightOnComplete: false,
-          strokeFadeDuration: 0,
-        }).animateCharacter();
+        try {
+          writerRef.current!.innerHTML = '';
+          HanziWriter.default.create(writerRef.current!, activeSurname, {
+            width: 120,
+            height: 120,
+            padding: 8,
+            showOutline: true,
+            showCharacter: false,
+            strokeAnimationSpeed: 1.1,
+            delayBetweenStrokes: 180,
+            radicalColor: '#036aff',
+            strokeColor: '#036aff',
+            outlineColor: '#b3d1ff',
+            drawingColor: '#036aff',
+            highlightOnComplete: false,
+            strokeFadeDuration: 0,
+          }).animateCharacter();
+        } catch (error) {
+          console.error('hanzi-writer 初始化失败:', error);
+        }
+      }).catch(error => {
+        console.error('hanzi-writer 模块加载失败:', error);
       });
     }
   };
@@ -199,7 +212,7 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
   return (
     <div className="naming-container">
       <div className="naming-panda-fixed">
-        <img src="/panda-chat.gif" alt="panda chat" />
+        <Image src="/panda-chat.gif" alt="panda chat" width={120} height={120} unoptimized />
       </div>
       <h2 className="naming-title">{t('namingTitle')}</h2>
       <div className="naming-chat-area">
@@ -252,10 +265,11 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
                       }
                     }}
                   >
-                    <img
+                    <Image
                       src={selectedSurname === surname ? "/checked.svg" : "/uncheck.svg"}
                       alt={selectedSurname === surname ? "已选中" : "未选中"}
-                      style={{ width: 22, height: 22 }}
+                      width={22}
+                      height={22}
                     />
                   </button>
                 </div>
@@ -320,7 +334,6 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
         <div className="naming-more-overlay" onClick={handleMoreClose}>
           <div className="naming-more-popup" onClick={e => e.stopPropagation()}>
             {/* 直接复用 Surname 页面组件 */}
-            {/* @ts-ignore */}
             <Surname
               editable={true}
               onSelect={item => {
@@ -359,10 +372,10 @@ export default function NamingPage({ onBack }: { onBack?: () => void }) {
                   }
                 }}
               >
-                <img src="/voice.svg" alt="发音" />
+                <Image src="/voice.svg" alt="发音" width={24} height={24} />
               </button>
               <button className="naming-surname-popup-btn" title="编辑" onClick={handleWriteClick}>
-                <img src="/pencil.svg" alt="编辑" />
+                <Image src="/pencil.svg" alt="编辑" width={24} height={24} />
               </button>
             </div>
           </div>

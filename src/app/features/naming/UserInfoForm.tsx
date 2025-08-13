@@ -66,7 +66,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
     }
   };
 
-  const handleRadioChange = (name: keyof UserInfoData, value: any) => {
+  const handleRadioChange = (name: keyof UserInfoData, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
