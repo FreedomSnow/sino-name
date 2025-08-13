@@ -7,7 +7,7 @@ const resources = {
   zh: {
     translation: {
       langZh: "中文",
-      langEn: "英文",
+      langEn: "English",
       contact: "联系我们",
       login: "登录",
       tabNaming: "起名",
@@ -22,7 +22,7 @@ const resources = {
       edit: "编辑",
       // Welcome
       welcome: "欢迎来到Sino Name!",
-      welcomeDesc: `是否渴望拥有一个承载文化灵魂的中文名？\n<strong>「Sino Name」</strong>为旅居者、求学者及所有倾心东方文化者, 奉上专业级中文命名艺术。\n\n我们将以你的个性为墨, 以千年文化为砚, 精心淬炼：\n❖ 深度文化浸润——打破音译桎梏, 让名字自然流淌于中文语境 \n❖ 三重匠心交付——3-5个定制选项, 每个名字皆附：\n    ▸ 诗意外延解析\n    ▸ 声韵发音指南\n    ▸ 汉字美学赏析\n❖ 永恒文化印记——让每个音节都镌刻你的独特气质\n\n此刻启程, 让世界听见你的东方回响`,
+      welcomeDesc: `是否渴望拥有一个承载文化灵魂的中文名？\n<strong>「Sino Name」</strong>为旅居者、求学者及所有倾心中华文化者, 奉上专业级中文命名艺术。\n\n我们将以你的个性为墨, 以千年文化为砚, 精心淬炼：\n❖ 深度文化浸润——打破音译桎梏, 让名字自然流淌于中文语境 \n❖ 三重匠心交付——3-5个定制选项, 每个名字皆附：\n    ▸ 诗意外延解析\n    ▸ 声韵发音指南\n    ▸ 汉字美学赏析\n❖ 永恒文化印记——让每个音节都镌刻你的独特气质\n\n此刻启程, 让世界听见你的东方回响`,
       welcomeStart: "→ 开始你的中文命名之旅",
       // Naming
       namingTitle: "姓名定制",
@@ -85,7 +85,7 @@ const resources = {
   },
   en: {
     translation: {
-      langZh: "Chinese",
+      langZh: "中文",
       langEn: "English",
       contact: "Contact Us",
       login: "Login",
@@ -105,14 +105,14 @@ const resources = {
       welcomeStart: "→ Start Your Chinese Naming Journey",
       // Naming
       namingTitle: "Name Customization",
-      namingChatWelcomeMsg:`Hello and welcome to the Personalized Name Service! I'm Mike, your dedicated service representative.\n\nIn China, names typically follow the order of surname first, followed by the given name.\n Surnames are passed down through generations, while given names are chosen by parents. \nThey are usually one or two characters long and carry positive wishes, such as hopes for the child's health, intelligence, or happiness.`,
-      namingChatSurnameMsg: `Now, let's start by customizing your surname. \nIn China we have the concept of the "Hundred Family Surnames." I will list some common surnames for you. You can choose one yourself, or I can choose one for you.`,
+      namingChatWelcomeMsg:`Hello and welcome to the Personalized Name Service! I'm Mike, your personal assistant.\n\nIn China, names follow the order of surname first, followed by the given name.\n Surnames are passed down through generations, while first names are given by parents. \nThey are usually one or two characters and carry best wishes, such as hopes for the child's health, intelligence, or happiness.`,
+      namingChatSurnameMsg: `Now, let's start customizing your surname. \nIn China we have the concept of the "Hundred Family Surnames." I will list some common surnames for you. You can choose one yourself, or I can choose one for you.`,
       namingMoreSurnames: "More Surnames",
       namingMikeCustom: "Mike Custom Surname",
       namingInputSelectedSurnameTip: `You have selected "{{surname}}" as your surname. Please send it to Mike for confirmation.`,
       namingInputSend: "Send",
       namingSelectedSurname: `I have selected "{{surname}}" as my surname`,
-      namingChatInfoMsg:`Congratulations on acquiring the authentic Chinese surname "{{surname}}". \nNow, let's proceed to customize your given name.\nPlease fill out the following information and send it to me.`,
+      namingChatInfoMsg:`Congratulations on choosing the authentic Chinese surname "{{surname}}". \nNow, let's proceed to customize your given name.\nPlease fill out the following information and send it to me.`,
       // UserInfoForm
       formNameLabel: "Name",
       formNamePlaceholder: "Please enter your name",
