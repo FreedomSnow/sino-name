@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { FC } from 'react';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import './Login.css';
 import { useTranslation } from 'react-i18next';
 
@@ -34,12 +35,12 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
     setLoading(true);
     if (provider === 'google' || provider === 'apple') {
       // 真实三方登录，登录成功后获取用户信息
-      const result = await signIn(provider, { redirect: false });
+      await signIn(provider, { redirect: false });
       // 这里假设登录成功后可通过 next-auth session 获取用户信息
       // 你可以根据实际业务调整获取方式
       const res = await fetch('/api/auth/session');
       const session = await res.json();
-      let user: UserInfo = {
+      const user: UserInfo = {
         name: session?.user?.name || '',
         avatar: session?.user?.image || '',
         email: session?.user?.email || '',
@@ -63,7 +64,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
             onClick={onClose}
             aria-label="关闭"
           >
-            <img src="/close.svg" alt="关闭" className="login-closeIcon" />
+            <Image src="/close.svg" alt="关闭" className="login-closeIcon" width={24} height={24} />
           </button>
         </div>
         <div className="socials">
@@ -74,7 +75,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
               onClick={() => handleSocialLogin(social.key as 'google' | 'apple')}
               disabled={loading}
             >
-              <img src={social.icon} alt={social.label} className="socialIcon" />
+              <Image src={social.icon} alt={social.label} className="socialIcon" width={24} height={24} />
               {t('login_with', { provider: social.label })}
             </button>
           ))}
