@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 import "./ActiveSurname.css";
 
 interface SurnameItem {
@@ -27,33 +28,39 @@ const ActiveSurname: React.FC<ActiveSurnameProps> = ({ item, onClose, editable, 
   useEffect(() => {
     if (item) {
       import('hanzi-writer').then(HanziWriter => {
-        const chars = item.surname.split("");
-        const animateChar = (idx: number) => {
-          if (idx >= chars.length) return;
-          const ref = writerRefs.current[idx];
-          if (ref) {
-            ref.innerHTML = '';
-            const writer = HanziWriter.default.create(ref, chars[idx], {
-              width: 100,
-              height: 100,
-              padding: 4,
-              showOutline: true,
-              showCharacter: false,
-              strokeAnimationSpeed: 1.1,
-              delayBetweenStrokes: 180,
-              radicalColor: '#036aff',
-              strokeColor: '#036aff',
-              outlineColor: '#b3d1ff',
-              drawingColor: '#036aff',
-              highlightOnComplete: false,
-              strokeFadeDuration: 0,
-            });
-            writer.animateCharacter({ onComplete: () => animateChar(idx + 1) });
-          } else {
-            animateChar(idx + 1);
-          }
-        };
-        animateChar(0);
+        try {
+          const chars = item.surname.split("");
+          const animateChar = (idx: number) => {
+            if (idx >= chars.length) return;
+            const ref = writerRefs.current[idx];
+            if (ref) {
+              ref.innerHTML = '';
+              const writer = HanziWriter.default.create(ref, chars[idx], {
+                width: 100,
+                height: 100,
+                padding: 4,
+                showOutline: true,
+                showCharacter: false,
+                strokeAnimationSpeed: 1.1,
+                delayBetweenStrokes: 180,
+                radicalColor: '#036aff',
+                strokeColor: '#036aff',
+                outlineColor: '#b3d1ff',
+                drawingColor: '#036aff',
+                highlightOnComplete: false,
+                strokeFadeDuration: 0,
+              });
+              writer.animateCharacter({ onComplete: () => animateChar(idx + 1) });
+            } else {
+              animateChar(idx + 1);
+            }
+          };
+          animateChar(0);
+        } catch (error) {
+          console.error('hanzi-writer 初始化失败:', error);
+        }
+      }).catch(error => {
+        console.error('hanzi-writer 模块加载失败:', error);
       });
     }
   }, [item]);
@@ -95,42 +102,48 @@ const ActiveSurname: React.FC<ActiveSurnameProps> = ({ item, onClose, editable, 
               window.speechSynthesis.speak(utter);
             }}
           >
-            <img src="/voice.svg" alt="发音" />
+            <Image src="/voice.svg" alt="发音" width={24} height={24} />
           </button>
           <button className="active-surname-popup-btn" title="编辑" onClick={() => {
             if (item) {
               import('hanzi-writer').then(HanziWriter => {
-                const chars = item.surname.split("");
-                const animateChar = (idx: number) => {
-                  if (idx >= chars.length) return;
-                  const ref = writerRefs.current[idx];
-                  if (ref) {
-                    ref.innerHTML = '';
-                    const writer = HanziWriter.default.create(ref, chars[idx], {
-                      width: 100,
-                      height: 100,
-                      padding: 4,
-                      showOutline: true,
-                      showCharacter: false,
-                      strokeAnimationSpeed: 1.1,
-                      delayBetweenStrokes: 180,
-                      radicalColor: '#036aff',
-                      strokeColor: '#036aff',
-                      outlineColor: '#b3d1ff',
-                      drawingColor: '#036aff',
-                      highlightOnComplete: false,
-                      strokeFadeDuration: 0,
-                    });
-                    writer.animateCharacter({ onComplete: () => animateChar(idx + 1) });
-                  } else {
-                    animateChar(idx + 1);
-                  }
-                };
-                animateChar(0);
+                try {
+                  const chars = item.surname.split("");
+                  const animateChar = (idx: number) => {
+                    if (idx >= chars.length) return;
+                    const ref = writerRefs.current[idx];
+                    if (ref) {
+                      ref.innerHTML = '';
+                      const writer = HanziWriter.default.create(ref, chars[idx], {
+                        width: 100,
+                        height: 100,
+                        padding: 4,
+                        showOutline: true,
+                        showCharacter: false,
+                        strokeAnimationSpeed: 1.1,
+                        delayBetweenStrokes: 180,
+                        radicalColor: '#036aff',
+                        strokeColor: '#036aff',
+                        outlineColor: '#b3d1ff',
+                        drawingColor: '#036aff',
+                        highlightOnComplete: false,
+                        strokeFadeDuration: 0,
+                      });
+                      writer.animateCharacter({ onComplete: () => animateChar(idx + 1) });
+                    } else {
+                      animateChar(idx + 1);
+                    }
+                  };
+                  animateChar(0);
+                } catch (error) {
+                  console.error('hanzi-writer 初始化失败:', error);
+                }
+              }).catch(error => {
+                console.error('hanzi-writer 模块加载失败:', error);
               });
             }
           }}>
-            <img src="/pencil.svg" alt="编辑" />
+            <Image src="/pencil.svg" alt="编辑" width={24} height={24} />
           </button>
           {editable && (
             <button
@@ -145,9 +158,11 @@ const ActiveSurname: React.FC<ActiveSurnameProps> = ({ item, onClose, editable, 
                 }
               }}
             >
-              <img
+              <Image
                 src={selected ? "/checked.svg" : "/uncheck.svg"}
                 alt={selected ? t('active_surname_checked') : t('active_surname_unchecked')}
+                width={24}
+                height={24}
               />
             </button>
           )}

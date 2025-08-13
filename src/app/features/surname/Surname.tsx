@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 import "./Surname.css";
 import surnamesData from './surnames.json';
 import ActiveSurname from './ActiveSurname';
@@ -118,10 +119,11 @@ const Surname: React.FC<SurnameProps> = ({ editable = false, onSelect, selectedS
                   }
                 }}
               >
-                <img
+                <Image
                   src={selectedItem?.surname === item.surname ? "/checked.svg" : "/uncheck.svg"}
                   alt={selectedItem?.surname === item.surname ? t('active_surname_checked') : t('active_surname_unchecked')}
-                  style={{ width: 22, height: 22 }}
+                  width={22}
+                  height={22}
                 />
               </button>
             )}
