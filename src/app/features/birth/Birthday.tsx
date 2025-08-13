@@ -7,7 +7,7 @@ import 'dayjs/locale/zh-cn';
 import { useTranslation } from 'react-i18next';
 import solarlunar from 'solarlunar';
 import lunar from 'lunar-javascript';
-const { Lunar, Solar } = lunar;
+const { Lunar } = lunar;
 import './Birthday.css';
 
 const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) => {
@@ -16,7 +16,7 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
     let navType: string | number | undefined;
     const navEntries = window.performance?.getEntriesByType?.('navigation');
     if (navEntries && navEntries.length > 0) {
-      navType = (navEntries[0] as any).type;
+      navType = (navEntries[0] as unknown as { type: string }).type;
     } else if (window.performance?.navigation) {
       navType = window.performance.navigation.type;
     }
@@ -27,10 +27,7 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
   // 12生肖列表
   const zodiacListZh = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
   const zodiacListEn = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
-  const zodiacIcons = [
-    '/zodiac-rat.svg', '/zodiac-ox.svg', '/zodiac-tiger.svg', '/zodiac-rabbit.svg', '/zodiac-dragon.svg', '/zodiac-snake.svg',
-    '/zodiac-horse.svg', '/zodiac-goat.svg', '/zodiac-monkey.svg', '/zodiac-rooster.svg', '/zodiac-dog.svg', '/zodiac-pig.svg'
-  ];
+
   // 生肖守护神
   const guardiansZh = [
     '千手观音菩萨（鼠）', '虚空藏菩萨（牛）', '虚空藏菩萨（虎）', '文殊菩萨（兔）', '普贤菩萨（龙）', '普贤菩萨（蛇）',
@@ -150,9 +147,9 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
   }, []);
 
   // 保存页面所有相关状态到 localStorage
-  function saveState(partial: any) {
+  function saveState(partial: Record<string, unknown>) {
     const prev = window.localStorage.getItem('birthdayState');
-    let state: any = {};
+    let state: Record<string, unknown> = {};
     if (prev) {
       try { state = JSON.parse(prev); } catch { state = {}; }
     }
@@ -222,7 +219,7 @@ const Birthday: React.FC<{ onQuery?: (date: string) => void }> = ({ onQuery }) =
                       {(() => {
                         if (!birthDate || zodiacIdx === null) return '';
                         const lunarDate = solarlunar.solar2lunar(birthDate.year(), birthDate.month() + 1, birthDate.date());
-                        let monthIdx = lunarDate.lMonth - 1;
+                        const monthIdx = lunarDate.lMonth - 1;
                         if (monthIdx < 0 || monthIdx > 11) return '';
                         return i18n.language === 'zh'
                           ? birthdayFlowerListZh[monthIdx]

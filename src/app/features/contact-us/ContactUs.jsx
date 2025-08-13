@@ -2,7 +2,14 @@ import { useState } from 'react';
 import styles from './ContactUs.module.css';
 import { useTranslation } from 'react-i18next';
 
-const ContactUs = ({ isOpen, onClose }) => {
+const ContactUs = (props) => {
+  // 添加额外的安全检查
+  if (!props || typeof props !== 'object') {
+    return null;
+  }
+  
+  const { isOpen = false, onClose = () => {} } = props;
+  
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',

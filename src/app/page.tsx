@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 import NamingPage from "./features/naming/Naming";
 import Surname from "./features/surname/Surname";
 import "./i18n-init";
@@ -52,10 +53,25 @@ export default function Home() {
   };
   const [showContactUs, setShowContactUs] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<{ name: string; avatar: string; email: string; provider: string; loginTime: number } | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
-  const ContactUs = mounted ? require('./features/contact-us/ContactUs.jsx').default : null;
-  const Login = mounted ? require('./features/login/Login.tsx').default : null;
+  const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
+  const [Login, setLogin] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; onLogin: (user: { name: string; avatar: string; email: string; provider: string; loginTime: number }) => void }> | null>(null);
+
+  // 动态导入组件
+  useEffect(() => {
+    if (mounted) {
+      Promise.all([
+        import('./features/contact-us/ContactUs.jsx'),
+        import('./features/login/Login')
+      ]).then(([contactUsModule, loginModule]) => {
+        setContactUs(() => contactUsModule.default);
+        setLogin(() => loginModule.default);
+      }).catch(error => {
+        console.error('动态导入组件失败:', error);
+      });
+    }
+  }, [mounted]);
   if (!mounted) {
     // SSR 或 hydration 前只渲染空白，避免 mismatch
     return null;
@@ -65,12 +81,12 @@ export default function Home() {
       {/* 顶部栏 */}
       <header className="header-v2">
         <div className="header-left">
-          <img src="/icon.png" alt="Logo" className="header-logo" />
+          <Image src="/icon.png" alt="Logo" className="header-logo" width={32} height={32} />
           <span className="header-title">Sino Name</span>
         </div>
         <div className="header-center">
           <div className="panda-anim-area">
-            <img src="/panda-icon.gif" alt="Panda Animation" className="panda-anim" />
+            <Image src="/panda-icon.gif" alt="Panda Animation" className="panda-anim" width={48} height={48} unoptimized />
           </div>
         </div>
         <div className="header-right">
@@ -89,7 +105,7 @@ export default function Home() {
           {user ? (
             <button className="login-btn-v2 user-avatar-btn" style={{ padding: 0, border: 'none', background: 'none', marginLeft: 12 }}>
               {user.avatar ? (
-                <img src={user.avatar} alt={user.name} style={{ width: 32, height: 32, borderRadius: '50%', background: '#eee' }} />
+                <Image src={user.avatar} alt={user.name} width={32} height={32} style={{ borderRadius: '50%', background: '#eee' }} />
               ) : (
                 <span style={{
                   width: 32,
@@ -110,14 +126,18 @@ export default function Home() {
             <button className="login-btn-v2" onClick={() => setShowLogin(true)}>{t("login")}</button>
           )}
       {/* Login 弹窗 */}
-      {Login && (
+      {Login && showLogin && (
         <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={setUser} />
       )}
         </div>
       </header>
       {/* ContactUs 弹窗 */}
-      {ContactUs && (
-        <ContactUs isOpen={showContactUs} onClose={() => setShowContactUs(false)} lang={i18n.language} />
+      {ContactUs && showContactUs && (
+        <ContactUs 
+          isOpen={showContactUs} 
+          onClose={() => setShowContactUs(false)} 
+          lang={i18n.language} 
+        />
       )}
       {/* 下半部分 */}
       <div className="main-v2" style={{ position: 'relative' }}>
@@ -138,7 +158,7 @@ export default function Home() {
                     onClick={() => handleTabClick(tabItem.key)}
                   >
                     <div className="tabbar-item-inner">
-                      <img src={tabItem.icon} alt={t(tabItem.title)} className="tabbar-icon" />
+                      <Image src={tabItem.icon} alt={t(tabItem.title)} className="tabbar-icon" width={24} height={24} />
                       <span
                         className="tabbar-title"
                         style={{
