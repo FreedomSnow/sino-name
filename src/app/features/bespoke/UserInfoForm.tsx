@@ -12,7 +12,8 @@ interface UserInfoFormProps {
 }
 
 export interface UserInfoData {
-  name: string;
+  lastName: string;
+  givenName: string;
   gender: '男' | '女' | '保密';
   birth: string;
   classic: '随意' | '诗经' | '古诗词';
@@ -26,7 +27,8 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
   // 首次加载标志，防止初始化时触发保存
   const [isInitialMount, setIsInitialMount] = useState(true);
   const initialForm: UserInfoData = {
-    name: '',
+    lastName: '',
+    givenName: '',
     gender: '保密',
     birth: '',
     classic: '随意',
@@ -79,14 +81,26 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
     <ConfigProvider locale={i18n.language === 'zh' ? zhCN : enUS}>
       <form className="user-info-form" onSubmit={handleSubmit}>
       <div className="user-info-form-group">
-        <label htmlFor="name">{t('formNameLabel')}</label>
+        <label htmlFor="name">{t('formLastNameLabel')}</label>
         <input
-          id="name"
-          name="name"
+          id="lastName"
+          name="lastName"
           type="text"
-          value={form.name}
+          value={form.lastName}
           onChange={handleChange}
-          placeholder={t('formNamePlaceholder')}
+          placeholder={t('formLastNamePlaceholder')}
+          required
+        />
+      </div>
+      <div className="user-info-form-group">
+        <label htmlFor="name">{t('formGivenNameLabel')}</label>
+        <input
+          id="givenName"
+          name="givenName"
+          type="text"
+          value={form.givenName}
+          onChange={handleChange}
+          placeholder={t('formGivenNamePlaceholder')}
           required
         />
       </div>
