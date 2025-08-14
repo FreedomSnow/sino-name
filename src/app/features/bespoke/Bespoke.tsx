@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-// 全局刷新或重新进入网站时清空 Naming 页面缓存（无论当前tab是否显示）
+// 全局刷新或重新进入网站时清空 bespoke 页面缓存（无论当前tab是否显示）
 if (typeof window !== 'undefined') {
   let navType: string | number | undefined;
   const navEntries = window.performance?.getEntriesByType?.('navigation');
@@ -10,20 +10,20 @@ if (typeof window !== 'undefined') {
     navType = window.performance.navigation.type;
   }
   if (navType === 'reload' || navType === 1 || navType === 'navigate') {
-    console.log('Clearing Naming page cache on reload or navigation');
+    console.log('Clearing bespoke page cache on reload or navigation');
     window.localStorage.removeItem('selectedSurname');
-    window.localStorage.removeItem('namingPageCache');
+    window.localStorage.removeItem('bespokePageCache');
     window.localStorage.removeItem('userInfoFormCache');
   }
 }
 
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import "./Naming.css";
+import "./Bespoke.css";
 import UserInfoForm from "./UserInfoForm";
 import Surname from '../surname/Surname';
 
-export default function NamingPage() {
+export default function BespokePage() {
   const commonSurnames = [
     '王', '李', '赵', '吴', '周', '郑', '冯', '陈', '卫', '许',
     '何', '吕', '孙', '林', '叶', '宋', '杨', '朱', '张', '洪'
@@ -35,7 +35,7 @@ export default function NamingPage() {
   const [activeSurname, setActiveSurname] = useState<string|null>(null);
 
   // 页面显示记录缓存
-  const cache = typeof window !== 'undefined' ? window.localStorage.getItem('namingPageCache') : null;
+  const cache = typeof window !== 'undefined' ? window.localStorage.getItem('bespokePageCache') : null;
   const cacheObj = cache ? JSON.parse(cache) : {};
   const [selectedSurname, setSelectedSurname] = useState<string|null>(cacheObj.selectedSurname ?? null);
   const [isShowBottomBar, setIsShowBottomBar] = useState(cacheObj.isShowBottomBar ?? false);
@@ -57,7 +57,7 @@ export default function NamingPage() {
         isShowBottomBar,
         userSurname,
       };
-      window.localStorage.setItem('namingPageCache', JSON.stringify(cacheData));
+      window.localStorage.setItem('bespokePageCache', JSON.stringify(cacheData));
     };
   }, [hasShown, selectedSurname, isShowBottomBar, userSurname]);
 
@@ -147,7 +147,7 @@ export default function NamingPage() {
     setShowNameMsg(false);
     setShowUserInfoForm(false);
 
-    console.log('NamingPage, hasShown:', hasShown, ", selectedSurname:", selectedSurname, ", userSurname:", userSurname, ", isShowBottomBar:", isShowBottomBar);
+    console.log('BespokePage, hasShown:', hasShown, ", selectedSurname:", selectedSurname, ", userSurname:", userSurname, ", isShowBottomBar:", isShowBottomBar);
     
     let timeout1 = 1000;
     let timeout2 = 700;
@@ -210,41 +210,54 @@ export default function NamingPage() {
   };
 
   return (
-    <div className="naming-container">
-      <div className="naming-panda-fixed">
+    <div className="bespoke-container">
+      <div className="bespoke-panda-fixed">
         <Image src="/panda-chat.gif" alt="panda chat" width={120} height={120} unoptimized />
       </div>
-      <h2 className="naming-title">{t('namingTitle')}</h2>
-      <div className="naming-chat-area">
+      <h2 className="bespoke-title">{t('bespokeTitle')}</h2>
+      <div className="bespoke-chat-area">
         {/* welcome-msg 动画显示 */}
         {showWelcomeMsg && (
           <div
-            className="welcome-msg naming-chat-left-msg"
-            dangerouslySetInnerHTML={{ __html: t("namingChatWelcomeMsg").replace(/\n/g, "<br />") }}
+            className="welcome-msg bespoke-chat-left-msg"
+            dangerouslySetInnerHTML={{ __html: t("bespokeChatWelcomeMsg").replace(/\n/g, "<br />") }}
           />
         )}
         {/* surname-msg 动画显示 */}
         {showSurnameMsg && (
-          <div
-            className="surname-msg naming-chat-left-msg"
-            dangerouslySetInnerHTML={{ __html: t("namingChatSurnameMsg").replace(/\n/g, "<br />") }}
-          />
+          <div className="surname-msg bespoke-chat-left-msg">
+            <div dangerouslySetInnerHTML={{ __html: t("bespokeChatSurnameMsg").replace(/\n/g, "<br />") }} />
+            <div className="bespoke-btn-row">
+              <button
+                className="bespoke-more-btn"
+                onClick={handleMoreClick}
+              >
+                {t('bespokeMoreSurnames')}
+              </button>
+              <button
+                className="bespoke-mike-pick-btn"
+                onClick={handleMikePick}
+              >
+                {t("bespokeMikeCustom")}
+              </button>
+            </div>
+          </div>
         )}
         {/* 姓氏选择区和按钮动画显示 */}
-        {showSurnamesGrid && (
-          <div className="naming-surnames-block">
-            <div className="naming-surnames-grid">
+        {/* {showSurnamesGrid && (
+          <div className="bespoke-surnames-block">
+            <div className="bespoke-surnames-grid">
               {commonSurnames.map((surname) => (
-                <div key={surname} className="naming-surname-radio-wrapper">
+                <div key={surname} className="bespoke-surname-radio-wrapper">
                   <div
-                    className={`naming-surname-cell${selectedSurname === surname ? ' naming-surname-cell-selected' : ''}`}
+                    className={`bespoke-surname-cell${selectedSurname === surname ? ' bespoke-surname-cell-selected' : ''}`}
                     tabIndex={0}
                     onClick={() => handleCellClick(surname)}
                   >
-                    <span className="naming-surname-text">{surname}</span>
+                    <span className="bespoke-surname-text">{surname}</span>
                   </div>
                   <button
-                    className="naming-surname-radio-btn"
+                    className="bespoke-surname-radio-btn"
                     tabIndex={-1}
                     aria-label="选中"
                     onClick={e => {
@@ -275,37 +288,23 @@ export default function NamingPage() {
                 </div>
               ))}
             </div>
-            <div className="naming-btn-row">
-              <button
-                className="naming-more-btn"
-                onClick={handleMoreClick}
-              >
-                {t('namingMoreSurnames')}
-              </button>
-              <button
-                className="naming-mike-pick-btn"
-                onClick={handleMikePick}
-              >
-                {t("namingMikeCustom")}
-              </button>
-            </div>
           </div>
-        )}
+        )} */}
         {/* 用户发送的右侧气泡及后续内容动画显示 */}
         {userSurname && (
           <>
             {showUserSurname && (
               <div 
-                className="user-surname naming-chat-right-msg" 
+                className="user-surname bespoke-chat-right-msg" 
                 style={{ whiteSpace: 'pre-line' }}
-                dangerouslySetInnerHTML={{ __html: t('namingSelectedSurname', { surname: userSurname }).replace(/\n/g, '<br />') }}
+                dangerouslySetInnerHTML={{ __html: t('bespokeSelectedSurname', { surname: userSurname }).replace(/\n/g, '<br />') }}
               />
             )}
             {showNameMsg && (
               <div
-                className="name-msg naming-chat-left-msg"
+                className="name-msg bespoke-chat-left-msg"
                 style={{ whiteSpace: 'pre-line' }}
-                dangerouslySetInnerHTML={{ __html: t('namingChatInfoMsg', { surname: userSurname }).replace(/\n/g, '<br />') }}
+                dangerouslySetInnerHTML={{ __html: t('bespokeChatInfoMsg', { surname: userSurname }).replace(/\n/g, '<br />') }}
               />
             )}
             {showUserInfoForm && (
@@ -319,20 +318,20 @@ export default function NamingPage() {
 
       {/* 底部只读输入框和发送按钮 */}
       {isShowBottomBar && selectedSurname && (
-        <div className="naming-bottom-bar">
+        <div className="bespoke-bottom-bar">
           <div
-            className="naming-bottom-input"
+            className="bespoke-bottom-input"
             style={{ whiteSpace: 'pre-line' }}
-            dangerouslySetInnerHTML={{ __html: t('namingInputSelectedSurnameTip', { surname: selectedSurname }).replace(/\n/g, '<br />') }}
+            dangerouslySetInnerHTML={{ __html: t('bespokeInputSelectedSurnameTip', { surname: selectedSurname }).replace(/\n/g, '<br />') }}
           />
-          <button className="naming-bottom-send-btn" onClick={handleSend}>{t('namingInputSend')}</button>
+          <button className="bespoke-bottom-send-btn" onClick={handleSend}>{t('bespokeInputSend')}</button>
         </div>
       )}
 
       {/* 更多弹窗，显示 Surname 页面 */}
       {showMorePopup && (
-        <div className="naming-more-overlay" onClick={handleMoreClose}>
-          <div className="naming-more-popup" onClick={e => e.stopPropagation()}>
+        <div className="bespoke-more-overlay" onClick={handleMoreClose}>
+          <div className="bespoke-more-popup" onClick={e => e.stopPropagation()}>
             {/* 直接复用 Surname 页面组件 */}
             <Surname
               editable={true}
@@ -352,17 +351,17 @@ export default function NamingPage() {
       )}
       {/* 全屏放大姓氏卡片和遮罩层 */}
       {activeSurname && (
-        <div className="naming-surname-overlay" onClick={handleOverlayClose}>
+        <div className="bespoke-surname-overlay" onClick={handleOverlayClose}>
           <div
-            className="naming-surname-popup"
+            className="bespoke-surname-popup"
             onClick={e => e.stopPropagation()}
           >
-            <div className="naming-surname-popup-text" style={{ position: 'relative', width: 120, height: 120 }}>
+            <div className="bespoke-surname-popup-text" style={{ position: 'relative', width: 120, height: 120 }}>
               <div ref={writerRef} style={{ width: 120, height: 120, position: 'absolute', top: 0, left: 0, zIndex: 2 }} />
             </div>
-            <div className="naming-surname-popup-actions">
+            <div className="bespoke-surname-popup-actions">
               <button
-                className="naming-surname-popup-btn"
+                className="bespoke-surname-popup-btn"
                 title="发音"
                 onClick={() => {
                   if (activeSurname) {
@@ -374,7 +373,7 @@ export default function NamingPage() {
               >
                 <Image src="/voice.svg" alt="发音" width={24} height={24} />
               </button>
-              <button className="naming-surname-popup-btn" title="编辑" onClick={handleWriteClick}>
+              <button className="bespoke-surname-popup-btn" title="编辑" onClick={handleWriteClick}>
                 <Image src="/pencil.svg" alt="编辑" width={24} height={24} />
               </button>
             </div>

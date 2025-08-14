@@ -1,4 +1,4 @@
-.naming-container {
+.bespoke-container {
   position: relative;
   height: 100%;
   width: 100%;
@@ -8,9 +8,9 @@
   overflow: hidden;
 }
 
-.naming-title {
+.bespoke-title {
   width: 100%;
-  max-width: 400px;
+  min-width: 200px;
   margin: 20px auto 20px auto;
   font-size: 35px;
   font-weight: 700;
@@ -22,7 +22,7 @@
   /* background: red; */
 }
 
-.naming-panda-fixed {
+.bespoke-panda-fixed {
   position: absolute;
   top: 72px;
   left: 32px;
@@ -30,14 +30,14 @@
   pointer-events: none;
 }
 
-.naming-panda-fixed img {
+.bespoke-panda-fixed img {
   width: 80px;
   height: auto;
   display: block;
 }
 
 /* 聊天区域整体样式 */
-.naming-chat-area {
+.bespoke-chat-area {
   width: 78%;
   min-width: 320px;
   max-width: 1000px;
@@ -54,7 +54,7 @@
 }
 
 /* 单条聊天气泡 */
-.naming-chat-left-msg {
+.bespoke-chat-left-msg {
   position: relative;
   min-width: 120px;
   max-width: 70vw;
@@ -69,7 +69,7 @@
   text-align: left;
 }
 
-.naming-chat-left-msg::before {
+.bespoke-chat-left-msg::before {
   content: "";
   position: absolute;
   left: -16px;
@@ -82,7 +82,7 @@
   filter: drop-shadow(-2px 0 0 #036aff);
 }
 
-.naming-surnames-block {
+.bespoke-surnames-block {
   width: 100%;
   max-width: 900px;
   margin: 0 auto 20px auto;
@@ -95,7 +95,7 @@
   padding: 20px 30px;
 }
 /* 姓氏 grid 区域 */
-.naming-surnames-grid {
+.bespoke-surnames-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
   gap: 20px;
@@ -105,7 +105,7 @@
 }
 
 /* 单个姓氏格子 */
-.naming-surname-cell {
+.bespoke-surname-cell {
   position: relative;
   border: 1.5px solid #b3d1ff;
   border-radius: 12px;
@@ -120,11 +120,11 @@
   margin: 0 auto;
   /* background: yellow; */
 }
-.naming-surname-text {
+.bespoke-surname-text {
   z-index: 1;
 }
 /* 右上角按钮区域 */
-.naming-surname-actions {
+.bespoke-surname-actions {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -133,7 +133,7 @@
   z-index: 2;
 }
 
-.naming-surname-btn {
+.bespoke-surname-btn {
   width: 22px;
   height: 22px;
   background: #fff;
@@ -147,15 +147,15 @@
   box-shadow: 0 1px 4px 0 rgba(3,106,255,0.06);
   transition: background 0.2s;
 }
-.naming-surname-btn:hover {
+.bespoke-surname-btn:hover {
   background: #eaf2ff;
 }
-.naming-surname-btn img {
+.bespoke-surname-btn img {
   width: 14px;
   height: 14px;
 }
 /* 全屏半透明遮罩 */
-.naming-surname-overlay {
+.bespoke-surname-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -175,7 +175,7 @@
 }
 
 /* 居中弹窗卡片动画 */
-.naming-surname-popup {
+.bespoke-surname-popup {
   width: 220px;
   height: 220px;
   background: #fff;
@@ -211,7 +211,7 @@
   }
 }
 
-.naming-surname-popup-text {
+.bespoke-surname-popup-text {
   font-size: 56px;
   font-weight: 600;
   color: #036aff;
@@ -221,13 +221,13 @@
   user-select: text;
 }
 
-.naming-surname-popup-actions {
+.bespoke-surname-popup-actions {
   display: flex;
   gap: 24px;
   justify-content: center;
   width: 100%;
 }
-.naming-surname-popup-btn {
+.bespoke-surname-popup-btn {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -242,27 +242,27 @@
   font-size: 20px;
   padding: 0;
 }
-.naming-surname-popup-btn:hover {
+.bespoke-surname-popup-btn:hover {
   background: #eaf2ff;
   box-shadow: 0 4px 16px 0 rgba(3,106,255,0.16);
 }
-.naming-surname-popup-btn-selected {
+.bespoke-surname-popup-btn-selected {
   background: #036aff;
   box-shadow: 0 4px 16px 0 rgba(3,106,255,0.18);
 }
-.naming-surname-popup-btn-selected svg {
+.bespoke-surname-popup-btn-selected svg {
   display: block;
 }
 
 /* 姓氏cell+单选按钮外层包裹器 */
-.naming-surname-radio-wrapper {
+.bespoke-surname-radio-wrapper {
   display: inline-block;
   position: relative;
   margin: 0 8px 8px 0;
 }
 
 /* 单选按钮样式 */
-.naming-surname-radio-btn {
+.bespoke-surname-radio-btn {
   position: absolute;
   top: -2px;
   right: -6px;
@@ -277,13 +277,13 @@
 }
 
 /* 按钮容器横向排列 */
-.naming-btn-row {
+.bespoke-btn-row {
   display: flex;
   align-items: center;
   margin-top: 20px;
   gap: 30px;
 }
-.naming-more-btn {
+.bespoke-more-btn {
   margin-top: 20px;
   margin-bottom: 8px;
   padding: 8px 20px;
@@ -299,13 +299,13 @@
   transition: background 0.2s;
   border: 1.5px solid #036aff;
 }
-.naming-more-btn:hover {
+.bespoke-more-btn:hover {
   background: #eaf2ff;
   color: #036aff;
 }
 
 /* Mike为您定制姓氏按钮 */
-.naming-mike-pick-btn {
+.bespoke-mike-pick-btn {
   display: inline-block;
   margin-top: 20px;
   margin-bottom: 8px;
@@ -318,12 +318,12 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.naming-mike-pick-btn:hover {
+.bespoke-mike-pick-btn:hover {
   background: #005be4;
 }
 
 /* 更多弹窗遮罩和内容样式 */
-.naming-more-overlay {
+.bespoke-more-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -337,7 +337,7 @@
   justify-content: center;
 }
 
-.naming-more-popup {
+.bespoke-more-popup {
   width: 70%;
   height: 100%;
   background: #fff;
@@ -353,7 +353,7 @@
 }
 
 /* 底部只读输入框和发送按钮 */
-.naming-bottom-bar {
+.bespoke-bottom-bar {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -367,7 +367,7 @@
   z-index: 3001;
   gap: 16px;
 }
-.naming-bottom-input {
+.bespoke-bottom-input {
   flex: 0 1 auto;
   width: auto;
   max-width: calc(100% - 120px);
@@ -379,7 +379,7 @@
   color: #888;
   outline: none;
 }
-.naming-bottom-send-btn {
+.bespoke-bottom-send-btn {
   padding: 10px 24px;
   font-size: 16px;
   border-radius: 999px;
@@ -389,12 +389,12 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.naming-bottom-send-btn:hover {
+.bespoke-bottom-send-btn:hover {
   background: #005be4;
 }
 
 /* 用户右侧聊天气泡 */
-.naming-chat-right-msg {
+.bespoke-chat-right-msg {
   position: relative;
   min-width: 120px;
   max-width: 70vw;
@@ -414,7 +414,7 @@
   width: fit-content;
 }
 
-.naming-chat-right-msg::after {
+.bespoke-chat-right-msg::after {
   content: "";
   position: absolute;
   right: -16px;
@@ -426,8 +426,8 @@
   border-left: 16px solid #eee;
   filter: drop-shadow(2px 0 0 #bbb);
 }
-/* 让 naming-surnames-grid 父级容器填满 naming-chat-area */
-.naming-chat-left-msg > .naming-surnames-grid {
+/* 让 bespoke-surnames-grid 父级容器填满 bespoke-chat-area */
+.bespoke-chat-left-msg > .bespoke-surnames-grid {
   width: 100%;
   box-sizing: border-box;
 }
