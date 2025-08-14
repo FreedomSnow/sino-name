@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
-import NamingPage from "./features/naming/Naming";
+import BespokePage from "./features/bespoke/Bespoke";
+import CustomNamingPage from "./features/custom/CustomNaming";
 import Surname from "./features/surname/Surname";
 import "./i18n-init";
 import "./page.css";
@@ -13,6 +14,7 @@ import Welcome from "./features/welcome/Welcome";
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
+  { key: "bespoke", icon: "/bespoke.svg", title: "tabBespoke" },
   { key: "surname", icon: "/surname.svg", title: "tabSurname" },
   { key: "birth", icon: "/birthday.svg", title: "tabBirthday" },
 ];
@@ -194,7 +196,10 @@ export default function Home() {
             </aside>
             <section className="tab-content-v2">
               {tab === "naming" && (
-                <NamingPage />
+                <CustomNamingPage />
+              )}
+              {tab === "bespoke" && (
+                <BespokePage />
               )}
               {tab === "surname" && (
                 <Surname />
