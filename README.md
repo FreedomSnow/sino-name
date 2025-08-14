@@ -6,6 +6,33 @@
 - 支持 GIF 动画和视频展示
 - 可集成 AI 接口（如 DeepSeek、ChatGPT）
 - 现代化前端架构，便于扩展
+- 支持 Google 和 Apple OAuth 登录
+
+## 环境变量配置
+
+在开始开发之前，需要配置环境变量：
+
+1. 复制 `env.example` 文件为 `.env.local`
+2. 填入相应的 OAuth 配置信息：
+
+```bash
+# Google OAuth 配置
+GOOGLE_CLIENT_ID=your_google_client_id_here
+GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+
+# Apple OAuth 配置
+APPLE_CLIENT_ID=your_apple_client_id_here
+APPLE_CLIENT_SECRET=your_apple_client_secret_here
+
+# NextAuth 配置
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_here
+```
+
+### 获取 OAuth 凭据
+
+- **Google OAuth**: 访问 [Google Cloud Console](https://console.cloud.google.com/) 创建 OAuth 2.0 客户端
+- **Apple OAuth**: 访问 [Apple Developer](https://developer.apple.com/) 配置 Sign in with Apple
 
 ## 启动开发环境
 
