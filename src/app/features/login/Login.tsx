@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { FC } from 'react';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import './Login.css';
 import { useTranslation } from 'react-i18next';
@@ -28,20 +29,19 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
 
   if (!isOpen) return null;
 
-  // 谷歌登录 - 使用后端要求的OAuth路径
+  // 谷歌登录 - 使用NextAuth标准路径
   const handleGoogleLogin = async () => {
     setLoading(true);
     
     try {
-      // 使用后端要求的OAuth路径
-      const oauthUrl = '/api/oauth/signin/google';
-      const callbackUrl = encodeURIComponent('/oauth-success');
-      const fullUrl = `${oauthUrl}?callbackUrl=${callbackUrl}`;
+      // 使用NextAuth的标准signIn方法
+      const result = await signIn('google', { 
+        redirect: true,
+        callbackUrl: '/oauth-success'
+      });
       
-      console.log('重定向到OAuth登录:', fullUrl);
-      
-      // 直接重定向到OAuth登录
-      window.location.href = fullUrl;
+      // 如果redirect为true，NextAuth会自动处理重定向
+      // 这里不需要手动重定向
     } catch (err) {
       console.error('登录错误:', err);
       // 发生错误时重定向到失败页面
