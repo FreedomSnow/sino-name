@@ -34,28 +34,20 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
     setLoading(true);
     
     try {
+      // 直接使用NextAuth的signIn方法，简化登录流程
       const result = await signIn('google', { 
-        redirect: false,
-        callbackUrl: '/oauth-success?temp_token_id=temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) + '&user_id=1'
+        redirect: true,
+        callbackUrl: '/oauth-success'
       });
       
-      if (result?.error) {
-        // 登录失败，重定向到失败页面
-        const errorUrl = `/oauth-failed?error=${encodeURIComponent(result.error)}&error_description=${encodeURIComponent(result.error || '登录失败')}`;
-        window.location.href = errorUrl;
-        return;
-      }
-      
-      if (result?.ok) {
-        // 登录成功后重定向到OAuth成功页面
-        const tempTokenId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const redirectUrl = `/oauth-success?temp_token_id=${tempTokenId}&user_id=1`;
-        window.location.href = redirectUrl;
-      }
+      // 如果redirect为true，NextAuth会自动处理重定向
+      // 这里不需要手动重定向
     } catch (err) {
-      // 发生错误，重定向到失败页面
-      const errorUrl = `/oauth-failed?error=network_error&error_description=${encodeURIComponent('网络错误')}`;
-      window.location.href = errorUrl;
+      console.error('登录错误:', err);
+      // 发生错误时重定向到失败页面
+      window.location.href = '/oauth-failed?error=network_error&error_description=网络错误';
+    } finally {
+      setLoading(false);
     }
   };
 
