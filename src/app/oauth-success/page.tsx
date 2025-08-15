@@ -14,10 +14,10 @@ interface UserInfo {
 }
 
 interface OAuthSuccessProps {
-  searchParams: {
+  searchParams: Promise<{
     temp_token_id?: string;
     user_id?: string;
-  };
+  }>;
 }
 
 const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
@@ -26,11 +26,29 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [resolvedSearchParams, setResolvedSearchParams] = useState<{
+    temp_token_id?: string;
+    user_id?: string;
+  }>({});
+
+  useEffect(() => {
+    // 解析searchParams Promise
+    const resolveParams = async () => {
+      try {
+        const params = await searchParams;
+        setResolvedSearchParams(params);
+      } catch (err) {
+        console.error('解析searchParams失败:', err);
+      }
+    };
+    
+    resolveParams();
+  }, [searchParams]);
 
   useEffect(() => {
     const handleOAuthSuccess = async () => {
       try {
-        const { temp_token_id, user_id } = searchParams;
+        const { temp_token_id, user_id } = resolvedSearchParams;
         
         if (!temp_token_id || !user_id) {
           setError(t('missing_parameters'));
@@ -65,8 +83,10 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
       }
     };
 
-    handleOAuthSuccess();
-  }, [searchParams, t]);
+    if (resolvedSearchParams) {
+      handleOAuthSuccess();
+    }
+  }, [resolvedSearchParams, t]);
 
   if (isLoading) {
     return (
