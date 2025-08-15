@@ -21,7 +21,6 @@ interface LoginProps {
 
 const SOCIALS = [
   { key: 'google', label: 'Google', icon: '/icon-google.svg' },
-  { key: 'apple', label: 'Apple', icon: '/icon-apple.svg' },
 ];
 
 const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
@@ -32,15 +31,15 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
 
   if (!isOpen) return null;
 
-  // 社交登录
-  const handleSocialLogin = async (provider: 'google' | 'apple') => {
+  // 谷歌登录
+  const handleGoogleLogin = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const result = await signIn(provider, { 
+      const result = await signIn('google', { 
         redirect: false,
-        callbackUrl: '/'
+        callbackUrl: '/oauth-success?temp_token_id=temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) + '&user_id=1'
       });
       
       if (result?.error) {
@@ -50,29 +49,10 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
       }
       
       if (result?.ok) {
-        // 等待session更新
-        setTimeout(async () => {
-          try {
-            const res = await fetch('/api/auth/session');
-            const sessionData = await res.json();
-            
-            if (sessionData?.user) {
-              const user: UserInfo = {
-                name: sessionData.user.name || '',
-                avatar: sessionData.user.image || '',
-                email: sessionData.user.email || '',
-                provider,
-                loginTime: Date.now(),
-              };
-              onLogin(user);
-              onClose();
-            }
-          } catch (err) {
-            setError('获取用户信息失败');
-          } finally {
-            setLoading(false);
-          }
-        }, 1000);
+        // 登录成功后重定向到OAuth成功页面
+        const tempTokenId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const redirectUrl = `/oauth-success?temp_token_id=${tempTokenId}&user_id=1`;
+        window.location.href = redirectUrl;
       }
     } catch (err) {
       setError('登录过程中发生错误');
@@ -105,7 +85,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
             <button
               key={social.key}
               className="socialBtn"
-              onClick={() => handleSocialLogin(social.key as 'google' | 'apple')}
+              onClick={handleGoogleLogin}
               disabled={loading}
             >
               <Image src={social.icon} alt={social.label} className="socialIcon" width={24} height={24} />
