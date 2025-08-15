@@ -140,7 +140,7 @@ const ContactUs = (props) => {
               {t(lang, 'contactus_cancel')}
             </button> */}
             <button type="submit" className={styles.submitBtn}>
-              {t('contactus_submit')}
+              {t('submit')}
             </button>
           </div>
         </form>

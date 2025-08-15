@@ -1,6 +1,7 @@
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import BespokePage from "./features/bespoke/Bespoke";
 
 // 你可以将文案内容替换为自己的
 const resources = {
@@ -39,6 +40,7 @@ const resources = {
       //Common
       pronounce: "发音",
       edit: "编辑",
+      submit: "提交",
       // Welcome
       welcome_title: "欢迎来到Sino Name!",
       welcomeDesc: `我们是高端中文命名平台，提供以下专业服务：<br><br><b>自主命名服务</b>：请详述您的需求（信息越完整越好），我们将据此生成个性化中文名<br><b>深度定制姓名</b>：带您体验纯正中式命名流程，融合传统习俗，打造契合您特质的中文名<br><b>中华姓氏库</b>：详解中国姓氏体系，涵盖发音、书写及源流<br><b>生辰命理分析</b>：根据您的出生日期，提供五行八字等传统命理解读`,
@@ -46,17 +48,17 @@ const resources = {
       // Naming
       customNamingTitle: "自主命名服务",
       customNamingPlaceholder: "请输入您的命名需求...",
-      customNamingSubmit: "提交",
       // Bespoke
       bespokeTitle: "深度定制姓名",
       bespokeChatWelcomeMsg: `您好，欢迎体验姓名定制服务！我是您的专属顾问Mike。\n在中国文化中，姓名结构为姓氏居前、名字在后。姓氏承袭家族血脉，名字则由父母精心择定，通常含1-2个汉字，凝聚美好期许——如祈愿子女康健聪慧、人生顺遂。`,
       bespokeChatSurnameMsg: `现在，让我们开始为您定制专属姓氏。您可从中国姓氏库中自由选择，或由我为您精心推荐。`,
       bespokeMoreSurnames: "中国百家姓",
       bespokeMikeCustom: "Mike帮您定制姓氏",
-      bespokeInputSelectedSurnameTip: `选中“{{surname}}”为您的姓氏, 您意下如何？若方案满意，请确认回复。`,
+      bespokeInputSelectedSurnameTip: `选中<b>“{{surname}}”</b>为您的姓氏, 您意下如何？若方案满意，请确认回复。`,
       bespokeInputSend: "发送",
-      bespokeSelectedSurname:`我选中“{{surname}}”作为姓氏`,
-      bespokeChatInfoMsg: `恭贺您获得传承级中国姓氏“{{surname}}”，现在开启名字定制阶段。请完善以下信息并提交于我：`,
+      bespokeSelectedSurname:`我选中<b>“{{surname}}”</b>作为姓氏`,
+      bespokeChatInfoMsg: `恭贺您获得传承级中国姓氏<b>“{{surname}}”</b>，现在开启名字定制阶段。请完善以下信息并提交于我：`,
+      bespokeLastNameChoose:`基于您的姓氏<b>"{{lastName}}"</b>，我们为您定制了以下中国姓氏方案，敬请审阅。请选择最契合您心意的姓氏并提交`,
       // UserInfoForm
       formLastNameLabel: "姓氏",
       formLastNamePlaceholder: "请输入姓氏",
@@ -75,7 +77,6 @@ const resources = {
       formClassicPoetry: "古诗词",
       formNoteLabel: "其他说明",
       formNotePlaceholder: "如有特殊需求请填写",
-      formSubmitBtn: "提交",
       // ContactUs
       contactus_title: "联系我们",
       contactus_name: "姓名",
@@ -90,7 +91,6 @@ const resources = {
       contactus_emailInfo: "邮箱：example@email.com",
       contactus_responseTime: "我们会在24小时内回复您的消息",
       contactus_cancel: "取消",
-      contactus_submit: "提交",
       contactus_submitSuccess: "感谢您的反馈！我们会尽快回复您。",
       contactus_submitError: "提交失败, 请稍后重试",
       // Surname
@@ -143,6 +143,7 @@ const resources = {
       //Common
       pronounce: "Pronounce",
       edit: "Edit",
+      submit: "Submit",
       // Welcome
       welcome_title: "Welcome to Sino Name!",
       welcomeDesc: `We are a premier Chinese naming platform offering these professional services:
@@ -155,17 +156,17 @@ const resources = {
       // Naming
       customNamingTitle: "Custom Name Creation",
       customNamingPlaceholder: "Please enter your naming requirements...",
-      customNamingSubmit: "Submit",
       // Bespoke
       bespokeTitle: "Tailored bespoke Experience",
       bespokeChatWelcomeMsg:`Welcome to our Bespoke bespoke Service! I'm Mike, your dedicated consultant. \nIn Chinese tradition, surnames precede given names. Surnames carry ancestral heritage, while given names—typically one or two characters—are carefully chosen by parents to embody meaningful aspirations, such as wishes for health, wisdom, or happiness.`,
       bespokeChatSurnameMsg: `Let's begin crafting your bespoke surname now. You may select any from our curated Chinese surname collection, or allow me to handpick options for you.`,
       bespokeMoreSurnames: "Classic Chinese Surnames",
       bespokeMikeCustom: "Mike Bespoke Surnames for You",
-      bespokeInputSelectedSurnameTip: `You have selected "{{surname}}" as your surname. How do you find the proposal? Should it meet your expectations, kindly send your approval.`,
+      bespokeInputSelectedSurnameTip: `You have selected <b>"{{surname}}"</b> as your surname. How do you find the proposal? Should it meet your expectations, kindly send your approval.`,
       bespokeInputSend: "Send",
-      bespokeSelectedSurname: `I have selected "{{surname}}" as my surname`,
-      bespokeChatInfoMsg:`Congratulations on your heritage-grade Chinese surname "{{surname}}"! Let's now curate your given name. Kindly complete the profile below and send it over:`,
+      bespokeSelectedSurname: `I have selected <b>"{{surname}}"</b> as my surname`,
+      bespokeChatInfoMsg:`Congratulations on your heritage-grade Chinese surname <b>"{{surname}}"</b>! Let's now curate your given name. Kindly complete the profile below and send it over:`,
+      bespokeLastNameChoose: `Based on your LastName <b>"{{lastName}}"</b>, I've curated these bespoke Chinese surname options. Please review whether any resonates with you, and feel free to select the best suiting one for confirmation.`,
       // UserInfoForm
       formLastNameLabel: "Last Name",
       formLastNamePlaceholder: "Please enter your last name",
@@ -184,7 +185,6 @@ const resources = {
       formClassicPoetry: "Ancient Poetry",
       formNoteLabel: "Other Notes",
       formNotePlaceholder: "Please fill in if you have special requirements",
-      formSubmitBtn: "Submit",
       // ContactUs
       contactus_title: "Contact Us",
       contactus_name: "Name",
@@ -199,7 +199,7 @@ const resources = {
       contactus_emailInfo: "Email: example@email.com",
       contactus_responseTime: "We will respond to your message within 24 hours",
       contactus_cancel: "Cancel",
-      contactus_submit: "Submit",
+    
       contactus_submitSuccess: "Thank you for your feedback! We will get back to you soon.",
       contactus_submitError: "Submission failed, please try again later",
       // Surname

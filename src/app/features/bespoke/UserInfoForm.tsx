@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import './UserInfoForm.css';
 
 interface UserInfoFormProps {
+  lastName?: string;
   onSubmit: (data: UserInfoData) => void;
-  isReadCache?: boolean;
 }
 
 export interface UserInfoData {
@@ -21,8 +21,8 @@ export interface UserInfoData {
 }
 
 
-const FORM_CACHE_KEY = 'userInfoFormCache';
-const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
+const USER_INFO_FORM_CACHE_KEY = 'userInfoFormCache';
+const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
   const { t, i18n } = useTranslation();
   // 首次加载标志，防止初始化时触发保存
   const [isInitialMount, setIsInitialMount] = useState(true);
@@ -35,15 +35,19 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
     note: '',
   };
   const [form, setForm] = useState<UserInfoData>(() => {
-    const cache = localStorage.getItem(FORM_CACHE_KEY);
+    const cache = localStorage.getItem(USER_INFO_FORM_CACHE_KEY);
+    let result = initialForm;
     if (cache) {
       try {
-        return JSON.parse(cache);
+        result = JSON.parse(cache);
       } catch {
-        return initialForm;
+        result = initialForm;
       }
     }
-    return initialForm;
+    if (lastName) {
+      result.lastName = lastName;
+    }
+    return result;
   });
 
   // 监听form变化，非首次加载时缓存
@@ -52,7 +56,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
       setIsInitialMount(false);
       return;
     }
-    localStorage.setItem(FORM_CACHE_KEY, JSON.stringify(form));
+    localStorage.setItem(USER_INFO_FORM_CACHE_KEY, JSON.stringify(form));
   }, [form, isInitialMount]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -149,7 +153,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ onSubmit}) => {
           rows={3}
         />
       </div>
-      <button className="user-info-form-submit" type="submit">{t('formSubmitBtn')}</button>
+      <button className="user-info-form-submit" type="submit">{t('submit')}</button>
       </form>
     </ConfigProvider>
   );
