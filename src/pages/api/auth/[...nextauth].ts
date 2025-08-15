@@ -22,14 +22,12 @@ export default NextAuth({
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // 如果URL是相对路径，添加基础URL
+      // 简化重定向逻辑
       if (url.startsWith('/')) return `${baseUrl}${url}`;
-      // 如果URL是外部链接，重定向到首页
-      else if (new URL(url).origin === baseUrl) return url;
+      if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    async signIn({ user, account, profile, email, credentials }) {
-      // 记录登录信息
+    async signIn({ user, account, profile }) {
       console.log('用户登录:', { 
         email: user.email, 
         provider: account?.provider,
