@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { FC } from 'react';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import './Login.css';
 import { useTranslation } from 'react-i18next';
@@ -26,15 +26,12 @@ const SOCIALS = [
 const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { data: session } = useSession();
 
   if (!isOpen) return null;
 
   // 谷歌登录
   const handleGoogleLogin = async () => {
     setLoading(true);
-    setError(null);
     
     try {
       const result = await signIn('google', { 
@@ -75,12 +72,6 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
             <Image src="/close.svg" alt="关闭" className="login-closeIcon" width={24} height={24} />
           </button>
         </div>
-        
-        {error && (
-          <div className="error-message" style={{ color: 'red', textAlign: 'center', marginBottom: '16px' }}>
-            {error}
-          </div>
-        )}
         
         <div className="socials">
           {SOCIALS.map(social => (
