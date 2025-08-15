@@ -163,6 +163,30 @@ npm start
 - 检查请求方法是否为POST
 - 查看浏览器控制台错误信息
 
+#### 6. React水合(Hydration)错误
+**错误信息**: `Hydration failed because the server rendered text didn't match the client`
+
+**原因**: 服务器端渲染(SSR)和客户端渲染的内容不匹配，通常由国际化(i18n)引起
+
+**解决方案**:
+- 使用 `useTranslation` 的 `ready` 状态检查
+- 在国际化准备完成前显示静态内容
+- 避免在服务器端和客户端使用不同的文本
+- 确保所有国际化文本都通过 `t()` 函数获取
+
+**代码示例**:
+```javascript
+const { t, ready } = useTranslation();
+
+// 等待国际化准备完成，避免水合问题
+if (!ready) {
+  return <div>Loading...</div>;
+}
+
+// 国际化准备完成后渲染
+return <div>{t('welcome')}</div>;
+```
+
 ### 调试工具
 
 访问 `/oauth-debug` 页面来诊断OAuth问题：
@@ -180,6 +204,13 @@ NextAuth.js 使用以下cookies来管理OAuth状态：
 - `next-auth.pkce.code_verifier`: PKCE验证码
 
 确保这些cookies能够正常设置和读取。
+
+### 国际化配置说明
+
+为了避免水合问题，所有使用国际化的组件都应该：
+1. 检查 `ready` 状态
+2. 在准备完成前显示静态内容
+3. 使用一致的文本获取方式
 
 ## 项目结构
 
@@ -209,3 +240,4 @@ src/
 7. 如果遇到OAuth问题，使用 `/oauth-debug` 页面进行诊断
 8. 确保cookies配置正确，特别是开发环境中的状态管理
 9. 兼容接口支持fetch POST请求，确保请求方法正确
+10. 避免水合问题，确保国际化在客户端完全加载后再渲染

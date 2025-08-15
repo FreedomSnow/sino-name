@@ -23,10 +23,43 @@ const SOCIALS = [
 ];
 
 const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
+
+  // 等待国际化准备完成，避免水合问题
+  if (!ready) {
+    return (
+      <div className="login-root" onClick={onClose}>
+        <div className="login-container" onClick={e => e.stopPropagation()}>
+          <div className="login-header">
+            <h2 className="login-title">Loading...</h2>
+            <button
+              className="login-closeBtn"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <Image src="/close.svg" alt="Close" className="login-closeIcon" width={24} height={24} />
+            </button>
+          </div>
+          
+          <div className="socials">
+            {SOCIALS.map(social => (
+              <button
+                key={social.key}
+                className="socialBtn"
+                disabled={true}
+              >
+                <Image src={social.icon} alt={social.label} className="socialIcon" width={24} height={24} />
+                Loading...
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // 谷歌登录 - 使用后端兼容接口
   const handleGoogleLogin = async () => {

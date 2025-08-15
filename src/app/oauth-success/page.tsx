@@ -21,7 +21,7 @@ interface OAuthSuccessProps {
 }
 
 const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +87,24 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
       handleOAuthSuccess();
     }
   }, [resolvedSearchParams, t]);
+
+  // 等待国际化准备完成，避免水合问题
+  if (!ready) {
+    return (
+      <div className="oauth-success-container">
+        <div className="loading-content">
+          <Image 
+            src="/panda-loading.gif" 
+            alt="Loading" 
+            width={80} 
+            height={80} 
+            className="loading-icon"
+          />
+          <p className="loading-text">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

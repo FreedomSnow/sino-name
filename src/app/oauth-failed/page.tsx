@@ -21,7 +21,7 @@ interface OAuthFailedProps {
 }
 
 const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [errorInfo, setErrorInfo] = useState<{
     error: string;
@@ -98,6 +98,24 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
       handleOAuthFailed();
     }
   }, [resolvedSearchParams]);
+
+  // 等待国际化准备完成，避免水合问题
+  if (!ready) {
+    return (
+      <div className="oauth-failed-container">
+        <div className="loading-content">
+          <Image 
+            src="/panda-loading.gif" 
+            alt="Loading" 
+            width={80} 
+            height={80} 
+            className="loading-icon"
+          />
+          <p className="loading-text">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
