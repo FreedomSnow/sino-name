@@ -15,15 +15,15 @@ Sino-Name 是一个中文起名应用，支持Google OAuth登录。
 ### Google OAuth 登录流程
 
 1. **用户点击登录按钮**
-   - 触发 `/api/auth/signin/google` 端点（NextAuth标准路径）
-   - NextAuth.js 处理OAuth流程
+   - 前端发送 `POST /api/auth/signin/google` 请求（后端兼容接口）
+   - 后端处理OAuth启动流程并返回重定向URL
 
 2. **Google授权页面**
    - 用户被重定向到Google授权页面
    - 用户授权后，Google重定向回 `/api/auth/callback/google`
 
 3. **登录成功处理**
-   - NextAuth.js 创建用户会话
+   - NextAuth.js 处理回调并创建用户会话
    - 重定向到 `/oauth-success` 页面
    - 显示登录成功信息
 
@@ -33,9 +33,31 @@ Sino-Name 是一个中文起名应用，支持Google OAuth登录。
 
 ### OAuth路径说明
 
-- **登录入口**: `/api/auth/signin/google` (NextAuth标准路径)
+- **登录入口**: `POST /api/auth/signin/google` (后端兼容接口)
 - **回调地址**: `/api/auth/callback/google` (NextAuth自动处理)
 - **调试页面**: `/oauth-debug` (用于诊断OAuth问题)
+
+### 兼容接口使用方式
+
+```javascript
+// 使用fetch POST请求启动OAuth流程
+const response = await fetch('/api/auth/signin/google', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// 检查重定向
+if (response.redirected) {
+  // 重定向到 Google OAuth 页面
+  window.location.href = response.url;
+} else {
+  // 处理错误
+  const error = await response.json();
+  console.error('OAuth 启动失败:', error);
+}
+```
 
 ### 环境变量配置
 
@@ -130,6 +152,17 @@ npm start
 - 验证重定向URI设置
 - 清除浏览器状态
 
+#### 5. OAuth启动失败
+**错误信息**: `OAuth 启动失败`
+
+**原因**: 兼容接口调用失败
+
+**解决方案**:
+- 检查网络连接
+- 验证API端点是否正确
+- 检查请求方法是否为POST
+- 查看浏览器控制台错误信息
+
 ### 调试工具
 
 访问 `/oauth-debug` 页面来诊断OAuth问题：
@@ -171,7 +204,8 @@ src/
 2. 开发环境使用端口3000
 3. 生产环境需要更新NEXTAUTH_URL和Google OAuth重定向URI
 4. 保持NEXTAUTH_SECRET的安全性
-5. 使用NextAuth标准路径：`/api/auth/signin/google`
+5. 使用POST请求调用 `/api/auth/signin/google` 兼容接口
 6. 启用PKCE安全机制防止授权码拦截攻击
 7. 如果遇到OAuth问题，使用 `/oauth-debug` 页面进行诊断
 8. 确保cookies配置正确，特别是开发环境中的状态管理
+9. 兼容接口支持fetch POST请求，确保请求方法正确
