@@ -6,11 +6,18 @@ import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import './OAuthFailed.css';
 
+interface UserInfo {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+}
+
 interface OAuthFailedProps {
-  searchParams: {
+  searchParams: Promise<{
     error?: string;
     error_description?: string;
-  };
+  }>;
 }
 
 const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
@@ -20,11 +27,29 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
     error: string;
     error_description: string;
   } | null>(null);
+  const [resolvedSearchParams, setResolvedSearchParams] = useState<{
+    error?: string;
+    error_description?: string;
+  }>({});
+
+  useEffect(() => {
+    // 解析searchParams Promise
+    const resolveParams = async () => {
+      try {
+        const params = await searchParams;
+        setResolvedSearchParams(params);
+      } catch (err) {
+        console.error('解析searchParams失败:', err);
+      }
+    };
+    
+    resolveParams();
+  }, [searchParams]);
 
   useEffect(() => {
     const handleOAuthFailed = async () => {
       try {
-        const { error, error_description } = searchParams;
+        const { error, error_description } = resolvedSearchParams;
         
         if (!error) {
           setErrorInfo({
@@ -69,8 +94,10 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
       }
     };
 
-    handleOAuthFailed();
-  }, [searchParams]);
+    if (resolvedSearchParams) {
+      handleOAuthFailed();
+    }
+  }, [resolvedSearchParams]);
 
   if (isLoading) {
     return (
