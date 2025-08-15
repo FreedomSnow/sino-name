@@ -15,8 +15,8 @@ Sino-Name 是一个中文起名应用，支持Google OAuth登录。
 ### Google OAuth 登录流程
 
 1. **用户点击登录按钮**
-   - 触发 `GET /api/oauth/signin/google` 端点（后端要求的路径）
-   - 该端点重定向到 NextAuth 的标准路径 `/api/auth/signin/google`
+   - 触发 `/api/auth/signin/google` 端点（NextAuth标准路径）
+   - NextAuth.js 处理OAuth流程
 
 2. **Google授权页面**
    - 用户被重定向到Google授权页面
@@ -33,8 +33,7 @@ Sino-Name 是一个中文起名应用，支持Google OAuth登录。
 
 ### OAuth路径说明
 
-- **登录入口**: `GET /api/oauth/signin/google` (后端要求的路径)
-- **实际处理**: 重定向到 `/api/auth/signin/google` (NextAuth标准路径)
+- **登录入口**: `/api/auth/signin/google` (NextAuth标准路径)
 - **回调地址**: `/api/auth/callback/google` (NextAuth自动处理)
 
 ### 环境变量配置
@@ -96,8 +95,7 @@ src/
 │   └── ...
 ├── pages/                 # Pages Router API
 │   └── api/
-│       ├── auth/         # NextAuth API端点
-│       └── oauth/        # 自定义OAuth路由
+│       └── auth/         # NextAuth API端点
 └── ...
 ```
 
@@ -107,4 +105,4 @@ src/
 2. 开发环境使用端口3000
 3. 生产环境需要更新NEXTAUTH_URL和Google OAuth重定向URI
 4. 保持NEXTAUTH_SECRET的安全性
-5. 登录入口路径 `/api/oauth/signin/google` 是后端要求的，不可更改
+5. 使用NextAuth标准路径：`/api/auth/signin/google`
