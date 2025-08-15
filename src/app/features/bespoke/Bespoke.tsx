@@ -11,7 +11,6 @@ if (typeof window !== 'undefined') {
   }
   if (navType === 'reload' || navType === 1 || navType === 'navigate') {
     console.log('Clearing bespoke page cache on reload or navigation');
-    window.localStorage.removeItem('selectedSurname');
     window.localStorage.removeItem('bespokePageCache');
     window.localStorage.removeItem('userInfoFormCache');
   }
@@ -22,25 +21,26 @@ import Image from "next/image";
 import "./Bespoke.css";
 import UserInfoForm from "./UserInfoForm";
 import Surname from '../surname/Surname';
+import LastNameForm from './LastNameForm';
+import { LastNameItem } from "./types";
+import SurnameList from './SurnameList';
+import { set } from "date-fns";
 
 export default function BespokePage() {
-  const commonSurnames = [
-    '王', '李', '赵', '吴', '周', '郑', '冯', '陈', '卫', '许',
-    '何', '吕', '孙', '林', '叶', '宋', '杨', '朱', '张', '洪'
-  ];
 
-  // ...existing code...
   const { t } = useTranslation();
-
-  const [activeSurname, setActiveSurname] = useState<string|null>(null);
 
   // 页面显示记录缓存
   const cache = typeof window !== 'undefined' ? window.localStorage.getItem('bespokePageCache') : null;
   const cacheObj = cache ? JSON.parse(cache) : {};
+  const [hasShown, setHasShown] = useState(() => cacheObj.hasShown ?? false);
   const [selectedSurname, setSelectedSurname] = useState<string|null>(cacheObj.selectedSurname ?? null);
   const [isShowBottomBar, setIsShowBottomBar] = useState(cacheObj.isShowBottomBar ?? false);
   const [userSurname, setUserSurname] = useState<string|null>(cacheObj.userSurname ?? null);
-  const [hasShown, setHasShown] = useState(() => cacheObj.hasShown ?? false);
+  // LastNameForm结果
+  const [lastName, setLastName] = useState<string|null>(cacheObj.lastName ?? null);
+  const [lastNameResult, setLastNameResult] = useState<LastNameItem[] | null>(cacheObj.lastNameResult ?? null);
+
   // 页面首次显示时设置 hasShown 为 true
   useEffect(() => {
     if (!hasShown) {
@@ -56,29 +56,27 @@ export default function BespokePage() {
         selectedSurname,
         isShowBottomBar,
         userSurname,
+        lastName,
+        lastNameResult,
       };
       window.localStorage.setItem('bespokePageCache', JSON.stringify(cacheData));
     };
-  }, [hasShown, selectedSurname, isShowBottomBar, userSurname]);
+  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName]);
 
   // 聊天动画相关状态
   const [showWelcomeMsg, setShowWelcomeMsg] = useState(false);
   const [showSurnameMsg, setShowSurnameMsg] = useState(false);
-  const [showSurnamesGrid, setShowSurnamesGrid] = useState(false);
   const [showUserSurname, setShowUserSurname] = useState(false);
   const [showNameMsg, setShowNameMsg] = useState(false);
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
-  
+  // LastNameForm弹窗状态
+  const [showLastNameForm, setShowLastNameForm] = useState(false);
+
   // Mike定制按钮点击
   const handleMikePick = () => {
-    if (commonSurnames.length > 0) {
-      const idx = Math.floor(Math.random() * commonSurnames.length);
-      const surname = commonSurnames[idx];
-      setSelectedSurname(surname);
-      setActiveSurname(surname);
-      setIsShowBottomBar(true);
-    }
-  } 
+    setShowLastNameForm(true);
+  };
+
   // 更多按钮弹窗状态
   const [showMorePopup, setShowMorePopup] = useState(false);
   const handleMoreClick = () => setShowMorePopup(true);
@@ -88,8 +86,12 @@ export default function BespokePage() {
   const handleSend = () => {
     if (selectedSurname) {
       setUserSurname(selectedSurname);
-      // setSelectedSurname(null);
     }
+
+    setSelectedSurname(selectedSurname);
+    setLastName(null);
+    setLastNameResult(null);
+
     setIsShowBottomBar(false);
     setShowUserSurname(false);
     setShowNameMsg(false);
@@ -105,44 +107,9 @@ export default function BespokePage() {
     }, 0);
   } 
 
-  const writerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (activeSurname) {
-      setTimeout(() => {
-        if (writerRef.current) {
-          import('hanzi-writer').then(HanziWriter => {
-            try {
-              writerRef.current!.innerHTML = '';
-              HanziWriter.default.create(writerRef.current!, activeSurname, {
-                width: 120,
-                height: 120,
-                padding: 8,
-                showOutline: true,
-                showCharacter: false,
-                strokeAnimationSpeed: 1.1,
-                delayBetweenStrokes: 180,
-                radicalColor: '#036aff',
-                strokeColor: '#036aff',
-                outlineColor: '#b3d1ff',
-                drawingColor: '#036aff',
-                highlightOnComplete: false,
-                strokeFadeDuration: 0,
-              }).animateCharacter();
-            } catch (error) {
-              console.error('hanzi-writer 初始化失败:', error);
-            }
-          }).catch(error => {
-            console.error('hanzi-writer 模块加载失败:', error);
-          });
-        }
-      }, 0);
-    }
-  }, [activeSurname]);
-
   useEffect(() => {
     setShowWelcomeMsg(false);
     setShowSurnameMsg(false);
-    setShowSurnamesGrid(false);
     setShowUserSurname(false);
     setShowNameMsg(false);
     setShowUserInfoForm(false);
@@ -161,7 +128,6 @@ export default function BespokePage() {
       setTimeout(() => {
         setShowSurnameMsg(true);
         setTimeout(() => {
-          setShowSurnamesGrid(true);
           if (hasShown && userSurname) {
             setShowUserSurname(true);
             setShowNameMsg(true);
@@ -171,43 +137,6 @@ export default function BespokePage() {
       }, timeout1);
     }, 0);
   }, [hasShown, userSurname, isShowBottomBar, selectedSurname]);
-
-  // 处理姓氏单元格点击事件
-  const handleCellClick = (surname: string) => {
-    setActiveSurname(surname);
-  };
-  const handleOverlayClose = () => {
-    setActiveSurname(null);
-  };
-
-  const handleWriteClick = () => {
-    if (writerRef.current && activeSurname) {
-      import('hanzi-writer').then(HanziWriter => {
-        try {
-          writerRef.current!.innerHTML = '';
-          HanziWriter.default.create(writerRef.current!, activeSurname, {
-            width: 120,
-            height: 120,
-            padding: 8,
-            showOutline: true,
-            showCharacter: false,
-            strokeAnimationSpeed: 1.1,
-            delayBetweenStrokes: 180,
-            radicalColor: '#036aff',
-            strokeColor: '#036aff',
-            outlineColor: '#b3d1ff',
-            drawingColor: '#036aff',
-            highlightOnComplete: false,
-            strokeFadeDuration: 0,
-          }).animateCharacter();
-        } catch (error) {
-          console.error('hanzi-writer 初始化失败:', error);
-        }
-      }).catch(error => {
-        console.error('hanzi-writer 模块加载失败:', error);
-      });
-    }
-  };
 
   return (
     <div className="bespoke-container">
@@ -243,53 +172,44 @@ export default function BespokePage() {
             </div>
           </div>
         )}
-        {/* 姓氏选择区和按钮动画显示 */}
-        {/* {showSurnamesGrid && (
-          <div className="bespoke-surnames-block">
-            <div className="bespoke-surnames-grid">
-              {commonSurnames.map((surname) => (
-                <div key={surname} className="bespoke-surname-radio-wrapper">
-                  <div
-                    className={`bespoke-surname-cell${selectedSurname === surname ? ' bespoke-surname-cell-selected' : ''}`}
-                    tabIndex={0}
-                    onClick={() => handleCellClick(surname)}
-                  >
-                    <span className="bespoke-surname-text">{surname}</span>
-                  </div>
-                  <button
-                    className="bespoke-surname-radio-btn"
-                    tabIndex={-1}
-                    aria-label="选中"
-                    onClick={e => {
-                      e.stopPropagation();
-                      if (selectedSurname === surname) {
-                        setSelectedSurname(null);
-                        if (userSurname !== null) {
-                          setSelectedSurname(userSurname);
-                          setIsShowBottomBar(false);
-                        }
-                      } else {
-                        setSelectedSurname(surname);
-                        if (userSurname === surname) {
-                          setIsShowBottomBar(false);
-                        } else {
-                          setIsShowBottomBar(true);
-                        }
-                      }
-                    }}
-                  >
-                    <Image
-                      src={selectedSurname === surname ? "/checked.svg" : "/uncheck.svg"}
-                      alt={selectedSurname === surname ? "已选中" : "未选中"}
-                      width={22}
-                      height={22}
-                    />
-                  </button>
-                </div>
-              ))}
+        {/* LastNameForm弹窗 */}
+        {showLastNameForm && (
+          <LastNameForm
+            onClose={() => setShowLastNameForm(false)}
+            onResult={(lastName, items) => {
+              setLastName(lastName);
+              setLastNameResult(items);
+              setShowLastNameForm(false);
+              // 可根据需要处理items，比如展示、保存等
+              setUserSurname(null);
+              setSelectedSurname(null);
+              setIsShowBottomBar(false);
+            }}
+          />
+        )}
+        {lastName && lastNameResult && (
+          <>
+            <div
+              className="lastname-choose-msg bespoke-chat-left-msg"
+              dangerouslySetInnerHTML={{ __html: t("bespokeLastNameChoose", { lastName: lastName }).replace(/\n/g, "<br />") }}
+            />
+            <div className="surname-list-container">
+                <SurnameList
+                  items={lastNameResult}
+                  selected={ selectedSurname }
+                  onSubmit={surname => {
+                    if (surname === userSurname) {
+                        return;
+                    }
+                    
+                    setUserSurname(surname);
+                    setSelectedSurname(surname);
+                    setIsShowBottomBar(false)
+                  }}
+                />
             </div>
-          </div>
-        )} */}
+          </> 
+        )}
         {/* 用户发送的右侧气泡及后续内容动画显示 */}
         {userSurname && (
           <>
@@ -309,7 +229,7 @@ export default function BespokePage() {
             )}
             {showUserInfoForm && (
               <div className="user-info-form">
-                <UserInfoForm onSubmit={() => {}} />
+                <UserInfoForm lastName={lastName ?? undefined} onSubmit={() => {}} />
               </div>
             )}
           </>
@@ -324,7 +244,7 @@ export default function BespokePage() {
             style={{ whiteSpace: 'pre-line' }}
             dangerouslySetInnerHTML={{ __html: t('bespokeInputSelectedSurnameTip', { surname: selectedSurname }).replace(/\n/g, '<br />') }}
           />
-          <button className="bespoke-bottom-send-btn" onClick={handleSend}>{t('bespokeInputSend')}</button>
+          <button className="bespoke-bottom-send-btn" onClick={handleSend}>{t('submit')}</button>
         </div>
       )}
 
@@ -346,37 +266,6 @@ export default function BespokePage() {
               }}
               selectedSurname={selectedSurname}
             />
-          </div>
-        </div>
-      )}
-      {/* 全屏放大姓氏卡片和遮罩层 */}
-      {activeSurname && (
-        <div className="bespoke-surname-overlay" onClick={handleOverlayClose}>
-          <div
-            className="bespoke-surname-popup"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="bespoke-surname-popup-text" style={{ position: 'relative', width: 120, height: 120 }}>
-              <div ref={writerRef} style={{ width: 120, height: 120, position: 'absolute', top: 0, left: 0, zIndex: 2 }} />
-            </div>
-            <div className="bespoke-surname-popup-actions">
-              <button
-                className="bespoke-surname-popup-btn"
-                title="发音"
-                onClick={() => {
-                  if (activeSurname) {
-                    const utter = new window.SpeechSynthesisUtterance(activeSurname);
-                    utter.lang = 'zh-CN';
-                    window.speechSynthesis.speak(utter);
-                  }
-                }}
-              >
-                <Image src="/voice.svg" alt="发音" width={24} height={24} />
-              </button>
-              <button className="bespoke-surname-popup-btn" title="编辑" onClick={handleWriteClick}>
-                <Image src="/pencil.svg" alt="编辑" width={24} height={24} />
-              </button>
-            </div>
           </div>
         </div>
       )}
