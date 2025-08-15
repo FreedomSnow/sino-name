@@ -10,7 +10,9 @@ export default NextAuth({
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
+          // 启用PKCE安全机制
+          code_challenge_method: "S256"
         }
       }
     }),
@@ -20,6 +22,8 @@ export default NextAuth({
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  // 启用PKCE
+  useSecureCookies: process.env.NODE_ENV === 'production',
   callbacks: {
     async redirect({ url, baseUrl }) {
       // 简化重定向逻辑

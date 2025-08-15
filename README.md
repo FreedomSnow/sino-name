@@ -35,6 +35,7 @@ Sino-Name 是一个中文起名应用，支持Google OAuth登录。
 
 - **登录入口**: `/api/auth/signin/google` (NextAuth标准路径)
 - **回调地址**: `/api/auth/callback/google` (NextAuth自动处理)
+- **调试页面**: `/oauth-debug` (用于诊断OAuth问题)
 
 ### 环境变量配置
 
@@ -60,6 +61,7 @@ NODE_ENV=development
 1. 创建OAuth 2.0客户端ID
 2. 设置授权重定向URI：`http://localhost:3000/api/auth/callback/google`
 3. 获取客户端ID和客户端密钥
+4. **重要**: 确保OAuth客户端支持PKCE (Proof Key for Code Exchange)
 
 ### 开发环境运行
 
@@ -83,6 +85,47 @@ npm run build
 npm start
 ```
 
+## 故障排除
+
+### 常见OAuth错误
+
+#### 1. "Missing code verifier" 错误
+**错误信息**: `TokenError: Missing code verifier`
+
+**原因**: OAuth流程中缺少PKCE (Proof Key for Code Exchange) 参数
+
+**解决方案**:
+- 确保NextAuth配置中启用了PKCE
+- 检查Google OAuth客户端配置是否正确
+- 清除浏览器cookies和缓存
+- 使用 `/oauth-debug` 页面测试OAuth流程
+
+#### 2. "invalid_grant" 错误
+**错误信息**: `code: "invalid_grant"`
+
+**原因**: 授权码无效或已过期
+
+**解决方案**:
+- 重新尝试登录
+- 检查重定向URI配置是否正确
+- 确保Google OAuth客户端配置正确
+
+#### 3. 重定向循环
+**现象**: 页面在登录和回调之间无限循环
+
+**解决方案**:
+- 检查 `NEXTAUTH_URL` 配置
+- 验证重定向URI设置
+- 清除浏览器状态
+
+### 调试工具
+
+访问 `/oauth-debug` 页面来诊断OAuth问题：
+- 查看URL参数
+- 检查浏览器信息
+- 测试OAuth流程
+- 收集调试信息
+
 ## 项目结构
 
 ```
@@ -91,7 +134,8 @@ src/
 │   ├── features/          # 功能模块
 │   │   ├── login/        # 登录组件
 │   │   ├── oauth-success/ # OAuth成功页面
-│   │   └── oauth-failed/  # OAuth失败页面
+│   │   ├── oauth-failed/  # OAuth失败页面
+│   │   └── oauth-debug/   # OAuth调试页面
 │   └── ...
 ├── pages/                 # Pages Router API
 │   └── api/
@@ -106,3 +150,5 @@ src/
 3. 生产环境需要更新NEXTAUTH_URL和Google OAuth重定向URI
 4. 保持NEXTAUTH_SECRET的安全性
 5. 使用NextAuth标准路径：`/api/auth/signin/google`
+6. 启用PKCE安全机制防止授权码拦截攻击
+7. 如果遇到OAuth问题，使用 `/oauth-debug` 页面进行诊断
