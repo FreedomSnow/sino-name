@@ -100,7 +100,19 @@ npm start
 - 清除浏览器cookies和缓存
 - 使用 `/oauth-debug` 页面测试OAuth流程
 
-#### 2. "invalid_grant" 错误
+#### 2. "state_mismatch" 错误
+**错误信息**: `error=state_mismatch&details={"cookieState":"undefined","cookieExists":false}`
+
+**原因**: OAuth状态验证失败，通常是因为cookies配置问题
+
+**解决方案**:
+- 检查NextAuth的cookies配置
+- 确保浏览器支持cookies
+- 清除浏览器cookies和缓存
+- 检查域名和端口配置是否正确
+- 如果使用HTTPS，确保cookies的secure选项配置正确
+
+#### 3. "invalid_grant" 错误
 **错误信息**: `code: "invalid_grant"`
 
 **原因**: 授权码无效或已过期
@@ -110,7 +122,7 @@ npm start
 - 检查重定向URI配置是否正确
 - 确保Google OAuth客户端配置正确
 
-#### 3. 重定向循环
+#### 4. 重定向循环
 **现象**: 页面在登录和回调之间无限循环
 
 **解决方案**:
@@ -125,6 +137,16 @@ npm start
 - 检查浏览器信息
 - 测试OAuth流程
 - 收集调试信息
+
+### Cookies配置说明
+
+NextAuth.js 使用以下cookies来管理OAuth状态：
+- `next-auth.session-token`: 会话令牌
+- `next-auth.callback-url`: 回调URL
+- `next-auth.csrf-token`: CSRF保护令牌
+- `next-auth.pkce.code_verifier`: PKCE验证码
+
+确保这些cookies能够正常设置和读取。
 
 ## 项目结构
 
@@ -152,3 +174,4 @@ src/
 5. 使用NextAuth标准路径：`/api/auth/signin/google`
 6. 启用PKCE安全机制防止授权码拦截攻击
 7. 如果遇到OAuth问题，使用 `/oauth-debug` 页面进行诊断
+8. 确保cookies配置正确，特别是开发环境中的状态管理
