@@ -29,7 +29,7 @@ export default function CustomNaming() {
             rows={1}
           />
           <button className="custom-naming-btn" onClick={handleSubmit}>
-            {t('customNamingSubmit')}
+            {t('submit')}
           </button>
         </div>
       </div>
