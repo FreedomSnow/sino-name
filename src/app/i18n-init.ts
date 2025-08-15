@@ -1,7 +1,6 @@
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import BespokePage from "./features/bespoke/Bespoke";
 
 // 你可以将文案内容替换为自己的
 const resources = {
@@ -54,10 +53,10 @@ const resources = {
       bespokeChatSurnameMsg: `现在，让我们开始为您定制专属姓氏。您可从中国姓氏库中自由选择，或由我为您精心推荐。`,
       bespokeMoreSurnames: "中国百家姓",
       bespokeMikeCustom: "Mike帮您定制姓氏",
-      bespokeInputSelectedSurnameTip: `选中<b>“{{surname}}”</b>为您的姓氏, 您意下如何？若方案满意，请确认回复。`,
+      bespokeInputSelectedSurnameTip: `选中<b>"{{surname}}"</b>为您的姓氏, 您意下如何？若方案满意，请确认回复。`,
       bespokeInputSend: "发送",
-      bespokeSelectedSurname:`我选中<b>“{{surname}}”</b>作为姓氏`,
-      bespokeChatInfoMsg: `恭贺您获得传承级中国姓氏<b>“{{surname}}”</b>，现在开启名字定制阶段。请完善以下信息并提交于我：`,
+      bespokeSelectedSurname:`我选中<b>"{{surname}}"</b>作为姓氏`,
+      bespokeChatInfoMsg: `恭贺您获得传承级中国姓氏<b>"{{surname}}"</b>，现在开启名字定制阶段。请完善以下信息并提交于我：`,
       bespokeLastNameChoose:`基于您的姓氏<b>"{{lastName}}"</b>，我们为您定制了以下中国姓氏方案，敬请审阅。请选择最契合您心意的姓氏并提交`,
       // UserInfoForm
       formLastNameLabel: "姓氏",
@@ -199,7 +198,6 @@ const resources = {
       contactus_emailInfo: "Email: example@email.com",
       contactus_responseTime: "We will respond to your message within 24 hours",
       contactus_cancel: "Cancel",
-    
       contactus_submitSuccess: "Thank you for your feedback! We will get back to you soon.",
       contactus_submitError: "Submission failed, please try again later",
       // Surname
@@ -219,16 +217,29 @@ const resources = {
   }
 };
 
+// 获取默认语言，确保服务器端和客户端一致
+const getDefaultLanguage = () => {
+  // 优先使用localStorage中的语言设置
+  if (typeof window !== "undefined") {
+    const storedLang = localStorage.getItem("sino-lang");
+    if (storedLang) return storedLang;
+  }
+  
+  // 如果没有存储的语言设置，默认使用中文
+  return "zh";
+};
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng:
-      typeof window !== "undefined"
-        ? (localStorage.getItem("sino-lang") || (navigator.language.startsWith("zh") ? "zh" : "en"))
-        : (typeof navigator !== "undefined" && navigator.language.startsWith("zh") ? "zh" : "en"),
-    fallbackLng: "en",
-    interpolation: { escapeValue: false }
+    lng: getDefaultLanguage(),
+    fallbackLng: "zh",
+    interpolation: { escapeValue: false },
+    // 确保服务器端和客户端使用相同的语言
+    react: {
+      useSuspense: false
+    }
   });
 
 export default i18n;
