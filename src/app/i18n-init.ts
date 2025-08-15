@@ -20,12 +20,29 @@ const resources = {
       // Login
       login_title: "三方登录",
       login_with: "使用{{provider}}登录",
+      // OAuth Success/Failed
+      loading: "加载中",
+      success: "成功",
+      error: "错误",
+      login_successful: "登录成功！",
+      login_failed: "登录失败",
+      verifying_login: "正在验证登录信息...",
+      missing_parameters: "缺少必要的参数",
+      verification_failed: "验证失败",
+      processing_error: "处理过程中发生错误",
+      google_login_success: "您已成功使用谷歌账号登录",
+      user_avatar: "用户头像",
+      welcome: "欢迎",
+      continue_using: "继续使用",
+      back_to_home: "返回首页",
+      try_again: "重试",
+      error_code: "错误代码",
       //Common
       pronounce: "发音",
       edit: "编辑",
       submit: "提交",
       // Welcome
-      welcome: "欢迎来到Sino Name!",
+      welcome_title: "欢迎来到Sino Name!",
       welcomeDesc: `我们是高端中文命名平台，提供以下专业服务：<br><br><b>自主命名服务</b>：请详述您的需求（信息越完整越好），我们将据此生成个性化中文名<br><b>深度定制姓名</b>：带您体验纯正中式命名流程，融合传统习俗，打造契合您特质的中文名<br><b>中华姓氏库</b>：详解中国姓氏体系，涵盖发音、书写及源流<br><b>生辰命理分析</b>：根据您的出生日期，提供五行八字等传统命理解读`,
       welcomeStart: "→ 开始你的中文命名之旅",
       // Naming
@@ -106,12 +123,29 @@ const resources = {
       // Login
       login_title: "Social Login",
       login_with: "Login with {{provider}}",
+      // OAuth Success/Failed
+      loading: "Loading",
+      success: "Success",
+      error: "Error",
+      login_successful: "Login Successful!",
+      login_failed: "Login Failed",
+      verifying_login: "Verifying login information...",
+      missing_parameters: "Missing required parameters",
+      verification_failed: "Verification failed",
+      processing_error: "An error occurred during processing",
+      google_login_success: "You have successfully logged in with your Google account",
+      user_avatar: "User Avatar",
+      welcome: "Welcome",
+      continue_using: "Continue Using",
+      back_to_home: "Back to Home",
+      try_again: "Try Again",
+      error_code: "Error Code",
       //Common
       pronounce: "Pronounce",
       edit: "Edit",
       submit: "Submit",
       // Welcome
-      welcome: "Welcome to Sino Name!",
+      welcome_title: "Welcome to Sino Name!",
       welcomeDesc: `We are a premier Chinese naming platform offering these professional services:
 
 <b>Custom Name Creation</b>: Submit detailed requirements (the more specific the better) to receive personalized Chinese name options

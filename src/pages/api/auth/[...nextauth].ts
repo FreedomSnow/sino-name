@@ -24,7 +24,7 @@ export default NextAuth({
   },
   pages: {
     signIn: '/login',
-    error: '/auth/error',
+    error: '/oauth-failed',
   },
   debug: process.env.NODE_ENV === 'development',
 });

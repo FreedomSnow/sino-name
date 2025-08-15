@@ -43,8 +43,9 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
       });
       
       if (result?.error) {
-        setError(`登录失败: ${result.error}`);
-        setLoading(false);
+        // 登录失败，重定向到失败页面
+        const errorUrl = `/oauth-failed?error=${encodeURIComponent(result.error)}&error_description=${encodeURIComponent(result.error || '登录失败')}`;
+        window.location.href = errorUrl;
         return;
       }
       
@@ -55,8 +56,9 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
         window.location.href = redirectUrl;
       }
     } catch (err) {
-      setError('登录过程中发生错误');
-      setLoading(false);
+      // 发生错误，重定向到失败页面
+      const errorUrl = `/oauth-failed?error=network_error&error_description=${encodeURIComponent('网络错误')}`;
+      window.location.href = errorUrl;
     }
   };
 

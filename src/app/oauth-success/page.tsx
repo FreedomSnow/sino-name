@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 import './OAuthSuccess.css';
 
 interface UserInfo {
@@ -20,6 +21,7 @@ interface OAuthSuccessProps {
 }
 
 const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         const { temp_token_id, user_id } = searchParams;
         
         if (!temp_token_id || !user_id) {
-          setError('缺少必要的参数');
+          setError(t('missing_parameters'));
           setIsLoading(false);
           return;
         }
@@ -54,17 +56,17 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
           setIsSuccess(true);
         } else {
           const errorData = await response.json();
-          setError(errorData.message || '验证失败');
+          setError(errorData.message || t('verification_failed'));
         }
       } catch (err) {
-        setError('处理过程中发生错误');
+        setError(t('processing_error'));
       } finally {
         setIsLoading(false);
       }
     };
 
     handleOAuthSuccess();
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   if (isLoading) {
     return (
@@ -72,12 +74,12 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         <div className="loading-content">
           <Image 
             src="/panda-loading.gif" 
-            alt="加载中" 
+            alt={t('loading')} 
             width={80} 
             height={80} 
             className="loading-icon"
           />
-          <p className="loading-text">正在验证登录信息...</p>
+          <p className="loading-text">{t('verifying_login')}</p>
         </div>
       </div>
     );
@@ -89,18 +91,18 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         <div className="error-content">
           <Image 
             src="/close.svg" 
-            alt="错误" 
+            alt={t('error')} 
             width={64} 
             height={64} 
             className="error-icon"
           />
-          <h2 className="error-title">登录失败</h2>
+          <h2 className="error-title">{t('login_failed')}</h2>
           <p className="error-message">{error}</p>
           <button 
             className="retry-button"
             onClick={() => window.location.href = '/'}
           >
-            返回首页
+            {t('back_to_home')}
           </button>
         </div>
       </div>
@@ -113,33 +115,33 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         <div className="success-content">
           <Image 
             src="/success.gif" 
-            alt="成功" 
+            alt={t('success')} 
             width={80} 
             height={80} 
             className="success-icon"
           />
-          <h2 className="success-title">登录成功！</h2>
+          <h2 className="success-title">{t('login_successful')}</h2>
           <div className="user-info">
             {userInfo.image && (
               <Image 
                 src={userInfo.image} 
-                alt="用户头像" 
+                alt={t('user_avatar')} 
                 width={60} 
                 height={60} 
                 className="user-avatar"
               />
             )}
             <div className="user-details">
-              <p className="user-name">欢迎，{userInfo.name}！</p>
+              <p className="user-name">{t('welcome')}, {userInfo.name}！</p>
               <p className="user-email">{userInfo.email}</p>
             </div>
           </div>
-          <p className="success-message">您已成功使用谷歌账号登录</p>
+          <p className="success-message">{t('google_login_success')}</p>
           <button 
             className="continue-button"
             onClick={() => window.location.href = '/'}
           >
-            继续使用
+            {t('continue_using')}
           </button>
         </div>
       </div>
