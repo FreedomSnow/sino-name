@@ -105,6 +105,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             width={80} 
             height={80} 
             className="loading-icon"
+            unoptimized
           />
           <p className="loading-text">
             {t('loading') || 'Loading...'}
