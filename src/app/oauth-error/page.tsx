@@ -123,7 +123,9 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             height={80} 
             className="loading-icon"
           />
-          <p className="loading-text">加载错误信息中...</p>
+          <p className="loading-text">
+            {t('loading_error_info') || 'Loading...'}
+          </p>
         </div>
       </div>
     );
@@ -170,31 +172,31 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
           height={64} 
           className="error-icon"
         />
-        <h2 className="error-title">{t('oauth_error_title') || 'OAuth登录失败'}</h2>
+        <h2 className="error-title">{t('oauth_error_title') || 'OAuth Login Failed'}</h2>
         
         <div className="error-details">
           <p className="error-type">
-            <strong>错误类型:</strong> {displayError}
+            <strong>{t('error_type') || 'Error Type'}:</strong> {displayError}
           </p>
           {errorInfo.error_description && (
             <p className="error-description">
-              <strong>错误详情:</strong> {errorInfo.error_description}
+              <strong>{t('error_details') || 'Error Details'}:</strong> {errorInfo.error_description}
             </p>
           )}
           {errorInfo.state && (
             <p className="error-state">
-              <strong>状态码:</strong> {errorInfo.state}
+              <strong>{t('status_code') || 'Status Code'}:</strong> {errorInfo.state}
             </p>
           )}
           {errorDetails?.timestamp && (
             <p className="error-timestamp">
-              <strong>时间:</strong> {new Date(errorDetails.timestamp).toLocaleString()}
+              <strong>{t('timestamp') || 'Timestamp'}:</strong> {new Date(errorDetails.timestamp).toLocaleString()}
             </p>
           )}
         </div>
 
         <div className="countdown-message">
-          {t('redirecting_in_seconds', { seconds: countdown }) || `${countdown}秒后自动跳转到首页`}
+          {t('redirecting_in_seconds', { seconds: countdown }) || `Redirecting to home page in ${countdown} seconds`}
         </div>
 
         <div className="action-buttons">
@@ -202,20 +204,20 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             className="retry-button"
             onClick={() => router.push('/test-auth')}
           >
-            {t('retry_login') || '重新登录'}
+            {t('retry_login') || 'Retry Login'}
           </button>
           
           <button 
             className="home-button"
             onClick={() => router.push('/')}
           >
-            {t('back_to_home') || '返回首页'}
+            {t('back_to_home') || 'Back to Home'}
           </button>
         </div>
 
         {displaySuggestions.length > 0 && (
           <div className="error-help">
-            <h3>建议解决方案:</h3>
+            <h3>{t('suggested_solutions') || 'Suggested Solutions:'}</h3>
             <ul>
               {displaySuggestions.map((suggestion, index) => (
                 <li key={index}>{suggestion}</li>
@@ -226,12 +228,12 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
 
         {displaySuggestions.length === 0 && (
           <div className="error-help">
-            <h3>常见问题解决方案：</h3>
+            <h3>{t('common_solutions') || 'Common Solutions:'}</h3>
             <ul>
-              <li>检查网络连接是否正常</li>
-              <li>确保Google账号可用</li>
-              <li>清除浏览器缓存和cookies</li>
-              <li>如果问题持续，请联系技术支持</li>
+              <li>{t('check_network_connection') || 'Check network connection'}</li>
+              <li>{t('ensure_google_account_available') || 'Ensure Google account is available'}</li>
+              <li>{t('clear_browser_cache') || 'Clear browser cache and cookies'}</li>
+              <li>{t('contact_support_if_persistent') || 'Contact support if problem persists'}</li>
             </ul>
           </div>
         )}
