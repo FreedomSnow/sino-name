@@ -61,32 +61,13 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
     );
   }
 
-  // 谷歌登录 - 使用后端兼容接口
+  // 谷歌登录 - 使用新的Google OAuth API
   const handleGoogleLogin = async () => {
     setLoading(true);
     
     try {
-      // 使用后端兼容接口
-      const response = await fetch('/api/auth/signin/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      // 检查重定向
-      if (response.redirected) {
-        // 重定向到 Google OAuth 页面
-        console.log('OAuth重定向到:', response.url);
-        window.location.href = response.url;
-      } else {
-        // 处理错误
-        const error = await response.json();
-        console.error('OAuth 启动失败:', error);
-        
-        // 重定向到失败页面
-        window.location.href = `/oauth-failed?error=oauth_start_failed&error_description=${encodeURIComponent(error.message || 'OAuth启动失败')}`;
-      }
+      // 直接跳转到我们的Google登录API
+      window.location.href = '/api/auth/google/login';
     } catch (err) {
       console.error('登录错误:', err);
       // 发生错误时重定向到失败页面
