@@ -89,9 +89,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             className="loading-icon"
             unoptimized
           />
-          <p className="loading-text">
-            {t('loading') || 'Loading...'}
-          </p>
+          <p className="loading-text">Loading...</p>
         </div>
       </div>
     );
@@ -109,9 +107,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             className="loading-icon"
             unoptimized
           />
-          <p className="loading-text">
-            {t('loading_user_info') || 'Loading...'}
-          </p>
+          <p className="loading-text">Loading user information...</p>
         </div>
       </div>
     );
