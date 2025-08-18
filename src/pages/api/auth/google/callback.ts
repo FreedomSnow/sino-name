@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sessionCookie = Buffer.from(JSON.stringify(sessionData)).toString('base64');
     res.setHeader('Set-Cookie', `user_session=${sessionCookie}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${tokenData.expires_in}`);
 
-    // 重定向到成功页面或首页
+    // 重定向到成功页面
     res.redirect('/oauth-success');
     
   } catch (error) {
