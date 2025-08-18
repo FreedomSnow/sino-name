@@ -1,18 +1,52 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useTransition, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-const OAuthDebug: React.FC = () => {
+interface DebugInfo {
+  urlParams: Record<string, string>;
+  browserInfo: {
+    userAgent: string;
+    cookiesEnabled: boolean;
+    language: string;
+    platform: string;
+    timestamp: string;
+  };
+  currentUrl: string;
+  referrer: string;
+}
+
+const OAuthDebugContent: React.FC = () => {
   const searchParams = useSearchParams();
-  const [debugInfo, setDebugInfo] = useState<any>({});
+  const [debugInfo, setDebugInfo] = useState<DebugInfo>({
+    urlParams: {},
+    browserInfo: {
+      userAgent: '',
+      cookiesEnabled: false,
+      language: '',
+      platform: '',
+      timestamp: ''
+    },
+    currentUrl: '',
+    referrer: ''
+  });
+  const [isPending, startTransition] = useTransition();
+
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
 
   useEffect(() => {
     // 收集URL参数信息
-    const params: any = {};
-    searchParams.forEach((value, key) => {
-      params[key] = value;
-    });
+    const params: Record<string, string> = {};
+    if (searchParams) {
+      searchParams.forEach((value, key) => {
+        params[key] = value;
+      });
+    }
 
     // 收集浏览器信息
     const browserInfo = {
@@ -42,7 +76,7 @@ const OAuthDebug: React.FC = () => {
     .then(response => response.json())
     .then(data => {
       if (data.success && data.redirectUrl) {
-        window.location.href = data.redirectUrl;
+        safeNavigate(data.redirectUrl);
       }
     })
     .catch(error => {
@@ -57,9 +91,10 @@ const OAuthDebug: React.FC = () => {
       <div className="mb-6">
         <button 
           onClick={testOAuthFlow}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          disabled={isPending}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          测试 OAuth 流程
+          {isPending ? '启动中...' : '测试 OAuth 流程'}
         </button>
       </div>
 
@@ -92,13 +127,26 @@ const OAuthDebug: React.FC = () => {
       <div className="mt-6 bg-yellow-100 p-4 rounded">
         <h3 className="font-semibold text-yellow-800">调试说明</h3>
         <ul className="text-sm text-yellow-700 mt-2 list-disc list-inside">
-          <li>点击"测试 OAuth 流程"按钮开始OAuth登录</li>
+          <li>点击&quot;测试 OAuth 流程&quot;按钮开始OAuth登录</li>
           <li>观察URL参数变化，特别是code和state参数</li>
           <li>检查浏览器控制台是否有错误信息</li>
           <li>如果出现PKCE错误，检查NextAuth配置</li>
         </ul>
       </div>
     </div>
+  );
+};
+
+const OAuthDebug: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="p-8 max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6">OAuth 调试页面</h1>
+        <p>加载中...</p>
+      </div>
+    }>
+      <OAuthDebugContent />
+    </Suspense>
   );
 };
 

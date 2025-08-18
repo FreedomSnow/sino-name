@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ interface ErrorDetails {
 const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
   const { t, ready } = useTranslation();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [errorInfo, setErrorInfo] = useState<{
     error: string;
     error_description: string;
@@ -32,6 +33,32 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
   const [countdown, setCountdown] = useState(10);
   const [errorDetails, setErrorDetails] = useState<ErrorDetails | null>(null);
   const [loadingError, setLoadingError] = useState(false);
+
+  // 安全的导航函数
+  const safeNavigate = useCallback((path: string) => {
+    startTransition(() => {
+      router.push(path);
+    });
+  }, [startTransition]);
+
+  // 获取错误详情
+  const fetchErrorDetails = useCallback(async () => {
+    if (!errorInfo) return;
+    
+    setLoadingError(true);
+    try {
+      // 调用后端错误信息API
+      const response = await fetch(`/api/auth/oauth-error?error=${errorInfo.error}&message=${encodeURIComponent(errorInfo.error_description)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setErrorDetails(data.error);
+      }
+    } catch (err) {
+      console.error('获取错误详情失败:', err);
+    } finally {
+      setLoadingError(false);
+    }
+  }, [errorInfo]);
 
   useEffect(() => {
     // 解析searchParams Promise
@@ -60,7 +87,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
     const timer = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 1) {
-          router.push('/');
+          safeNavigate('/');
           return 0;
         }
         return prev - 1;
@@ -68,31 +95,13 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [router]);
+  }, [safeNavigate]);
 
   useEffect(() => {
     if (errorInfo) {
       fetchErrorDetails();
     }
-  }, [errorInfo]);
-
-  const fetchErrorDetails = async () => {
-    if (!errorInfo) return;
-    
-    setLoadingError(true);
-    try {
-      // 调用后端错误信息API
-      const response = await fetch(`/api/auth/oauth-error?error=${errorInfo.error}&message=${encodeURIComponent(errorInfo.error_description)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setErrorDetails(data.error);
-      }
-    } catch (err) {
-      console.error('获取错误详情失败:', err);
-    } finally {
-      setLoadingError(false);
-    }
-  };
+  }, [errorInfo, fetchErrorDetails]);
 
   // 等待国际化准备完成，避免水合问题
   if (!ready || !errorInfo) {
@@ -184,14 +193,16 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
         <div className="action-buttons">
           <button 
             className="retry-button"
-            onClick={() => router.push('/test-auth')}
+            onClick={() => safeNavigate('/test-auth')}
+            disabled={isPending}
           >
             {t('retry_login') || 'Retry Login'}
           </button>
           
           <button 
             className="home-button"
-            onClick={() => router.push('/')}
+            onClick={() => safeNavigate('/')}
+            disabled={isPending}
           >
             {t('back_to_home') || 'Back to Home'}
           </button>

@@ -1,17 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import './OAuthFailed.css';
-
-interface UserInfo {
-  id: string;
-  name: string;
-  email: string;
-  image?: string;
-}
 
 interface OAuthFailedProps {
   searchParams: Promise<{
@@ -20,26 +13,39 @@ interface OAuthFailedProps {
   }>;
 }
 
+interface ErrorInfo {
+  error: string;
+  error_description: string;
+}
+
 const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
   const { t, ready } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorInfo, setErrorInfo] = useState<{
-    error: string;
-    error_description: string;
-  } | null>(null);
   const [resolvedSearchParams, setResolvedSearchParams] = useState<{
     error?: string;
     error_description?: string;
-  }>({});
+  } | null>(null);
+  const [errorInfo, setErrorInfo] = useState<ErrorInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
+
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
 
   useEffect(() => {
-    // 解析searchParams Promise
     const resolveParams = async () => {
       try {
         const params = await searchParams;
         setResolvedSearchParams(params);
       } catch (err) {
         console.error('解析searchParams失败:', err);
+        setResolvedSearchParams({
+          error: 'parse_error',
+          error_description: '参数解析失败'
+        });
       }
     };
     
@@ -48,30 +54,14 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
 
   useEffect(() => {
     const handleOAuthFailed = async () => {
+      if (!resolvedSearchParams) return;
+      
+      const { error, error_description } = resolvedSearchParams;
+      
       try {
-        const { error, error_description } = resolvedSearchParams;
+        // 调用后端错误信息API获取详细信息
+        const response = await fetch(`/api/auth/oauth-error?error=${error}&message=${encodeURIComponent(error_description || '')}`);
         
-        if (!error) {
-          setErrorInfo({
-            error: 'unknown_error',
-            error_description: '未知错误'
-          });
-          setIsLoading(false);
-          return;
-        }
-
-        // 调用失败处理API
-        const response = await fetch('/api/auth/oauth-failed', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            error,
-            error_description: error_description || '',
-          }),
-        });
-
         if (response.ok) {
           const data = await response.json();
           setErrorInfo({
@@ -80,7 +70,7 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
           });
         } else {
           setErrorInfo({
-            error: error,
+            error: error || 'unknown_error',
             error_description: error_description || '登录失败'
           });
         }
@@ -110,6 +100,7 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
             width={80} 
             height={80} 
             className="loading-icon"
+            unoptimized
           />
           <p className="loading-text">Loading...</p>
         </div>
@@ -127,6 +118,7 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
             width={80} 
             height={80} 
             className="loading-icon"
+            unoptimized
           />
           <p className="loading-text">{t('processing_error')}</p>
         </div>
@@ -153,13 +145,15 @@ const OAuthFailed: React.FC<OAuthFailedProps> = ({ searchParams }) => {
           <div className="error-actions">
             <button 
               className="retry-button"
-              onClick={() => window.location.href = '/'}
+              onClick={() => safeNavigate('/')}
+              disabled={isPending}
             >
               {t('back_to_home')}
             </button>
             <button 
               className="login-again-button"
-              onClick={() => window.location.href = '/login'}
+              onClick={() => safeNavigate('/login')}
+              disabled={isPending}
             >
               {t('try_again')}
             </button>
