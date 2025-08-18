@@ -32,8 +32,8 @@ const OAuthDebug: React.FC = () => {
   }, [searchParams]);
 
   const testOAuthFlow = () => {
-    // 测试OAuth流程
-    const testUrl = '/api/auth/signin/google?callbackUrl=/oauth-debug';
+    // 测试OAuth流程 - 使用新的API端点
+    const testUrl = '/api/auth/google/login';
     console.log('测试OAuth流程:', testUrl);
     window.location.href = testUrl;
   };
