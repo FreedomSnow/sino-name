@@ -308,9 +308,9 @@ sino-name/
 
 ## 📚 相关文档
 
-- [完整OAuth流程文档](./docs/OAUTH_FLOW_DOCUMENTATION.md)
-- [OAuth流程图](./docs/OAUTH_FLOW_DIAGRAM.md)
-- [OAuth快速参考](./docs/OAUTH_QUICK_REFERENCE.md)
+- [项目概览](./docs/PROJECT_OVERVIEW.md)
+- [开发指南](./docs/DEVELOPMENT_GUIDE.md)
+- [OAuth技术指南](./docs/OAUTH_TECHNICAL_GUIDE.md)
 - [API测试脚本](./scripts/test-oauth-apis.sh)
 
 ## 🚀 部署
@@ -361,6 +361,3 @@ npm start
 本项目采用 MIT 许可证。
 
 ---
-
-*最后更新: 2024年8月18日*
-*版本: v1.3.0*
