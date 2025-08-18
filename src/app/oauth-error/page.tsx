@@ -106,7 +106,9 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             height={80} 
             className="loading-icon"
           />
-          <p className="loading-text">Loading...</p>
+          <p className="loading-text">
+            {t('loading') || 'Loading...'}
+          </p>
         </div>
       </div>
     );
@@ -167,7 +169,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
       <div className="error-content">
         <Image 
           src={getErrorIcon(errorInfo.error)} 
-          alt={t('error')} 
+          alt={t('error') || 'Error'} 
           width={64} 
           height={64} 
           className="error-icon"
