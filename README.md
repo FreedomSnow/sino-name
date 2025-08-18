@@ -1,39 +1,54 @@
 # Sino-Name 项目
 
-## 项目简介
-Sino-Name 是一个中文起名应用，支持Google OAuth登录。项目采用自定义OAuth实现，提供完整的认证流程和用户管理功能。
+## 🎯 项目简介
 
-## 技术栈
-- **前端**: Next.js 15.4.5 + React 19.1.0 + TypeScript
-- **认证**: 自定义Google OAuth 2.0实现
-- **状态管理**: React Hooks + Context API
-- **样式**: Tailwind CSS + 自定义CSS
-- **国际化**: react-i18next
+Sino-Name 是一个现代化的中文起名应用，采用前后端分离架构，提供完整的Google OAuth认证系统和用户管理功能。项目专注于用户体验和安全性，实现了自定义的OAuth流程。
 
-## 🚀 快速开始
+## 🏗️ 系统架构
 
-### 环境要求
-- Node.js 18+ 
-- npm 或 yarn
-
-### 安装和运行
-```bash
-# 克隆项目
-git clone https://github.com/dujiepeng/sino-name.git
-cd sino-name
-
-# 安装依赖
-npm install
-
-# 配置环境变量
-cp env.example .env
-# 编辑 .env 文件，填入你的配置
-
-# 启动开发服务器
-npm run dev
-
-# 应用将在 http://localhost:3000 运行
+### 整体架构图
 ```
+┌─────────────────────────────────────────────────────────────┐
+│                        用户                                 │
+└─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      前端服务                               │
+│                    (端口3000)                              │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │   用户界面      │  │   状态管理      │  │   OAuth页面 │ │
+│  │   (首页)        │  │   (useAuth)     │  │ (成功/错误) │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      后端服务                               │
+│                    (端口3001)                              │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │   OAuth登录     │  │   OAuth回调     │  │   用户管理  │ │
+│  │   (生成URL)     │  │   (处理授权)     │  │  (会话管理) │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Google OAuth服务                         │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │   授权页面      │  │   令牌交换      │  │   用户信息  │ │
+│  │   (用户登录)     │  │   (code→token)  │  │  (profile)  │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 技术架构特点
+
+1. **前后端分离**: 前端运行在3000端口，后端运行在3001端口
+2. **自定义OAuth**: 完全自主实现的Google OAuth 2.0流程
+3. **状态管理**: 使用React Hooks和Context API管理认证状态
+4. **安全机制**: 实现CSRF保护、安全的Cookie管理和状态验证
+5. **错误处理**: 完善的错误处理机制和用户友好的错误页面
 
 ## 🔐 OAuth认证系统
 
@@ -45,44 +60,85 @@ npm run dev
 └─────────────┘    └─────────────┘    └─────────────┘
 ```
 
+### 技术特点
+- **自定义实现**: 完全自主实现的OAuth 2.0流程
+- **前后端分离**: 前端(3000端口) + 后端(3001端口)
+- **安全优先**: CSRF保护、状态验证、安全Cookie
+- **用户体验**: 自动状态同步、智能重定向、错误处理
+
 ### 完整认证流程
 
-1. **用户发起登录**
-   - 点击登录按钮
-   - 前端调用 `useAuth.login()` 函数
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant F as 前端(3000)
+    participant B as 后端(3001)
+    participant G as Google OAuth
 
-2. **后端生成OAuth URL**
-   - 发送 `POST /api/auth/signin/google` 请求
-   - 后端生成CSRF保护的state参数
-   - 构建Google OAuth授权URL
-   - 设置state cookie
+    U->>F: 点击登录按钮
+    F->>B: POST /api/auth/signin/google
+    B->>B: 生成state参数
+    B->>F: 返回OAuth URL
+    F->>U: 重定向到Google
+    U->>G: 输入Google账号密码
+    G->>U: 显示授权确认页面
+    U->>G: 确认授权
+    G->>B: 回调 + 授权码
+    B->>G: 使用授权码换取token
+    G->>B: 返回access_token
+    B->>G: 使用token获取用户信息
+    G->>B: 返回用户信息
+    B->>B: 设置用户会话Cookie
+    B->>F: 重定向到成功页面
+    F->>F: 显示成功信息
+    F->>F: 2秒后自动跳转首页
+    F->>B: GET /api/auth/user (自动检查)
+    B->>F: 返回用户信息
+    F->>F: 更新UI状态
+    F->>F: 显示用户头像和登出按钮
+```
 
-3. **Google授权**
-   - 重定向到Google OAuth页面
-   - 用户输入Google账号密码
-   - 确认应用授权
+### 详细流程说明
 
-4. **OAuth回调处理**
-   - Google重定向到后端回调地址
-   - 携带授权码(code)和state参数
-   - 后端验证state参数防止CSRF攻击
-   - 使用授权码换取访问令牌
+#### 阶段1: 用户发起登录
+1. 用户在首页点击"Login"按钮
+2. 前端调用`useAuth.login()`函数
+3. 发送POST请求到后端登录接口
 
-5. **获取用户信息**
-   - 使用access_token调用Google API
-   - 获取用户基本信息(姓名、邮箱、头像)
-   - 创建用户会话数据
-   - 设置HttpOnly Cookie
+#### 阶段2: 后端生成OAuth URL
+1. 后端验证请求方法
+2. 生成CSRF保护的state参数
+3. 构建Google OAuth授权URL
+4. 设置state cookie
+5. 返回授权URL给前端
 
-6. **重定向到成功页面**
-   - 后端重定向到前端成功页面
-   - URL中包含编码的用户信息
-   - 2秒后自动跳转回首页
+#### 阶段3: 用户Google授权
+1. 前端重定向到Google OAuth页面
+2. 用户输入Google账号密码
+3. Google显示应用授权确认页面
+4. 用户确认授权
 
-7. **状态同步**
-   - 首页useAuth Hook自动检查登录状态
-   - 调用 `GET /api/auth/user` 接口
-   - 更新UI状态，显示用户头像和登出按钮
+#### 阶段4: Google回调处理
+1. Google重定向到后端回调地址
+2. 携带授权码(code)和state参数
+3. 后端验证state参数防止CSRF攻击
+4. 使用授权码换取访问令牌
+
+#### 阶段5: 获取用户信息
+1. 后端使用access_token调用Google API
+2. 获取用户基本信息(姓名、邮箱、头像)
+3. 创建用户会话数据
+4. 设置HttpOnly Cookie
+
+#### 阶段6: 重定向到成功页面
+1. 后端重定向到前端成功页面
+2. URL中包含编码的用户信息
+3. 2秒后自动跳转回首页
+
+#### 阶段7: 状态同步
+1. 首页useAuth Hook自动检查登录状态
+2. 调用`GET /api/auth/user`接口
+3. 更新UI状态，显示用户头像和登出按钮
 
 ## 🔌 API接口文档
 
@@ -152,20 +208,69 @@ GET /api/auth/oauth-error?error=ERROR_TYPE&message=ERROR_DESC
 ## 🔒 安全机制
 
 ### CSRF保护
-- 使用随机生成的state参数
-- 验证回调中的state与cookie中的state是否匹配
-- state cookie设置为HttpOnly和SameSite=Lax
+- **state参数**: 随机生成的32位字符串
+- **Cookie存储**: HttpOnly + SameSite=Lax
+- **参数验证**: 回调时验证state与cookie是否匹配
+- **过期时间**: 10分钟自动过期
 
 ### 会话安全
-- 用户会话存储在HttpOnly Cookie中
-- Cookie数据使用Base64编码
-- 设置合理的过期时间
-- 支持SameSite=Lax防止CSRF
+- **HttpOnly Cookie**: 防止XSS攻击
+- **Base64编码**: 用户数据编码存储
+- **过期管理**: 自动清理过期会话
+- **安全属性**: secure、sameSite等安全设置
 
 ### 环境变量保护
-- 敏感信息存储在.env文件中
-- .env文件被.gitignore忽略
-- 提供env.example作为配置模板
+- **敏感信息**: 存储在.env文件中
+- **版本控制**: .env文件被.gitignore忽略
+- **配置模板**: 提供env.example作为参考
+- **生产环境**: 使用环境变量管理
+
+## 🚨 错误处理
+
+### 错误类型映射
+```typescript
+const errorMap: Record<string, ErrorInfo> = {
+  'invalid_grant': {
+    message: 'OAuth授权码已过期或无效，请重新登录',
+    suggestions: [
+      'OAuth授权码已过期，请重新登录',
+      '检查系统时间是否正确',
+      '清除浏览器缓存和Cookie'
+    ]
+  },
+  'access_denied': {
+    message: '用户拒绝了授权请求',
+    suggestions: [
+      '重新尝试登录',
+      '确保Google账号可用',
+      '检查网络连接'
+    ]
+  },
+  'redirect_uri_mismatch': {
+    message: '重定向URI不匹配，请检查配置',
+    suggestions: [
+      '检查Google Console配置',
+      '确认重定向URI正确',
+      '联系技术支持'
+    ]
+  }
+};
+```
+
+### 常见错误及解决方案
+
+| 错误代码 | 错误描述 | 解决方案 |
+|----------|----------|----------|
+| `invalid_grant` | 授权码已过期或无效 | 重新登录 |
+| `access_denied` | 用户拒绝授权 | 重新授权 |
+| `redirect_uri_mismatch` | 重定向URI不匹配 | 检查Google Console配置 |
+| `invalid_client` | 客户端配置错误 | 检查环境变量 |
+| `server_error` | 服务器内部错误 | 稍后重试 |
+
+### 错误页面流程
+```
+OAuth错误 → 后端错误处理 → 重定向到/oauth-error → 显示错误信息 → 提供解决建议
+```
 
 ## ⚙️ 环境配置
 
@@ -223,23 +328,6 @@ curl -s -o /dev/null -w "前端: %{http_code}\n" http://localhost:3000
 curl -s -o /dev/null -w "后端: %{http_code}\n" http://localhost:3001
 ```
 
-## 🚨 错误处理
-
-### 常见错误类型
-
-| 错误代码 | 错误描述 | 解决方案 |
-|----------|----------|----------|
-| `invalid_grant` | 授权码已过期或无效 | 重新登录 |
-| `access_denied` | 用户拒绝授权 | 重新授权 |
-| `redirect_uri_mismatch` | 重定向URI不匹配 | 检查Google Console配置 |
-| `invalid_client` | 客户端配置错误 | 检查环境变量 |
-| `server_error` | 服务器内部错误 | 稍后重试 |
-
-### 错误页面流程
-```
-OAuth错误 → 后端错误处理 → 重定向到/oauth-error → 显示错误信息 → 提供解决建议
-```
-
 ## 📱 前端集成
 
 ### useAuth Hook使用
@@ -274,6 +362,48 @@ const handleLogout = () => {
 - 安全的导航函数包装所有路由跳转
 - 自动的认证状态检查和同步
 
+### 技术实现细节
+
+#### 1. 状态管理 (useAuth Hook)
+```typescript
+export const useAuth = () => {
+  const [authState, setAuthState] = useState<AuthState>({
+    user: null,
+    loading: true,
+    error: null
+  });
+  const [isPending, startTransition] = useTransition();
+
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
+
+  return {
+    ...authState,
+    login,
+    logout,
+    refreshUser,
+    isAuthenticated: !!authState.user,
+    isPending
+  };
+};
+```
+
+#### 2. 安全导航实现
+```typescript
+// 使用useTransition避免渲染错误
+const [isPending, startTransition] = useTransition();
+
+const safeNavigate = (path: string) => {
+  startTransition(() => {
+    router.push(path);
+  });
+};
+```
+
 ## 🏗️ 项目结构
 
 ```
@@ -298,20 +428,34 @@ sino-name/
 │   └── ...
 ├── scripts/                   # 工具脚本
 │   └── test-oauth-apis.sh    # OAuth API测试脚本
-├── docs/                      # 文档
-│   ├── OAUTH_FLOW_DOCUMENTATION.md # OAuth流程完整文档
-│   ├── OAUTH_FLOW_DIAGRAM.md      # OAuth流程图
-│   └── OAUTH_QUICK_REFERENCE.md   # OAuth快速参考
 ├── .env.example              # 环境变量配置模板
 └── README.md                 # 项目说明文档
 ```
 
-## 📚 相关文档
+## 🚀 快速开始
 
-- [项目概览](./docs/PROJECT_OVERVIEW.md)
-- [开发指南](./docs/DEVELOPMENT_GUIDE.md)
-- [OAuth技术指南](./docs/OAUTH_TECHNICAL_GUIDE.md)
-- [API测试脚本](./scripts/test-oauth-apis.sh)
+### 环境要求
+- Node.js 18+ 
+- npm 或 yarn
+
+### 安装和运行
+```bash
+# 克隆项目
+git clone https://github.com/dujiepeng/sino-name.git
+cd sino-name
+
+# 安装依赖
+npm install
+
+# 配置环境变量
+cp env.example .env
+# 编辑 .env 文件，填入你的配置
+
+# 启动开发服务器
+npm run dev
+
+# 应用将在 http://localhost:3000 运行
+```
 
 ## 🚀 部署
 
@@ -361,3 +505,5 @@ npm start
 本项目采用 MIT 许可证。
 
 ---
+
+*本文档提供了Sino-Name项目的完整技术说明，包括系统架构、OAuth实现、API接口、安全机制和部署配置。*
