@@ -7,6 +7,10 @@ import BespokePage from "./features/bespoke/Bespoke";
 const resources = {
   zh: {
     translation: {
+      title: "Sino Name - AI智能起名 | 百家姓定制 | 宝宝取名 | 专业中文英文名字生成",
+      mainTitle: "Sino Name - AI智能起名平台",
+      mainSubtitle: "AI智能起名 · 百家姓 · 定制专属名字",
+      // ...existing code...
       langZh: "中文",
       langEn: "English",
       contact: "联系我们",
@@ -93,6 +97,10 @@ const resources = {
   },
   en: {
     translation: {
+      title: "Sino Name - AI-powered Naming | Surname Customization | Baby Name | Professional Chinese & English Name Generator",
+      mainTitle: "Sino Name - AI-powered Naming Platform",
+      mainSubtitle: "AI Naming · Surname Database · Custom Name Generation",
+      // ...existing code...
       langZh: "中文",
       langEn: "English",
       contact: "Contact Us",
