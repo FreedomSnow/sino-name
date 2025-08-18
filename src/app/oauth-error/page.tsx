@@ -95,7 +95,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
   };
 
   // 等待国际化准备完成，避免水合问题
-  if (!ready) {
+  if (!ready || !errorInfo) {
     return (
       <div className="oauth-error-container">
         <div className="loading-content">
@@ -108,23 +108,6 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             unoptimized
           />
           <p className="loading-text">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!errorInfo) {
-    return (
-      <div className="oauth-error-container">
-        <div className="loading-content">
-          <Image 
-            src="/panda-loading.gif" 
-            alt="Loading" 
-            width={80} 
-            height={80} 
-            className="loading-icon"
-          />
-                  <p className="loading-text">Loading error information...</p>
         </div>
       </div>
     );
