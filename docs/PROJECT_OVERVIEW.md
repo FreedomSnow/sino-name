@@ -136,9 +136,9 @@ Sino-Name 是一个现代化的中文起名应用，采用前后端分离架构�
 
 1. **README.md**: 项目主要说明文档
 2. **PROJECT_OVERVIEW.md**: 项目概览和架构说明
-3. **OAUTH_FLOW_DOCUMENTATION.md**: OAuth流程完整文档
-4. **OAUTH_FLOW_DIAGRAM.md**: OAuth流程图和架构图
-5. **OAUTH_QUICK_REFERENCE.md**: OAuth快速参考卡片
+3. **DEVELOPMENT_GUIDE.md**: 开发指南和流程说明
+4. **OAUTH_TECHNICAL_GUIDE.md**: OAuth技术实现指南
+5. **API测试脚本**: 完整的接口测试套件
 
 ### 文档特点
 
