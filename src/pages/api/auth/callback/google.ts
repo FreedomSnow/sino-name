@@ -9,17 +9,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   // 检查是否有错误
   if (error) {
-    return res.redirect(`/oauth-failed?error=${encodeURIComponent(error as string)}`);
+    const errorDescription = req.query.error_description || '未知错误';
+    return res.redirect(`${process.env.FRONTEND_BASE_URL || 'http://localhost:3000'}/oauth-error?error=${encodeURIComponent(error as string)}&error_description=${encodeURIComponent(errorDescription as string)}`);
   }
 
   // 验证state参数防止CSRF攻击
   const cookieState = req.cookies.oauth_state;
   if (!state || !cookieState || state !== cookieState) {
-    return res.redirect('/oauth-failed?error=invalid_state');
+    return res.redirect(`${process.env.FRONTEND_BASE_URL || 'http://localhost:3000'}/oauth-error?error=invalid_state&error_description=状态验证失败，可能存在安全风险`);
   }
 
   if (!code) {
-    return res.redirect('/oauth-failed?error=no_code');
+    return res.redirect(`${process.env.FRONTEND_BASE_URL || 'http://localhost:3000'}/oauth-error?error=no_code&error_description=未收到授权码，请重新登录`);
   }
 
   try {
@@ -34,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
         code: code as string,
         grant_type: 'authorization_code',
-        redirect_uri: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/google/callback`,
+        redirect_uri: `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/api/auth/callback/google`,
       }),
     });
 
@@ -76,11 +77,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sessionCookie = Buffer.from(JSON.stringify(sessionData)).toString('base64');
     res.setHeader('Set-Cookie', `user_session=${sessionCookie}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${tokenData.expires_in}`);
 
+    // 编码用户信息用于URL传递
+    const encodedUserInfo = encodeURIComponent(JSON.stringify({
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      picture: userData.picture
+    }));
+
     // 重定向到成功页面
-    res.redirect('/oauth-success');
+    res.redirect(`${process.env.FRONTEND_BASE_URL || 'http://localhost:3000'}/oauth-success?user_info=${encodedUserInfo}`);
     
   } catch (error) {
     console.error('OAuth回调处理错误:', error);
-    res.redirect('/oauth-failed?error=server_error');
+    
+    // 根据错误类型重定向到错误页面
+    let errorType = 'server_error';
+    let errorDescription = '服务器内部错误';
+    
+    if (error instanceof Error) {
+      if (error.message.includes('token')) {
+        errorType = 'invalid_grant';
+        errorDescription = '获取访问令牌失败，请重新登录';
+      } else if (error.message.includes('user')) {
+        errorType = 'no_user';
+        errorDescription = '无法获取用户信息，请重新登录';
+      }
+    }
+    
+    res.redirect(`${process.env.FRONTEND_BASE_URL || 'http://localhost:3000'}/oauth-error?error=${errorType}&error_description=${encodeURIComponent(errorDescription)}`);
   }
 }
