@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useTransition } from 'react';
 import type { FC } from 'react';
 import Image from 'next/image';
 import './Login.css';
@@ -25,6 +27,14 @@ const SOCIALS = [
 const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
   const { t, ready } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -78,7 +88,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
         const data = await response.json();
         if (data.success && data.redirectUrl) {
           // 跳转到Google授权页面
-          window.location.href = data.redirectUrl;
+          safeNavigate(data.redirectUrl);
         } else {
           throw new Error('获取授权URL失败');
         }
@@ -88,7 +98,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
     } catch (err) {
       console.error('登录错误:', err);
       // 发生错误时重定向到失败页面
-      window.location.href = '/oauth-failed?error=network_error&error_description=网络错误';
+      safeNavigate('/oauth-failed?error=network_error&error_description=网络错误');
     } finally {
       setLoading(false);
     }
@@ -114,10 +124,10 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
               key={social.key}
               className="socialBtn"
               onClick={handleGoogleLogin}
-              disabled={loading}
+              disabled={loading || isPending}
             >
               <Image src={social.icon} alt={social.label} className="socialIcon" width={24} height={24} />
-              {loading ? '登录中...' : t('login_with', { provider: social.label })}
+              {loading || isPending ? '登录中...' : t('login_with', { provider: social.label })}
             </button>
           ))}
         </div>

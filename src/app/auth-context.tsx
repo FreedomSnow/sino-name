@@ -1,12 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useTransition } from 'react';
 
 interface User {
   id: string;
-  email: string;
   name: string;
-  picture: string;
+  email: string;
+  picture?: string;
 }
 
 interface AuthContextType {
@@ -36,6 +36,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
 
   // 获取当前用户信息
   const fetchUser = async () => {
@@ -71,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     .then(response => response.json())
     .then(data => {
       if (data.success && data.redirectUrl) {
-        window.location.href = data.redirectUrl;
+        safeNavigate(data.redirectUrl);
       }
     })
     .catch(error => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
@@ -24,9 +24,17 @@ interface UserInfo {
 const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
   const { t, ready } = useTranslation();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [countdown, setCountdown] = useState(10);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // 安全的导航函数
+  const safeNavigate = useCallback((path: string) => {
+    startTransition(() => {
+      router.push(path);
+    });
+  }, [startTransition]);
 
   useEffect(() => {
     // 解析searchParams Promise
@@ -56,7 +64,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
     // 如果有用户信息，立即跳转（减少等待时间）
     if (userInfo) {
       const timer = setTimeout(() => {
-        router.push('/');
+        safeNavigate('/');
       }, 2000); // 2秒后跳转
 
       return () => clearTimeout(timer);
@@ -65,7 +73,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
-            router.push('/');
+            safeNavigate('/');
             return 0;
           }
           return prev - 1;
@@ -74,7 +82,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
 
       return () => clearInterval(timer);
     }
-  }, [router, userInfo]);
+  }, [userInfo, safeNavigate]);
 
   // 等待国际化准备完成，避免水合问题
   if (!ready || loading) {
@@ -104,6 +112,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
           width={80} 
           height={80} 
           className="success-icon"
+          unoptimized
         />
         
         <div className="success-status">
@@ -166,14 +175,16 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         <div className="action-buttons">
           <button 
             className="continue-button"
-            onClick={() => router.push('/')}
+            onClick={() => safeNavigate('/')}
+            disabled={isPending}
           >
-            {t('continue_to_app') || 'Continue to App'}
+            {isPending ? (t('redirecting') || 'Redirecting...') : (t('continue_to_app') || 'Continue to App')}
           </button>
           
           <button 
             className="home-button"
-            onClick={() => router.push('/')}
+            onClick={() => safeNavigate('/')}
+            disabled={isPending}
           >
             {t('back_to_home') || 'Back to Home'}
           </button>

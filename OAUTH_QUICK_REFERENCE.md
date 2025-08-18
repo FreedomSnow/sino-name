@@ -25,7 +25,7 @@ vim .env
 
 ### 1. 登录接口
 ```bash
-curl -X POST http://localhost:3000/api/auth/signin/google \
+curl -X POST http://localhost:3001/api/auth/signin/google \
   -H "Content-Type: application/json" \
   -d '{}'
 ```

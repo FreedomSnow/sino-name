@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useTransition } from 'react';
 
 interface User {
   id: string;
@@ -19,6 +19,14 @@ export const useAuth = () => {
     loading: true,
     error: null
   });
+  const [isPending, startTransition] = useTransition();
+
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
 
   // 检查用户会话
   const checkAuth = useCallback(async () => {
@@ -72,7 +80,7 @@ export const useAuth = () => {
         const data = await response.json();
         if (data.success && data.redirectUrl) {
           // 重定向到Google OAuth
-          window.location.href = data.redirectUrl;
+          safeNavigate(data.redirectUrl);
           return;
         }
       }
@@ -144,6 +152,7 @@ export const useAuth = () => {
     login,
     logout,
     refreshUser,
-    isAuthenticated: !!authState.user
+    isAuthenticated: !!authState.user,
+    isPending
   };
 };

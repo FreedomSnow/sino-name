@@ -1,13 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../auth-context';
+import React, { useState, useEffect, useTransition } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
-export default function TestAuthPage() {
-  const { user, loading, error, logout } = useAuth();
-  const [countdown, setCountdown] = useState(5);
+const TestAuthPage: React.FC = () => {
+  const { user, loading, error, login, logout } = useAuth();
+  const [isPending, startTransition] = useTransition();
 
-  // 登录
+  // 安全的导航函数
+  const safeNavigate = (url: string) => {
+    startTransition(() => {
+      window.location.href = url;
+    });
+  };
+
   const handleLogin = () => {
     // 调用新的登录API端点
     fetch('/api/auth/signin/google', {
@@ -19,7 +25,7 @@ export default function TestAuthPage() {
     .then(response => response.json())
     .then(data => {
       if (data.success && data.redirectUrl) {
-        window.location.href = data.redirectUrl;
+        safeNavigate(data.redirectUrl);
       }
     })
     .catch(error => {
@@ -66,9 +72,10 @@ export default function TestAuthPage() {
         {!user ? (
           <button
             onClick={handleLogin}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            disabled={isPending}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            使用Google登录
+            {isPending ? '启动中...' : '使用Google登录'}
           </button>
         ) : (
           <button
@@ -80,8 +87,9 @@ export default function TestAuthPage() {
         )}
         
         <button
-          onClick={() => window.location.href = '/'}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          onClick={() => safeNavigate('/')}
+          disabled={isPending}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           返回首页
         </button>
@@ -107,3 +115,5 @@ export default function TestAuthPage() {
     </div>
   );
 }
+
+export default TestAuthPage;
