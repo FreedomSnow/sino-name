@@ -1,10 +1,31 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../auth-context';
 
 export default function TestAuthPage() {
-  const { user, loading, error, login, logout } = useAuth();
+  const { user, loading, error, logout } = useAuth();
+  const [countdown, setCountdown] = useState(5);
+
+  // 登录
+  const handleLogin = () => {
+    // 调用新的登录API端点
+    fetch('/api/auth/signin/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      }
+    })
+    .catch(error => {
+      console.error('登录失败:', error);
+    });
+  };
 
   if (loading) {
     return (
@@ -44,7 +65,7 @@ export default function TestAuthPage() {
       <div className="space-x-4">
         {!user ? (
           <button
-            onClick={login}
+            onClick={handleLogin}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             使用Google登录
@@ -58,12 +79,12 @@ export default function TestAuthPage() {
           </button>
         )}
         
-        <a
-          href="/"
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 inline-block"
+        <button
+          onClick={() => window.location.href = '/'}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
         >
           返回首页
-        </a>
+        </button>
       </div>
       
       <div className="mt-8 bg-gray-100 p-4 rounded">
@@ -71,15 +92,11 @@ export default function TestAuthPage() {
         <ul className="text-sm space-y-2">
           <li>
             <strong>登录:</strong> 
-            <a href="/api/auth/google/login" className="text-blue-600 hover:underline ml-2">
-              /api/auth/google/login
-            </a>
+            <span className="text-gray-500 ml-2">POST /api/auth/signin/google</span>
           </li>
           <li>
             <strong>用户信息:</strong> 
-            <a href="/api/auth/user" className="text-blue-600 hover:underline ml-2">
-              /api/auth/user
-            </a>
+            <span className="text-gray-500 ml-2">GET /api/auth/user</span>
           </li>
           <li>
             <strong>登出:</strong> 

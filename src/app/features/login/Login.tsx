@@ -66,8 +66,25 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
     setLoading(true);
     
     try {
-      // 直接跳转到我们的Google登录API
-      window.location.href = '/api/auth/google/login';
+      // 调用新的登录API端点
+      const response = await fetch('/api/auth/signin/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.redirectUrl) {
+          // 跳转到Google授权页面
+          window.location.href = data.redirectUrl;
+        } else {
+          throw new Error('获取授权URL失败');
+        }
+      } else {
+        throw new Error('登录请求失败');
+      }
     } catch (err) {
       console.error('登录错误:', err);
       // 发生错误时重定向到失败页面

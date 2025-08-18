@@ -61,7 +61,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // 登录
   const login = () => {
-    window.location.href = '/api/auth/google/login';
+    // 调用新的登录API端点
+    fetch('/api/auth/signin/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      }
+    })
+    .catch(error => {
+      console.error('登录失败:', error);
+    });
   };
 
   // 登出

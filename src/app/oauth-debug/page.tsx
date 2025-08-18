@@ -33,9 +33,21 @@ const OAuthDebug: React.FC = () => {
 
   const testOAuthFlow = () => {
     // 测试OAuth流程 - 使用新的API端点
-    const testUrl = '/api/auth/google/login';
-    console.log('测试OAuth流程:', testUrl);
-    window.location.href = testUrl;
+    fetch('/api/auth/signin/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      }
+    })
+    .catch(error => {
+      console.error('OAuth流程启动失败:', error);
+    });
   };
 
   return (
