@@ -281,10 +281,15 @@ const resources = {
 
 // 获取默认语言，确保服务器端和客户端一致
 const getDefaultLanguage = () => {
-  // 优先使用localStorage中的语言设置
-  if (typeof window !== "undefined") {
-    const storedLang = localStorage.getItem("sino-lang");
-    if (storedLang) return storedLang;
+  // 服务器端始终使用中文，避免水合错误
+  if (typeof window === "undefined") {
+    return "zh";
+  }
+  
+  // 客户端优先使用localStorage中的语言设置
+  const storedLang = localStorage.getItem("sino-lang");
+  if (storedLang && (storedLang === "zh" || storedLang === "en")) {
+    return storedLang;
   }
   
   // 如果没有存储的语言设置，默认使用中文
@@ -301,7 +306,26 @@ i18n
     // 确保服务器端和客户端使用相同的语言
     react: {
       useSuspense: false
+    },
+    // 添加语言检测和同步
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage']
     }
   });
+
+// 在客户端初始化后同步语言设置
+if (typeof window !== "undefined") {
+  const currentLang = i18n.language;
+  const storedLang = localStorage.getItem("sino-lang");
+  
+  // 如果localStorage中的语言与当前语言不同，同步更新
+  if (storedLang && storedLang !== currentLang) {
+    i18n.changeLanguage(storedLang);
+  } else if (!storedLang) {
+    // 如果没有存储的语言，将当前语言存储到localStorage
+    localStorage.setItem("sino-lang", currentLang);
+  }
+}
 
 export default i18n;
