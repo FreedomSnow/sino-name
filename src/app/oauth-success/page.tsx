@@ -96,7 +96,9 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             height={80} 
             className="loading-icon"
           />
-          <p className="loading-text">加载用户信息中...</p>
+          <p className="loading-text">
+            {t('loading_user_info') || 'Loading...'}
+          </p>
         </div>
       </div>
     );
@@ -114,10 +116,10 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         />
         
         <div className="success-status">
-          {t('verification_successful') || '验证成功'}
+          {t('verification_successful') || 'Verification Successful'}
         </div>
         
-        <h2 className="success-title">{t('oauth_success_title') || 'OAuth登录成功！'}</h2>
+        <h2 className="success-title">{t('oauth_success_title') || 'OAuth Login Successful!'}</h2>
         
         <div className="verification-status">
           <Image 
@@ -128,29 +130,29 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             className="verification-icon"
           />
           <span className="verification-text">
-            {t('google_account_verified') || 'Google账号已验证'}
+            {t('google_account_verified') || 'Google Account Verified'}
           </span>
         </div>
         
         <div className="success-message">
-          {t('oauth_success_message') || '恭喜！您已成功通过Google账号登录。'}
+          {t('oauth_success_message') || 'Congratulations! You have successfully logged in with your Google account.'}
         </div>
 
         {userInfo && (
           <div className="user-info">
-            <h3>用户信息</h3>
+            <h3>{t('user_information') || 'User Information'}</h3>
             <div className="user-details">
               <div className="user-detail">
-                <span className="detail-label">姓名:</span>
+                <span className="detail-label">{t('name') || 'Name'}:</span>
                 <span className="detail-value">{userInfo.name}</span>
               </div>
               <div className="user-detail">
-                <span className="detail-label">邮箱:</span>
+                <span className="detail-label">{t('email') || 'Email'}:</span>
                 <span className="detail-value">{userInfo.email}</span>
               </div>
               {userInfo.picture && (
                 <div className="user-detail">
-                  <span className="detail-label">头像:</span>
+                  <span className="detail-label">{t('avatar') || 'Avatar'}:</span>
                   <span className="detail-value">
                     <Image 
                       src={userInfo.picture} 
@@ -167,7 +169,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         )}
 
         <div className="countdown-message">
-          {t('redirecting_in_seconds', { seconds: countdown }) || `${countdown}秒后自动跳转到首页`}
+          {t('redirecting_in_seconds', { seconds: countdown }) || `Redirecting to home page in ${countdown} seconds`}
         </div>
 
         <div className="action-buttons">
@@ -175,24 +177,24 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             className="continue-button"
             onClick={() => router.push('/')}
           >
-            {t('continue_to_app') || '继续使用应用'}
+            {t('continue_to_app') || 'Continue to App'}
           </button>
           
           <button 
             className="home-button"
             onClick={() => router.push('/')}
           >
-            {t('back_to_home') || '返回首页'}
+            {t('back_to_home') || 'Back to Home'}
           </button>
         </div>
 
         <div className="success-features">
-          <h3>您现在可以：</h3>
+          <h3>{t('what_you_can_do') || 'What you can do now:'}</h3>
           <ul>
-            <li>访问所有受保护的功能</li>
-            <li>保存您的个人设置</li>
-            <li>使用高级功能</li>
-            <li>管理您的账户信息</li>
+            <li>{t('access_protected_features') || 'Access all protected features'}</li>
+            <li>{t('save_personal_settings') || 'Save your personal settings'}</li>
+            <li>{t('use_advanced_features') || 'Use advanced features'}</li>
+            <li>{t('manage_account_info') || 'Manage your account information'}</li>
           </ul>
         </div>
       </div>
