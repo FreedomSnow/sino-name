@@ -29,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="robots" content="index,follow" />
         <link rel="icon" href="/icon.png" type="image/png" />
       </head>
       <body
