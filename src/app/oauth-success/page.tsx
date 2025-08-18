@@ -77,7 +77,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
   }, [router, userInfo]);
 
   // 等待国际化准备完成，避免水合问题
-  if (!ready) {
+  if (!ready || loading) {
     return (
       <div className="oauth-success-container">
         <div className="loading-content">
@@ -90,24 +90,6 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             unoptimized
           />
           <p className="loading-text">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="oauth-success-container">
-        <div className="loading-content">
-          <Image 
-            src="/panda-loading.gif" 
-            alt="Loading" 
-            width={80} 
-            height={80} 
-            className="loading-icon"
-            unoptimized
-          />
-          <p className="loading-text">Loading user information...</p>
         </div>
       </div>
     );
