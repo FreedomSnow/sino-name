@@ -107,9 +107,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             className="loading-icon"
             unoptimized
           />
-          <p className="loading-text">
-            {t('loading') || 'Loading...'}
-          </p>
+          <p className="loading-text">Loading...</p>
         </div>
       </div>
     );
@@ -126,9 +124,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
             height={80} 
             className="loading-icon"
           />
-          <p className="loading-text">
-            {t('loading_error_info') || 'Loading...'}
-          </p>
+                  <p className="loading-text">Loading error information...</p>
         </div>
       </div>
     );
