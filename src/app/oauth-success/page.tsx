@@ -88,7 +88,9 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
             height={80} 
             className="loading-icon"
           />
-          <p className="loading-text">Loading...</p>
+          <p className="loading-text">
+            {t('loading') || 'Loading...'}
+          </p>
         </div>
       </div>
     );
@@ -118,7 +120,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
       <div className="success-content">
         <Image 
           src="/success.gif" 
-          alt="Success" 
+          alt={t('success') || 'Success'} 
           width={80} 
           height={80} 
           className="success-icon"
@@ -133,7 +135,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         <div className="verification-status">
           <Image 
             src="/checked.svg" 
-            alt="Verified" 
+            alt={t('verification_successful') || 'Verified'} 
             width={20} 
             height={20} 
             className="verification-icon"
@@ -165,7 +167,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
                   <span className="detail-value">
                     <Image 
                       src={userInfo.picture} 
-                      alt="Avatar" 
+                      alt={t('avatar') || 'Avatar'} 
                       width={40} 
                       height={40} 
                       style={{ borderRadius: '50%' }}
