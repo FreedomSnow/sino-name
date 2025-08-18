@@ -11,6 +11,7 @@ import "./page.css";
 import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
 import Welcome from "./features/welcome/Welcome";
+import { useAuth } from "../hooks/useAuth";
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
@@ -55,10 +56,12 @@ export default function Home() {
   };
   const [showContactUs, setShowContactUs] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [user, setUser] = useState<{ name: string; avatar: string; email: string; provider: string; loginTime: number } | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
   const [Login, setLogin] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; onLogin: (user: { name: string; avatar: string; email: string; provider: string; loginTime: number }) => void }> | null>(null);
+  
+  // 使用认证Hook
+  const { user, loading: authLoading, login, logout, isAuthenticated } = useAuth();
 
   // 动态导入组件
   useEffect(() => {
@@ -104,32 +107,49 @@ export default function Home() {
             )}
           </div>
           <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
-          {user ? (
-            <button className="login-btn-v2 user-avatar-btn" style={{ padding: 0, border: 'none', background: 'none', marginLeft: 12 }}>
-              {user.avatar ? (
-                <Image src={user.avatar} alt={user.name} width={32} height={32} style={{ borderRadius: '50%', background: '#eee' }} />
-              ) : (
-                <span style={{
-                  width: 32,
-                  height: 32,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                  background: '#6c7ae0',
-                  color: '#fff',
-                  fontWeight: 600,
-                  fontSize: 18,
-                  userSelect: 'none',
-                }}>{user.name ? user.name[0].toUpperCase() : '?'}</span>
-              )}
-            </button>
+          {isAuthenticated && user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button className="login-btn-v2 user-avatar-btn" style={{ padding: 0, border: 'none', background: 'none', marginLeft: 12 }}>
+                {user.picture ? (
+                  <Image src={user.picture} alt={user.name} width={32} height={32} style={{ borderRadius: '50%', background: '#eee' }} />
+                ) : (
+                  <span style={{
+                    width: 32,
+                    height: 32,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%',
+                    background: '#6c7ae0',
+                    color: '#fff',
+                    fontWeight: 600,
+                    fontSize: 18,
+                    userSelect: 'none',
+                  }}>{user.name ? user.name[0].toUpperCase() : '?'}</span>
+                )}
+              </button>
+              <button 
+                className="login-btn-v2" 
+                onClick={logout}
+                style={{ 
+                  fontSize: '12px', 
+                  padding: '4px 8px',
+                  background: '#dc3545',
+                  color: 'white'
+                }}
+              >
+                {t("logout") || "Logout"}
+              </button>
+            </div>
           ) : (
-            <button className="login-btn-v2" onClick={() => setShowLogin(true)}>{t("login")}</button>
+            <button className="login-btn-v2" onClick={login}>{t("login")}</button>
           )}
       {/* Login 弹窗 */}
       {Login && showLogin && (
-        <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={setUser} />
+        <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={(userData) => {
+          // 登录成功后刷新认证状态
+          setShowLogin(false);
+        }} />
       )}
         </div>
       </header>
