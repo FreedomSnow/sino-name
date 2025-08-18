@@ -6,7 +6,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
-  const redirectUri = `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/api/auth/google/callback`;
+  const redirectUri = `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/api/auth/callback/google`;
   
   // 生成随机state参数防止CSRF攻击
   const state = Math.random().toString(36).substring(2, 15);
