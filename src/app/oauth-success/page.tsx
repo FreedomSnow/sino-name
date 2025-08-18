@@ -53,19 +53,28 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
   }, [searchParams]);
 
   useEffect(() => {
-    // 10秒后自动跳转到首页
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          router.push('/');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // 如果有用户信息，立即跳转（减少等待时间）
+    if (userInfo) {
+      const timer = setTimeout(() => {
+        router.push('/');
+      }, 2000); // 2秒后跳转
 
-    return () => clearInterval(timer);
-  }, [router]);
+      return () => clearTimeout(timer);
+    } else {
+      // 如果没有用户信息，10秒后跳转
+      const timer = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            router.push('/');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [router, userInfo]);
 
   // 等待国际化准备完成，避免水合问题
   if (!ready) {
