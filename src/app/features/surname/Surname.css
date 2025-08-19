@@ -53,6 +53,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow:hidden
 }
 .surname-item:hover {
   background: #e3e7ff;
@@ -62,13 +64,15 @@
 /* 右上角选中按钮样式 */
 .surname-item-check-btn {
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: -12px;
+  right: -12px;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  z-index: 2;
+    display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 新增：姓氏项两行样式 */
