@@ -98,7 +98,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
     } catch (err) {
       console.error('登录错误:', err);
       // 发生错误时重定向到失败页面
-      safeNavigate('/oauth-failed?error=network_error&error_description=网络错误');
+      safeNavigate('/oauth-error?error=network_error&error_description=网络错误');
     } finally {
       setLoading(false);
     }

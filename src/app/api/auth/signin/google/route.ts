@@ -1,10 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: '只支持POST请求' });
-  }
-
+export async function POST() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = `${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/api/auth/callback/google`;
   
@@ -22,12 +18,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     `&prompt=consent`;
 
   // 将state存储在cookie中，用于回调时验证
-  res.setHeader('Set-Cookie', `oauth_state=${state}; Path=/; HttpOnly; SameSite=Lax`);
-  
-  // 返回重定向URL，让前端处理跳转
-  res.json({ 
+  const response = NextResponse.json({ 
     success: true, 
     redirectUrl: authUrl,
     message: 'OAuth授权URL已生成'
   });
+  
+  response.cookies.set('oauth_state', state, {
+    path: '/',
+    httpOnly: true,
+    sameSite: 'lax'
+  });
+  
+  return response;
 }

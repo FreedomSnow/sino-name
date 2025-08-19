@@ -122,42 +122,15 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
     );
   }
 
-  // 错误信息映射（作为后备）
-  const getErrorMessage = (error: string) => {
-    const errorMap: Record<string, string> = {
-      'access_denied': '用户拒绝了授权请求',
-      'invalid_request': '请求参数无效',
-      'unauthorized_client': '客户端未授权',
-      'unsupported_response_type': '不支持的响应类型',
-      'invalid_scope': '请求的作用域无效',
-      'server_error': '服务器内部错误',
-      'temporarily_unavailable': '服务暂时不可用',
-      'redirect_uri_mismatch': '重定向URI不匹配',
-      'invalid_grant': '授权码无效或已过期',
-      'invalid_client': '客户端ID或密钥无效',
-      'network_error': '网络连接错误',
-      'timeout_error': '请求超时',
-      'unknown_error': '未知错误'
-    };
-    return errorMap[error] || error;
-  };
-
-  const getErrorIcon = (error: string) => {
-    if (error.includes('network') || error.includes('timeout')) {
-      return '/close.svg';
-    }
-    return '/close.svg';
-  };
-
-  // 使用后端API的错误信息，如果没有则使用本地映射
-  const displayError = errorDetails?.message || getErrorMessage(errorInfo.error);
+  // 使用后端API的错误信息，如果没有则使用默认信息
+  const displayError = errorDetails?.message || '未知错误';
   const displaySuggestions = errorDetails?.suggestions || [];
 
   return (
     <div className="oauth-error-container">
       <div className="error-content">
         <Image 
-          src={getErrorIcon(errorInfo.error)} 
+          src="/close.svg" 
           alt={t('error') || 'Error'} 
           width={64} 
           height={64} 
@@ -193,7 +166,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
         <div className="action-buttons">
           <button 
             className="retry-button"
-            onClick={() => safeNavigate('/test-auth')}
+            onClick={() => safeNavigate('/login')}
             disabled={isPending}
           >
             {t('retry_login') || 'Retry Login'}

@@ -41,15 +41,41 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
     const resolveParams = async () => {
       try {
         const params = await searchParams;
+        console.log('OAuth Success 页面参数:', params); // 调试信息
+        
+        // 处理user_info参数（来自OAuth回调）
         if (params.user_info) {
           try {
-            // 解析URL编码的用户信息
             const decodedUserInfo = JSON.parse(decodeURIComponent(params.user_info));
+            console.log('解析到的用户信息:', decodedUserInfo); // 调试信息
             setUserInfo(decodedUserInfo);
           } catch (err) {
             console.error('解析用户信息失败:', err);
           }
         }
+        // 处理temp_token_id和user_id参数（来自其他来源）
+        else if (params.temp_token_id && params.user_id) {
+          console.log('使用临时令牌参数:', { temp_token_id: params.temp_token_id, user_id: params.user_id }); // 调试信息
+          // 这里可以调用API验证临时令牌并获取用户信息
+          // 暂时使用模拟数据
+          setUserInfo({
+            id: params.user_id,
+            name: '用户',
+            email: 'user@example.com',
+            picture: undefined
+          });
+        }
+        // 如果没有任何有效参数，显示默认信息
+        else {
+          console.log('没有有效的用户信息参数'); // 调试信息
+          setUserInfo({
+            id: 'unknown',
+            name: '未知用户',
+            email: 'unknown@example.com',
+            picture: undefined
+          });
+        }
+        
         setLoading(false);
       } catch (err) {
         console.error('解析searchParams失败:', err);
@@ -138,7 +164,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
           {t('oauth_success_message') || 'Congratulations! You have successfully logged in with your Google account.'}
         </div>
 
-        {userInfo && (
+                {userInfo && (
           <div className="user-info">
             <h3>{t('user_information') || 'User Information'}</h3>
             <div className="user-details">

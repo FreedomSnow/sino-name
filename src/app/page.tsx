@@ -11,7 +11,7 @@ import "./page.css";
 import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
 import Welcome from "./features/welcome/Welcome";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "./auth-context";
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
