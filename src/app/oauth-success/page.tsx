@@ -1,18 +1,10 @@
 'use client';
 
-import React, { useEffect, useState, useTransition, useCallback } from 'react';
+import React, { useEffect, useState, useTransition, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import './OAuthSuccess.css';
-
-interface OAuthSuccessProps {
-  searchParams: Promise<{
-    temp_token_id?: string;
-    user_id?: string;
-    user_info?: string;
-  }>;
-}
 
 interface UserInfo {
   name: string;
@@ -21,9 +13,10 @@ interface UserInfo {
   id: string;
 }
 
-const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
+const OAuthSuccessContent: React.FC = () => {
   const { t, ready } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [countdown, setCountdown] = useState(10);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
@@ -34,56 +27,55 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
     startTransition(() => {
       router.push(path);
     });
-  }, [startTransition]);
+  }, [router, startTransition]);
 
   useEffect(() => {
-    // 解析searchParams Promise
-    const resolveParams = async () => {
-      try {
-        const params = await searchParams;
-        console.log('OAuth Success 页面参数:', params); // 调试信息
-        
-        // 处理user_info参数（来自OAuth回调）
-        if (params.user_info) {
-          try {
-            const decodedUserInfo = JSON.parse(decodeURIComponent(params.user_info));
-            console.log('解析到的用户信息:', decodedUserInfo); // 调试信息
-            setUserInfo(decodedUserInfo);
-          } catch (err) {
-            console.error('解析用户信息失败:', err);
-          }
+    // 解析searchParams
+    try {
+      const tempTokenId = searchParams.get('temp_token_id');
+      const userId = searchParams.get('user_id');
+      const userInfo = searchParams.get('user_info');
+      
+      console.log('OAuth Success 页面参数:', { tempTokenId, userId, userInfo }); // 调试信息
+      
+      // 处理user_info参数（来自OAuth回调）
+      if (userInfo) {
+        try {
+          const decodedUserInfo = JSON.parse(decodeURIComponent(userInfo));
+          console.log('解析到的用户信息:', decodedUserInfo); // 调试信息
+          setUserInfo(decodedUserInfo);
+        } catch (err) {
+          console.error('解析用户信息失败:', err);
         }
-        // 处理temp_token_id和user_id参数（来自其他来源）
-        else if (params.temp_token_id && params.user_id) {
-          console.log('使用临时令牌参数:', { temp_token_id: params.temp_token_id, user_id: params.user_id }); // 调试信息
-          // 这里可以调用API验证临时令牌并获取用户信息
-          // 暂时使用模拟数据
-          setUserInfo({
-            id: params.user_id,
-            name: '用户',
-            email: 'user@example.com',
-            picture: undefined
-          });
-        }
-        // 如果没有任何有效参数，显示默认信息
-        else {
-          console.log('没有有效的用户信息参数'); // 调试信息
-          setUserInfo({
-            id: 'unknown',
-            name: '未知用户',
-            email: 'unknown@example.com',
-            picture: undefined
-          });
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        console.error('解析searchParams失败:', err);
-        setLoading(false);
       }
-    };
-    
-    resolveParams();
+      // 处理temp_token_id和user_id参数（来自其他来源）
+      else if (tempTokenId && userId) {
+        console.log('使用临时令牌参数:', { tempTokenId, userId }); // 调试信息
+        // 这里可以调用API验证临时令牌并获取用户信息
+        // 暂时使用模拟数据
+        setUserInfo({
+          id: userId,
+          name: '用户',
+          email: 'user@example.com',
+          picture: undefined
+        });
+      }
+      // 如果没有任何有效参数，显示默认信息
+      else {
+        console.log('没有有效的用户信息参数'); // 调试信息
+        setUserInfo({
+          id: 'unknown',
+          name: '未知用户',
+          email: 'unknown@example.com',
+          picture: undefined
+        });
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('解析searchParams失败:', err);
+      setLoading(false);
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -227,6 +219,28 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
         </div>
       </div>
     </div>
+  );
+};
+
+const OAuthSuccess: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="oauth-success-container">
+        <div className="loading-content">
+          <Image 
+            src="/panda-loading.gif" 
+            alt="Loading" 
+            width={80} 
+            height={80} 
+            className="loading-icon"
+            unoptimized
+          />
+          <p className="loading-text">Loading...</p>
+        </div>
+      </div>
+    }>
+      <OAuthSuccessContent />
+    </Suspense>
   );
 };
 

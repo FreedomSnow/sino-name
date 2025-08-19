@@ -16,6 +16,7 @@ interface AuthContextType {
   login: () => void;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,7 +37,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   // 安全的导航函数
   const safeNavigate = (url: string) => {
@@ -59,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         setUser(null);
       }
-    } catch (error) {
+    } catch {
       setError('获取用户信息失败');
       setUser(null);
     } finally {
@@ -114,6 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     refetch: fetchUser,
+    isAuthenticated: !!user,
   };
 
   return (
