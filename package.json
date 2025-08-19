@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:icons": "tsx scripts/generate-icons.ts",
+    "seo:check": "tsx scripts/seo-check.ts",
+    "prebuild": "npm run build:icons && npm run seo:check",
+    "type-check": "tsc --noEmit",
+    "lint:ts": "tsc --noEmit && eslint . --ext .ts,.tsx"
   },
   "dependencies": {
     "antd": "^5.26.7",
@@ -15,24 +20,28 @@
     "dayjs": "^1.11.13",
     "hanzi-writer": "^3.7.2",
     "i18next": "^25.3.2",
+    "lucide-react": "^0.540.0",
     "lunar-javascript": "^1.7.3",
     "next": "15.4.5",
     "next-auth": "^4.24.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-i18next": "^15.6.1",
-    "solarlunar": "^2.0.7"
+    "solarlunar": "^2.0.7",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/axios": "^0.9.36",
-    "@types/node": "^20",
+    "@types/node": "^20.19.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
+    "sharp": "^0.33.5",
     "tailwindcss": "^4",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }

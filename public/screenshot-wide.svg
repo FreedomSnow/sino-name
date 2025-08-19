@@ -1,0 +1,38 @@
+<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgb(190,215,240);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgb(234,214,234);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#screenGrad)"/>
+  
+  <!-- 模拟界面元素 -->
+  <rect x="40" y="40" width="1200" height="80" rx="20" fill="rgba(255,255,255,0.9)"/>
+  <text x="640" y="90" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+        text-anchor="middle" fill="#141414">SinoName - 中文名字生成器</text>
+  
+  <!-- 主要内容区 -->
+  <rect x="40" y="140" width="1200" height="540" rx="20" fill="rgba(255,255,255,0.8)"/>
+  
+  <!-- Logo和标题 -->
+  <circle cx="320" cy="360" r="60" fill="#036aff"/>
+  <text x="320" y="375" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        text-anchor="middle" fill="white">名</text>
+  
+  <text x="640" y="300" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        text-anchor="middle" fill="#141414">专业的中文名字生成器</text>
+  <text x="640" y="350" font-family="Arial, sans-serif" font-size="28" 
+        text-anchor="middle" fill="#666">为外国人提供个性化中文起名服务</text>
+  <text x="640" y="390" font-family="Arial, sans-serif" font-size="24" 
+        text-anchor="middle" fill="#666">Professional Chinese Name Generator for Foreigners</text>
+  
+  <!-- 功能按钮模拟 -->
+  <rect x="460" y="450" width="120" height="40" rx="20" fill="#036aff"/>
+  <text x="520" y="475" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        text-anchor="middle" fill="white">开始起名</text>
+  
+  <rect x="600" y="450" width="120" height="40" rx="20" fill="#3498db"/>
+  <text x="660" y="475" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        text-anchor="middle" fill="white">定制服务</text>
+</svg>
