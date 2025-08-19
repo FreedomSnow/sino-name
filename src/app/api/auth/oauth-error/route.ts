@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
 interface ErrorInfo {
   error: string;
@@ -119,19 +119,14 @@ const errorMap: Record<string, ErrorInfo> = {
   }
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ 
-      success: false, 
-      error: '只支持GET请求' 
-    });
-  }
-
+export async function GET(request: NextRequest) {
   try {
-    const { error, message } = req.query;
+    const { searchParams } = new URL(request.url);
+    const error = searchParams.get('error');
+    const message = searchParams.get('message');
 
-    if (!error || typeof error !== 'string') {
-      return res.status(400).json({
+    if (!error) {
+      return NextResponse.json({
         success: false,
         error: {
           error: 'missing_error',
@@ -143,7 +138,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             '重新尝试操作'
           ]
         }
-      });
+      }, { status: 400 });
     }
 
     // 获取错误信息
@@ -153,7 +148,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!errorInfo) {
       errorInfo = {
         error: error,
-        message: message && typeof message === 'string' ? message : '未知错误',
+        message: message || '未知错误',
         timestamp: Date.now(),
         suggestions: [
           '发生了未知错误',
@@ -170,11 +165,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       error: errorInfo.error,
       message: errorInfo.message,
       timestamp: new Date(errorInfo.timestamp).toISOString(),
-      userAgent: req.headers['user-agent'],
-      ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+      userAgent: request.headers.get('user-agent'),
+      ip: request.headers.get('x-forwarded-for') || request.ip
     });
 
-    return res.status(200).json({
+    return NextResponse.json({
       success: false,
       error: errorInfo
     });
@@ -182,7 +177,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   } catch (err) {
     console.error('OAuth错误API处理失败:', err);
     
-    return res.status(500).json({
+    return NextResponse.json({
       success: false,
       error: {
         error: 'internal_error',
@@ -195,6 +190,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           '检查系统状态'
         ]
       }
-    });
+    }, { status: 500 });
   }
 }

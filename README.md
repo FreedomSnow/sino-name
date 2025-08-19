@@ -416,9 +416,20 @@ sino-name/
 
 
 │   │   └── ...
-│   ├── pages/                 # Pages Router API
-│   │   └── api/
-│   │       └── auth/         # 认证API端点
+│   ├── api/                   # App Router API
+│   │   └── auth/              # 认证相关API
+│   │       ├── callback/      # OAuth回调处理
+│   │       │   └── google/    # Google OAuth回调
+│   │       │       └── route.ts
+│   │       ├── signin/        # 登录启动
+│   │       │   └── google/    # Google登录启动
+│   │       │       └── route.ts
+│   │       ├── user/          # 用户信息获取
+│   │       │   └── route.ts
+│   │       ├── logout/        # 用户登出
+│   │       │   └── route.ts
+│   │       └── oauth-error/   # 错误信息提供
+│   │           └── route.ts
 │   ├── hooks/                 # 自定义Hooks
 │   │   └── useAuth.ts        # 认证状态管理Hook
 │   ├── components/            # 可复用组件
