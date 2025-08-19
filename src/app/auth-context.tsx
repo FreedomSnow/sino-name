@@ -16,6 +16,7 @@ interface AuthContextType {
   login: () => void;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -114,6 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     refetch: fetchUser,
+    isAuthenticated: !!user,
   };
 
   return (

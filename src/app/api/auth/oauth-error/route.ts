@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
       message: errorInfo.message,
       timestamp: new Date(errorInfo.timestamp).toISOString(),
       userAgent: request.headers.get('user-agent'),
-      ip: request.headers.get('x-forwarded-for') || request.ip
+      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
     });
 
     return NextResponse.json({
