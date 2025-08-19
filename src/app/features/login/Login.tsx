@@ -24,7 +24,7 @@ const SOCIALS = [
   { key: 'google', label: 'Google', icon: '/icon-google.svg' },
 ];
 
-const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
+const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
   const { t, ready } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();

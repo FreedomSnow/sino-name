@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useTransition, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import './OAuthSuccess.css';
@@ -34,7 +34,7 @@ const OAuthSuccess: React.FC<OAuthSuccessProps> = ({ searchParams }) => {
     startTransition(() => {
       router.push(path);
     });
-  }, [startTransition]);
+  }, [router, startTransition]);
 
   useEffect(() => {
     // 解析searchParams Promise

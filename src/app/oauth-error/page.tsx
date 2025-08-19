@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useTransition, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import './OAuthError.css';
@@ -32,14 +32,14 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
   } | null>(null);
   const [countdown, setCountdown] = useState(10);
   const [errorDetails, setErrorDetails] = useState<ErrorDetails | null>(null);
-  const [loadingError, setLoadingError] = useState(false);
+  const [, setLoadingError] = useState(false);
 
   // 安全的导航函数
   const safeNavigate = useCallback((path: string) => {
     startTransition(() => {
       router.push(path);
     });
-  }, [startTransition]);
+  }, [router, startTransition]);
 
   // 获取错误详情
   const fetchErrorDetails = useCallback(async () => {

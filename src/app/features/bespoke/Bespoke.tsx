@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // 全局刷新或重新进入网站时清空 bespoke 页面缓存（无论当前tab是否显示）
 if (typeof window !== 'undefined') {
@@ -24,7 +24,7 @@ import Surname from '../surname/Surname';
 import LastNameForm from './LastNameForm';
 import { LastNameItem } from "./types";
 import SurnameList from './SurnameList';
-import { set } from "date-fns";
+
 
 export default function BespokePage() {
 
@@ -61,7 +61,7 @@ export default function BespokePage() {
       };
       window.localStorage.setItem('bespokePageCache', JSON.stringify(cacheData));
     };
-  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName]);
+  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName, lastNameResult]);
 
   // 聊天动画相关状态
   const [showWelcomeMsg, setShowWelcomeMsg] = useState(false);

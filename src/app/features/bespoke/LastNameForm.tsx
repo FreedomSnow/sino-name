@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import { LastNameItem } from "./types";
 import { useTranslation } from "react-i18next";
 import "./LastNameForm.css";
@@ -35,13 +36,13 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
   };
 
   return (
-    <div className="lastnameform-overlay" onClick={e => {
+    <div className="lastnameform-overlay" onClick={() => {
       if (!loading) onClose();
     }}>
       <div className="lastnameform-popup" onClick={e => e.stopPropagation()}>
         {loading ? (
           <div className="lastnameform-loading">
-            <img src="/panda-loading.gif" alt="loading" className="lastnameform-loading-img" />
+            <Image src="/panda-loading.gif" alt="loading" className="lastnameform-loading-img" width={80} height={80} unoptimized />
             {/* <span className="lastnameform-loading-text">{t('aiLoading', 'AI智能处理中...')}</span> */}
           </div>
         ) : (

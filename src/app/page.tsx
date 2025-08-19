@@ -61,7 +61,7 @@ export default function Home() {
   const [Login, setLogin] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; onLogin: (user: { name: string; avatar: string; email: string; provider: string; loginTime: number }) => void }> | null>(null);
   
   // 使用认证Hook
-  const { user, loading: authLoading, login, logout, isAuthenticated } = useAuth();
+  const { user, login, logout, isAuthenticated } = useAuth();
 
   // 动态导入组件
   useEffect(() => {
@@ -146,7 +146,7 @@ export default function Home() {
           )}
       {/* Login 弹窗 */}
       {Login && showLogin && (
-        <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={(userData) => {
+        <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={() => {
           // 登录成功后刷新认证状态
           setShowLogin(false);
         }} />
