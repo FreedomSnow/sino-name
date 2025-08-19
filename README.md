@@ -430,9 +430,12 @@ sino-name/
 │   │       │   └── route.ts
 │   │       └── oauth-error/   # 错误信息提供
 │   │           └── route.ts
-│   ├── hooks/                 # 自定义Hooks
-│   │   └── useAuth.ts        # 认证状态管理Hook
-│   ├── components/            # 可复用组件
+│   ├── app/                   # App Router 页面和API
+│   │   ├── api/               # API路由
+│   │   │   └── auth/          # 认证相关API
+│   │   ├── features/          # 功能模块
+│   │   ├── oauth-error/       # OAuth错误页面
+│   │   └── oauth-success/     # OAuth成功页面
 
 │   └── ...
 ├── scripts/                   # 工具脚本
