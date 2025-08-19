@@ -424,7 +424,7 @@ sino-name/
 │   ├── hooks/                 # 自定义Hooks
 │   │   └── useAuth.ts        # 认证状态管理Hook
 │   ├── components/            # 可复用组件
-│   │   └── GoogleLoginButton.tsx # Google登录按钮
+
 │   └── ...
 ├── scripts/                   # 工具脚本
 │   └── test-oauth-apis.sh    # OAuth API测试脚本
