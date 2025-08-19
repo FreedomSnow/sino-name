@@ -193,7 +193,7 @@ const OAuthError: React.FC<OAuthErrorProps> = ({ searchParams }) => {
         <div className="action-buttons">
           <button 
             className="retry-button"
-            onClick={() => safeNavigate('/test-auth')}
+            onClick={() => safeNavigate('/login')}
             disabled={isPending}
           >
             {t('retry_login') || 'Retry Login'}

@@ -202,8 +202,7 @@ GET /api/auth/oauth-error?error=ERROR_TYPE&message=ERROR_DESC
 - `/` - 首页（根据登录状态显示不同内容）
 - `/oauth-success` - OAuth成功页面
 - `/oauth-error` - OAuth错误页面
-- `/oauth-debug` - OAuth调试页面
-- `/test-auth` - 认证测试页面
+
 
 ## 🔒 安全机制
 
@@ -313,7 +312,7 @@ curl -X POST http://localhost:3000/api/auth/signin/google \
 ```
 
 ### 调试页面
-访问 `/oauth-debug` 页面来诊断OAuth问题：
+如果遇到OAuth问题，请检查以下配置：
 - 查看URL参数
 - 检查浏览器信息
 - 测试OAuth流程
@@ -414,9 +413,8 @@ sino-name/
 │   │   │   ├── login/        # 登录组件
 │   │   │   ├── oauth-success/ # OAuth成功页面
 │   │   │   ├── oauth-error/   # OAuth错误页面
-│   │   │   └── oauth-failed/  # OAuth失败页面
-│   │   ├── oauth-debug/       # OAuth调试页面
-│   │   ├── test-auth/         # 认证测试页面
+
+
 │   │   └── ...
 │   ├── pages/                 # Pages Router API
 │   │   └── api/
