@@ -1,21 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-// 全局刷新或重新进入网站时清空 bespoke 页面缓存（无论当前tab是否显示）
-if (typeof window !== 'undefined') {
-  let navType: string | number | undefined;
-  const navEntries = window.performance?.getEntriesByType?.('navigation');
-  if (navEntries && navEntries.length > 0) {
-          navType = (navEntries[0] as unknown as { type: string }).type;
-  } else if (window.performance?.navigation) {
-    navType = window.performance.navigation.type;
-  }
-  if (navType === 'reload' || navType === 1 || navType === 'navigate') {
-    console.log('Clearing bespoke page cache on reload or navigation');
-    window.localStorage.removeItem('bespokePageCache');
-    window.localStorage.removeItem('userInfoFormCache');
-  }
-}
-
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
 import "./Bespoke.css";
@@ -24,14 +7,15 @@ import Surname from '../surname/Surname';
 import LastNameForm from './LastNameForm';
 import { LastNameItem } from "./types";
 import SurnameList from './SurnameList';
+import { CACHE_KEYS } from "@/app/cacheKeys";
 
 
 export default function BespokePage() {
 
   const { t } = useTranslation();
 
-  // 页面显示记录缓存
-  const cache = typeof window !== 'undefined' ? window.localStorage.getItem('bespokePageCache') : null;
+  // 页面显示获取缓存
+  const cache = typeof window !== 'undefined' ? window.localStorage.getItem(CACHE_KEYS.bespokePage) : null;
   const cacheObj = cache ? JSON.parse(cache) : {};
   const [hasShown, setHasShown] = useState(() => cacheObj.hasShown ?? false);
   const [selectedSurname, setSelectedSurname] = useState<string|null>(cacheObj.selectedSurname ?? null);
@@ -48,7 +32,7 @@ export default function BespokePage() {
     }
   }, [hasShown]);
 
-  // 页面卸载时缓存页面数据，包括 hasShown
+  // 页面卸载时缓存页面数据
   useEffect(() => {
     return () => {
       const cacheData = {
@@ -59,7 +43,7 @@ export default function BespokePage() {
         lastName,
         lastNameResult,
       };
-      window.localStorage.setItem('bespokePageCache', JSON.stringify(cacheData));
+      window.localStorage.setItem(CACHE_KEYS.bespokePage, JSON.stringify(cacheData));
     };
   }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName, lastNameResult]);
 

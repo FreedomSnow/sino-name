@@ -75,13 +75,17 @@ const resources = {
       pronounce: "发音",
       edit: "编辑",
       submit: "提交",
+      fullName: "姓名",
       // Welcome
       welcome_title: "欢迎来到Sino Name!",
       welcomeDesc: `我们是高端中文命名平台，提供以下专业服务：<br><br><b>自主命名服务</b>：请详述您的需求（信息越完整越好），我们将据此生成个性化中文名<br><b>深度定制姓名</b>：带您体验纯正中式命名流程，融合传统习俗，打造契合您特质的中文名<br><b>中华姓氏库</b>：详解中国姓氏体系，涵盖发音、书写及源流<br><b>生辰命理分析</b>：根据您的出生日期，提供五行八字等传统命理解读`,
       welcomeStart: "→ 开始你的中文命名之旅",
       // Naming
       customNamingTitle: "自主命名服务",
-      customNamingPlaceholder: "请输入您的命名需求...",
+      customNamingTip: "输入姓名生成发音相近的中文名，想要更个性化的中文名可添加描述",
+      customNamingNamePlaceholder: "请输入姓名",
+      customNamingDesc: "需求",
+      customNamingDescPlaceholder: "请输入您的命名需求...",
       // Bespoke
       bespokeTitle: "深度定制姓名",
       bespokeChatWelcomeMsg: `您好，欢迎体验姓名定制服务！我是您的专属顾问Mike。\n在中国文化中，姓名结构为姓氏居前、名字在后。姓氏承袭家族血脉，名字则由父母精心择定，通常含1-2个汉字，凝聚美好期许——如祈愿子女康健聪慧、人生顺遂。`,
@@ -213,6 +217,7 @@ const resources = {
       pronounce: "Pronounce",
       edit: "Edit",
       submit: "Submit",
+      fullName: "Name",
       // Welcome
       welcome_title: "Welcome to Sino Name!",
       welcomeDesc: `We are a premier Chinese naming platform offering these professional services:
@@ -224,7 +229,10 @@ const resources = {
       welcomeStart: "→ Start Your Chinese Naming Journey",
       // Naming
       customNamingTitle: "Custom Name Creation",
-      customNamingPlaceholder: "Please enter your naming requirements...",
+      customNamingTip: "Input your name to generate a Chinese name with a similar pronunciation. If you want a more personalized Chinese name, you can add a description.",
+      customNamingNamePlaceholder: "Please enter your name",
+      customNamingDesc: "Description",
+      customNamingDescPlaceholder: "Please enter your naming requirements...",
       // Bespoke
       bespokeTitle: "Tailored bespoke Experience",
       bespokeChatWelcomeMsg:`Welcome to our Bespoke bespoke Service! I'm Mike, your dedicated consultant. \nIn Chinese tradition, surnames precede given names. Surnames carry ancestral heritage, while given names—typically one or two characters—are carefully chosen by parents to embody meaningful aspirations, such as wishes for health, wisdom, or happiness.`,
