@@ -106,6 +106,9 @@ const Surname: React.FC<SurnameProps> = ({ editable = false, onSelect, selectedS
             {editable && (
               <button
                 className="surname-item-check-btn"
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                }}
                 onClick={e => {
                   e.stopPropagation();
                   if (selectedItem?.surname !== item.surname) {

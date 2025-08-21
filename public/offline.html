@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>离线 - SinoName 中文名字生成器</title>
+    <style>
+        body {
+            font-family: 'Nunito Sans', Arial, sans-serif;
+            background: linear-gradient(120deg, rgb(190,215,240) 0%, rgb(234,214,234) 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #141414;
+        }
+        .offline-container {
+            background: rgba(245, 245, 245, 0.9);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(3,106,255,0.15);
+        }
+        .offline-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        h1 {
+            color: #141414;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .retry-btn {
+            background: #036aff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .retry-btn:hover {
+            background: #0056cc;
+        }
+        .features {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .features h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #141414;
+        }
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        .features li {
+            padding: 4px 0;
+            color: #666;
+        }
+        .features li::before {
+            content: "✓ ";
+            color: #036aff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📱</div>
+        <h1>网络连接不可用</h1>
+        <p>抱歉，您当前处于离线状态。请检查网络连接后重试。</p>
+
+        <button class="retry-btn" onclick="window.location.reload()">
+            重新连接
+        </button>
+
+        <div class="features">
+            <h3>SinoName 功能特色：</h3>
+            <ul>
+                <li>个性化中文名字生成</li>
+                <li>传统文化与现代结合</li>
+                <li>生辰八字专业起名</li>
+                <li>多种姓氏选择</li>
+                <li>发音指导服务</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 检测网络状态变化
+        window.addEventListener('online', function() {
+            window.location.reload();
+        });
+
+        // 定期检测网络连接
+        setInterval(function() {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
