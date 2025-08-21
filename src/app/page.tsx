@@ -10,6 +10,7 @@ import "./i18n-init";
 import "./page.css";
 import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
+import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
 import { useAuth } from "./auth-context";
 
@@ -19,6 +20,23 @@ const TABS = [
   { key: "surname", icon: "/surname.svg", title: "tabSurname" },
   { key: "birth", icon: "/birthday.svg", title: "tabBirthday" },
 ];
+
+// 全局刷新或重新进入网站时清空所有页面缓存（无论当前tab是否显示）
+if (typeof window !== 'undefined') {
+  let navType: string | number | undefined;
+  const navEntries = window.performance?.getEntriesByType?.('navigation');
+  if (navEntries && navEntries.length > 0) {
+    navType = (navEntries[0] as unknown as { type: string }).type;
+  } else if (window.performance?.navigation) {
+    navType = window.performance.navigation.type;
+  }
+  if (navType === 'reload' || navType === 1 || navType === 'navigate') {
+    console.log('Clearing all page cache on reload or navigation');
+    window.localStorage.removeItem(CACHE_KEYS.bespokePage);
+    window.localStorage.removeItem(CACHE_KEYS.userInfoForm);
+    window.localStorage.removeItem(CACHE_KEYS.customNamingPage);
+  }
+}
 
 export default function Home() {
   const [tab, setTab] = useState("home");

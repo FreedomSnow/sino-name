@@ -1,3 +1,10 @@
+/* 提交按钮居中包裹行 */
+.custom-naming-submit-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 /* 页面整体居中布局 */
 .custom-naming-root {
   height: 100%;
@@ -22,36 +29,73 @@
 }
 
 .custom-naming-main {
-  width: 100%;
+  width: 80%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  margin: 0 auto;
+  gap: 20px;
   /* background: red; */
 }
-
-.custom-naming-form {
+/* 每行控件左对齐 */
+.custom-naming-row {
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  box-shadow: 0 2px 12px rgba(3,106,255,0.08);
-  padding: 24px 32px;
-  width: 80%;
-  /* background: black; */
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-/* 多行输入框，自动高度，内容全部可见 */
-.custom-naming-input {
-  flex: 1;
-  font-size: 20px;
-  padding: 12px 20px;
-  border: none;
+/* 第一行说明样式 */
+.custom-naming-tip {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #888;
+}
+
+.custom-naming-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #222;
+  min-width: 80px;
+  text-align: left;
+}
+
+/* 第二行姓名输入样式 */
+.custom-naming-row-name {
+  align-items: center;
+  margin-bottom: 8px;
+}
+.custom-naming-name-input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1.5px solid #b3d1ff;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fafdff;
+  color: #222;
   outline: none;
-  border-radius: 24px;
-  background: #f1f3f4;
-  margin-right: 16px;
+  transition: border-color 0.2s;
+}
+
+/* 第三行描述按钮和输入框样式 */
+.custom-naming-row-desc {
+  margin-bottom: 8px;
+}
+/* 多行输入框，自动高度，内容全部可见 */
+.custom-naming-desc-input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1.5px solid #b3d1ff;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fafdff;
+  color: #222;
+  outline: none;
+  transition: border-color 0.2s;
+  outline: none;
   min-height: 48px;
   max-height: 200px;
   resize: none;
@@ -66,17 +110,27 @@
   word-break: break-all;
 }
 
-.custom-naming-btn {
+/* 描述输入框字数统计 */
+.custom-naming-desc-count {
+  font-size: 12px;
+  color: #888;
+  text-align: right;
+  margin-top: 2px;
+  margin-right: 2px;
+}
+
+/* 第四行提交按钮样式 */
+.custom-naming-submit-btn {
   font-size: 18px;
   padding: 12px 32px;
-  border: none;
   border-radius: 999px;
   background: #036aff;
   color: #fff;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  border: none;
 }
-.custom-naming-btn:hover {
+.custom-naming-submit-btn:hover {
   background: #0056b3;
 }
