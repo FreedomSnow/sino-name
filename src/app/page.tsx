@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
 import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
-import { useAuth } from "./auth-context";
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
@@ -40,6 +39,7 @@ if (typeof window !== 'undefined') {
 
 export default function Home() {
   const [tab, setTab] = useState("home");
+  const [collapsed, setCollapsed] = useState(false);
   const [langList, setLangList] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { t, i18n } = useTranslation();
@@ -54,7 +54,7 @@ export default function Home() {
       }
     }
   }, [i18n]);
-  const [collapsed, setCollapsed] = useState(false);
+  
   // 点击 tabbar item 的处理
   const handleTabClick = (key: string) => {
     if (tab === key) {
@@ -77,9 +77,6 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
   const [Login, setLogin] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; onLogin: (user: { name: string; avatar: string; email: string; provider: string; loginTime: number }) => void }> | null>(null);
-  
-  // 使用认证Hook
-  const { user, login, logout, isAuthenticated } = useAuth();
 
   // 动态导入组件
   useEffect(() => {
@@ -125,7 +122,7 @@ export default function Home() {
             )}
           </div>
           <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
-          {isAuthenticated && user ? (
+          {/* {isAuthenticated && user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button className="login-btn-v2 user-avatar-btn" style={{ padding: 0, border: 'none', background: 'none', marginLeft: 12 }}>
                 {user.picture ? (
@@ -161,7 +158,8 @@ export default function Home() {
             </div>
           ) : (
             <button className="login-btn-v2" onClick={login}>{t("login")}</button>
-          )}
+          )} */}
+          <button className="login-btn-v2">{t("login")}</button>
       {/* Login 弹窗 */}
       {Login && showLogin && (
         <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={() => {
