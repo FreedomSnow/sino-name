@@ -59,12 +59,12 @@ class GoogleAuthService {
             const payload = this.parseJwt(response.credential);
             
             // 保存用户信息
-            this.currentUser = {
-                name: payload.name,
-                email: payload.email,
-                sub: payload.sub,
-                picture: payload.picture
-            };
+            // this.currentUser = {
+            //     name: payload.name,
+            //     email: payload.email,
+            //     sub: payload.sub,
+            //     avatar: payload.avatar
+            // };
             
             // 与后端认证
             await this.authenticateWithBackend(response.credential);
