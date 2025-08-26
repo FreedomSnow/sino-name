@@ -15,6 +15,9 @@ import Welcome from "./features/welcome/Welcome";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 import { GOOGLE_AUTH_CONFIG } from "@/config/googleAuth";
 import { googleAuthService } from "@/services/googleAuth";
+import GoogleAvatarButton from '@/components/GoogleAvatarButton';
+import { getCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
+import type { GoogleUser } from '@/types/auth';
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
@@ -76,29 +79,33 @@ export default function Home() {
     }
   };
   const [showContactUs, setShowContactUs] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
-  const [Login, setLogin] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; onLogin: (user: { name: string; avatar: string; email: string; provider: string; loginTime: number }) => void }> | null>(null);
+  const [user, setUser] = useState<GoogleUser | null>(null);
 
   // 动态导入组件
   useEffect(() => {
     if (mounted) {
       Promise.all([
         import('./features/contact-us/ContactUs.jsx'),
-        import('./features/login/Login')
-      ]).then(([contactUsModule, loginModule]) => {
+      ]).then(([contactUsModule]) => {
         setContactUs(() => contactUsModule.default);
-        setLogin(() => loginModule.default);
       }).catch(error => {
         console.error('动态导入组件失败:', error);
       });
+
+      const cached = getCachedGoogleAuth();
+      console.log('Cached Google Auth:', cached);
+      if (cached && cached.user && cached.tokens) {
+        setUser(cached.user);
+      }
     }
   }, [mounted]);
   if (!mounted) {
     // SSR 或 hydration 前只渲染空白，避免 mismatch
     return null;
   }
+
   return (
     <div className="layout-root-v2">
       {/* 顶部栏 */}
@@ -125,51 +132,11 @@ export default function Home() {
             )}
           </div>
           <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
-          {/* {isAuthenticated && user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button className="login-btn-v2 user-avatar-btn" style={{ padding: 0, border: 'none', background: 'none', marginLeft: 12 }}>
-                {user.picture ? (
-                  <Image src={user.picture} alt={user.name} width={32} height={32} style={{ borderRadius: '50%', background: '#eee' }} />
-                ) : (
-                  <span style={{
-                    width: 32,
-                    height: 32,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: '50%',
-                    background: '#6c7ae0',
-                    color: '#fff',
-                    fontWeight: 600,
-                    fontSize: 18,
-                    userSelect: 'none',
-                  }}>{user.name ? user.name[0].toUpperCase() : '?'}</span>
-                )}
-              </button>
-              <button 
-                className="login-btn-v2" 
-                onClick={logout}
-                style={{ 
-                  fontSize: '12px', 
-                  padding: '4px 8px',
-                  background: '#dc3545',
-                  color: 'white'
-                }}
-              >
-                {t("logout") || "Logout"}
-              </button>
-            </div>
+          {(user && (user.avatar || user.name || user.email)) ? (
+            <GoogleAvatarButton user={user} size={40} />
           ) : (
-            <button className="login-btn-v2" onClick={login}>{t("login")}</button>
-          )} */}
-          <GoogleLoginButton />
-      {/* Login 弹窗 */}
-      {Login && showLogin && (
-        <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={() => {
-          // 登录成功后刷新认证状态
-          setShowLogin(false);
-        }} />
-      )}
+            <GoogleLoginButton onLogin={u => setUser(u)} />
+          )}
         </div>
       </header>
       {/* ContactUs 弹窗 */}
