@@ -1,10 +1,10 @@
 // 用户信息类型
 export interface GoogleUser {
     id?: string;
-    sub?: string;
     name: string;
     email: string;
-    picture?: string;
+    avatar?: string;
+    provider?: string;
 }
 
 // OAuth 令牌类型

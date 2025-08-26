@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
+import { cacheGoogleAuth, getCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
+import { GoogleUser, OAuthTokens } from '@/types/auth';
 
-interface GoogleUser {
-  name: string;
-  email: string;
-  picture?: string;
-  sub: string;
+interface GoogleLoginButtonProps {
+  onLogin?: (user: GoogleUser) => void;
 }
 
-export const GoogleLoginButton = () => {
+export const GoogleLoginButton = ({
+  onLogin,
+}: GoogleLoginButtonProps = {}) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const scriptLoadingPromise = useRef<Promise<void> | null>(null);
 
@@ -78,26 +79,32 @@ export const GoogleLoginButton = () => {
     try {
       console.log('收到 Google 登录凭证');
       const token = response.credential;
+      console.log('Google 登录用户信息token:', token);
+
       const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('Google 登录用户信息payload:', payload);
 
       const user: GoogleUser = {
         name: payload.name,
         email: payload.email,
-        picture: payload.picture,
-        sub: payload.sub
+        avatar: payload.avatar,
+        provider: payload.provider || 'google',
       };
 
+      // 先触发前端登录成功事件
       const event = new CustomEvent('google-signin-success', {
         detail: { user, credential: token }
       });
       window.dispatchEvent(event);
 
       // 后端认证
-      authenticateWithBackend(token);
+      authenticateWithBackend(token).catch(error => {
+        console.error('后端认证失败:', error);
+      });
     } catch (error) {
       console.error('处理 Google 登录响应失败:', error);
     }
-  }, []);
+  }, [onLogin]);
 
   const authenticateWithBackend = async (credential: string) => {
     try {
@@ -119,6 +126,28 @@ export const GoogleLoginButton = () => {
 
       const data = await response.json();
       console.log('后端验证成功:', data);
+
+      const info = data.data.data
+      console.log('后端验证成功, 用户信息:', info);
+
+      // 后端返回结构兼容处理
+      const userRaw = info.user;
+      const user: GoogleUser = {
+        name: userRaw?.username || data.google_info?.name || '',
+        email: userRaw?.email || '',
+        avatar: userRaw?.avatar || data.google_info?.picture || '',
+        provider: userRaw?.auth_provider || '',
+      };
+      const tokens: OAuthTokens = {
+        access_token: info.access_token,
+        refresh_token: info.refresh_token,
+        expires_in: info.expires_in
+      };
+
+      // 保存到本地存储
+      cacheGoogleAuth(user, tokens);
+
+      if (onLogin) onLogin(user);
 
       const event = new CustomEvent('backend-auth-success', { detail: data });
       window.dispatchEvent(event);

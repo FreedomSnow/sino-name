@@ -75,7 +75,7 @@ body {
 }
 .header-right button {
   border-radius: 999px !important;
-  min-width: 100px;
+  /* min-width: 100px; */
   box-sizing: border-box;
 }
 .lang-switcher-v2 {

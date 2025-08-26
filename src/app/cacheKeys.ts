@@ -1,5 +1,6 @@
 // 页面缓存key统一管理
 export const CACHE_KEYS = {
+  googleAuth: 'sino_google_auth_cache',
   bespokePage: 'bespokePageCache',
   userInfoForm: 'userInfoFormCache',
   customNamingPage: 'customNamingPageCache',
