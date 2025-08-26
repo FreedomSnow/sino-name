@@ -2,8 +2,17 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
-import { cacheGoogleAuth, getCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
+import { cacheGoogleAuth } from '@/utils/cacheGoogleAuth';
 import { GoogleUser, OAuthTokens } from '@/types/auth';
+// 导入已存在的Google类型定义
+import '@/types/google'; // 这会引入Google类型定义
+
+// 仅添加自定义的handleGoogleCredentialResponse属性
+declare global {
+  interface Window {
+    handleGoogleCredentialResponse?: (response: { credential: string }) => void;
+  }
+}
 
 interface GoogleLoginButtonProps {
   onLogin?: (user: GoogleUser) => void;
@@ -14,6 +23,27 @@ export const GoogleLoginButton = ({
 }: GoogleLoginButtonProps = {}) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const scriptLoadingPromise = useRef<Promise<void> | null>(null);
+
+  // 添加自定义 CSS 样式来设置按钮边框颜色
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      // 创建自定义样式
+      const style = document.createElement('style');
+      style.innerHTML = `
+        .google-login-button-wrapper .nsm7Bb-HzV7m-LgbsSe {
+          border: 1px solid #036aff !important;
+          padding: 12px 18px;
+          background: #f5f5f5;
+          border-radius: 999px;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
+  }, []);
 
   const loadGoogleScript = useCallback(() => {
     if (scriptLoadingPromise.current) {
@@ -60,6 +90,12 @@ export const GoogleLoginButton = ({
     if (!buttonRef.current || !window.google) return;
 
     try {
+      // 添加类型保护
+      if (!window.google.accounts?.id) {
+        console.error('Google accounts.id API 不可用');
+        return;
+      }
+      
       window.google.accounts.id.renderButton(buttonRef.current, {
         type: 'standard',
         theme: 'outline',
@@ -173,6 +209,12 @@ export const GoogleLoginButton = ({
         if (!isMounted || !window.google) return;
 
         console.log('初始化 Google Sign-In...');
+        // 添加类型保护
+        if (!window.google.accounts?.id) {
+          console.error('Google accounts.id API 不可用');
+          return;
+        }
+        
         window.google.accounts.id.initialize({
           client_id: GOOGLE_AUTH_CONFIG.GOOGLE.CLIENT_ID,
           callback: handleCredentialResponse,
@@ -202,5 +244,13 @@ export const GoogleLoginButton = ({
     };
   }, [loadGoogleScript, renderGoogleButton, handleCredentialResponse]);
 
-  return <div ref={buttonRef} className="login-btn-v2" />;
+  // 注册初始回调
+  useEffect(() => {
+    // 使用已定义的全局接口
+    window.handleGoogleCredentialResponse = handleCredentialResponse;
+  }, [handleCredentialResponse]);
+
+  return (
+    <div ref={buttonRef} className="google-login-button-wrapper"></div>
+  );
 };

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { useTranslation } from "react-i18next";
 import "./CustomNaming.css";
+import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
+import Login from "../login/Login";
+import { GoogleUser } from "@/types/auth";
 
 export default function CustomNaming() {
   const { t } = useTranslation();
@@ -10,6 +13,8 @@ export default function CustomNaming() {
   const cacheObj = cache ? JSON.parse(cache) : {};
   const [name, setName] = useState<string>(cacheObj.name ?? "");
   const [desc, setDesc] = useState<string>(cacheObj.desc ?? "");
+  const [showLogin, setShowLogin] = useState(false);
+  const [user, setUser] = useState<GoogleUser | null>(null);
 
   useEffect(() => {
       return () => {
@@ -20,6 +25,14 @@ export default function CustomNaming() {
         window.localStorage.setItem(CACHE_KEYS.customNamingPage, JSON.stringify(cacheData));
       };
     }, [name, desc]);
+  
+  // 初始化时检查登录状态
+  useEffect(() => {
+    const authCache = getCachedGoogleAuth();
+    if (authCache && authCache.user) {
+      setUser(authCache.user);
+    }
+  }, []);
   
   
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +50,34 @@ export default function CustomNaming() {
   };
 
   const handleSubmit = () => {
+    // 验证名称合法性
+    if (!name.trim()) {
+      alert(t('nameRequired'));
+      return;
+    }
+    
+    // 名称长度检查
+    if (name.length < 2 || name.length > 30) {
+      alert(t('nameLength'));
+      return;
+    }
+    
+    // 检查是否已登录
+    const authCache = getCachedGoogleAuth();
+    if (!authCache || !authCache.user) {
+      // 未登录，显示登录弹窗
+      setShowLogin(true);
+      return;
+    }
+    
+    // 已登录，继续提交流程
+    alert(`提交内容：姓名：${name}，描述：${desc}`);
+  };
+  
+  // 处理登录成功
+  const handleLoginSuccess = (loginUser: GoogleUser) => {
+    setShowLogin(false);
+    // 登录成功后继续提交
     alert(`提交内容：姓名：${name}，描述：${desc}`);
   };
 
@@ -83,6 +124,14 @@ export default function CustomNaming() {
           </button>
         </div>
       </div>
+      
+      {/* 登录弹窗 */}
+      {showLogin && (
+        <Login 
+          isOpen={showLogin} 
+          onClose={() => setShowLogin(false)}  
+        />
+      )}
     </div>
   );
 }

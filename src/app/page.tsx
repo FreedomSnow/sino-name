@@ -13,11 +13,10 @@ import Birthday from "./features/birth/Birthday";
 import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
-import { GOOGLE_AUTH_CONFIG } from "@/config/googleAuth";
-import { googleAuthService } from "@/services/googleAuth";
 import GoogleAvatarButton from '@/components/GoogleAvatarButton';
-import { getCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
+import { useGoogleAuth } from '@/utils/cacheGoogleAuth';
 import type { GoogleUser } from '@/types/auth';
+import { clearCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
@@ -81,7 +80,21 @@ export default function Home() {
   const [showContactUs, setShowContactUs] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
+  
+  // 使用新的 Hook 监听 Google Auth 变化
+  const googleAuth = useGoogleAuth();
   const [user, setUser] = useState<GoogleUser | null>(null);
+
+  // 当 googleAuth 变化时更新 user
+  useEffect(() => {
+    if (googleAuth && googleAuth.user) {
+      setUser(googleAuth.user);
+      console.log('User updated from googleAuth hook:', googleAuth.user);
+    } else if (googleAuth === null) {
+      setUser(null);
+      console.log('User cleared from googleAuth hook');
+    }
+  }, [googleAuth]);
 
   // 动态导入组件
   useEffect(() => {
@@ -93,14 +106,9 @@ export default function Home() {
       }).catch(error => {
         console.error('动态导入组件失败:', error);
       });
-
-      const cached = getCachedGoogleAuth();
-      console.log('Cached Google Auth:', cached);
-      if (cached && cached.user && cached.tokens) {
-        setUser(cached.user);
-      }
     }
   }, [mounted]);
+
   if (!mounted) {
     // SSR 或 hydration 前只渲染空白，避免 mismatch
     return null;
@@ -133,9 +141,13 @@ export default function Home() {
           </div>
           <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
           {(user && (user.avatar || user.name || user.email)) ? (
-            <GoogleAvatarButton user={user} size={40} />
+            <GoogleAvatarButton user={user} size={40} onClick={() => {
+              clearCachedGoogleAuth();
+              setUser(null);
+            }}/>
           ) : (
-            <GoogleLoginButton onLogin={u => setUser(u)} />
+            <></>
+            // <GoogleLoginButton onLogin={u => setUser(u)} />
           )}
         </div>
       </header>

@@ -5,19 +5,11 @@ import type { FC } from 'react';
 import Image from 'next/image';
 import './Login.css';
 import { useTranslation } from 'react-i18next';
-
-interface UserInfo {
-  name: string;
-  avatar: string;
-  email: string;
-  provider: string;
-  loginTime: number;
-}
+import { GoogleLoginButton } from '@/components/GoogleLoginButton';
 
 interface LoginProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (user: UserInfo) => void;
 }
 
 const SOCIALS = [
@@ -26,15 +18,6 @@ const SOCIALS = [
 
 const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
   const { t, ready } = useTranslation();
-  const [loading, setLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  // 安全的导航函数
-  const safeNavigate = (url: string) => {
-    startTransition(() => {
-      window.location.href = url;
-    });
-  };
 
   if (!isOpen) return null;
 
@@ -71,39 +54,6 @@ const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
     );
   }
 
-  // 谷歌登录 - 使用新的Google OAuth API
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    
-    try {
-      // 调用新的登录API端点
-      const response = await fetch('/api/auth/signin/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.redirectUrl) {
-          // 跳转到Google授权页面
-          safeNavigate(data.redirectUrl);
-        } else {
-          throw new Error('获取授权URL失败');
-        }
-      } else {
-        throw new Error('登录请求失败');
-      }
-    } catch (err) {
-      console.error('登录错误:', err);
-      // 发生错误时重定向到失败页面
-      safeNavigate('/oauth-error?error=network_error&error_description=网络错误');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="login-root" onClick={onClose}>
       <div className="login-container" onClick={e => e.stopPropagation()}>
@@ -119,7 +69,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
         </div>
         
         <div className="socials">
-          {SOCIALS.map(social => (
+          {/* {SOCIALS.map(social => (
             <button
               key={social.key}
               className="socialBtn"
@@ -129,7 +79,13 @@ const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
               <Image src={social.icon} alt={social.label} className="socialIcon" width={24} height={24} />
               {loading || isPending ? '登录中...' : t('login_with', { provider: social.label })}
             </button>
-          ))}
+          ))} */}
+          
+          <div className="google-login-button-container">
+            <GoogleLoginButton onLogin={(user) => {
+              onClose();
+            }} />
+          </div>
         </div>
       </div>
     </div>
