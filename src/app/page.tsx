@@ -12,6 +12,9 @@ import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
 import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { GOOGLE_AUTH_CONFIG } from "@/config/googleAuth";
+import { googleAuthService } from "@/services/googleAuth";
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
@@ -159,7 +162,7 @@ export default function Home() {
           ) : (
             <button className="login-btn-v2" onClick={login}>{t("login")}</button>
           )} */}
-          <button className="login-btn-v2">{t("login")}</button>
+          <GoogleLoginButton />
       {/* Login 弹窗 */}
       {Login && showLogin && (
         <Login isOpen={showLogin} onClose={() => setShowLogin(false)} onLogin={() => {
