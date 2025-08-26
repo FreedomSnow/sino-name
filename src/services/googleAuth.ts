@@ -1,6 +1,11 @@
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
 import { GoogleUser, OAuthTokens } from '@/types/auth';
 
+// Google One Tap 回调响应类型
+interface GoogleSignInResponse {
+    credential: string;
+}
+
 class GoogleAuthService {
     private static instance: GoogleAuthService;
     private currentUser: GoogleUser | null = null;
@@ -46,7 +51,7 @@ class GoogleAuthService {
     /**
      * 处理登录回调
      */
-    private async handleSignInCallback(response: any) {
+    private async handleSignInCallback(response: GoogleSignInResponse) {
         try {
             console.log('🔐 Google 登录成功，开始处理...');
             
@@ -80,7 +85,7 @@ class GoogleAuthService {
     /**
      * 解析 JWT Token
      */
-    private parseJwt(token: string): any {
+    private parseJwt(token: string): GoogleUser {
         try {
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
