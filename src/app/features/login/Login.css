@@ -55,6 +55,13 @@
   flex-direction: column;
   gap: 18px;
 }
+
+.google-login-button-container {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}
+
 .socialBtn {
   display: flex;
   align-items: center;
