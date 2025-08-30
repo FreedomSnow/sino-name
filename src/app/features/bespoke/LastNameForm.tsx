@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { LastNameItem } from "./types";
+import { SurnameItem } from "@/types/restRespEntities";
 import { useTranslation } from "react-i18next";
 import "./LastNameForm.css";
+import { getSurname } from "@/services/aiNaming";
+import PandaLoadingView from "@/components/PandaLoadingView";
 
 interface LastNameFormProps {
   onClose: () => void;
-  onResult?: (lastName: string, items: LastNameItem[]) => void;
+  onResult?: (lastName: string, items: SurnameItem[]) => void;
 }
 
 const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
@@ -19,20 +21,29 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
   const handleSend = async () => {
     if (!lastName.trim()) return;
     setLoading(true);
-    // TODO 模拟AI接口请求，实际可替换为真实API
-    setTimeout(() => {
-      const item0: LastNameItem = {
-        lastName: "王",
-        pinyin: "Wang", // 示例
-        explanation: {
-          zh: `“${lastName.trim()}”是中国常见姓氏，寓意深远。`,
-          en: `"${lastName.trim()}" is a common Chinese surname with profound meaning.`
-        }
-      };
+    
+    try {
+      // 调用AI命名接口
+      const result = await getSurname({
+        lang: t('languageCode'), // 可以从i18n中获取当前语言
+        lastName: lastName.trim()
+      }, ""); // token参数可以根据实际情况从配置或状态中获取
+      
+      if (result.success && result.surnames && result.surnames.length > 0) {
+        // 使用API返回的姓氏数据
+        if (onResult) onResult(lastName.trim(), result.surnames);
+      } else {
+        // 处理错误情况
+        console.error("获取AI命名失败:", result.message);
+        // 可以添加错误提示
+      }
+    } catch (error) {
+      console.error("调用命名API出错:", error);
+      // 可以添加错误提示
+    } finally {
       setLoading(false);
-      if (onResult) onResult(lastName.trim(), [item0, item0, item0, item0, item0]);
       onClose();
-    }, 3800);
+    }
   };
 
   return (
@@ -40,26 +51,20 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
       if (!loading) onClose();
     }}>
       <div className="lastnameform-popup" onClick={e => e.stopPropagation()}>
-        {loading ? (
-          <div className="lastnameform-loading">
-            <Image src="/panda-loading.gif" alt="loading" className="lastnameform-loading-img" width={80} height={80} unoptimized />
-            {/* <span className="lastnameform-loading-text">{t('aiLoading', 'AI智能处理中...')}</span> */}
-          </div>
-        ) : (
-          <div className="lastnameform-content">
-            <label className="lastnameform-label">{t('formLastNameLabel')}</label>
-            <input
-              className="lastnameform-input"
-              type="text"
-              value={lastName}
-              onChange={handleChange}
-              placeholder={t('formLastNamePlaceholder')}
-              autoFocus
-            />
-            <button className="lastnameform-btn" onClick={handleSend}>{t('submit')}</button>
-          </div>
-        )}
+        <div className="lastnameform-content">
+          <label className="lastnameform-label">{t('formLastNameLabel')}</label>
+          <input
+            className="lastnameform-input"
+            type="text"
+            value={lastName}
+            onChange={handleChange}
+            placeholder={t('formLastNamePlaceholder')}
+            autoFocus
+          />
+          <button className="lastnameform-btn" onClick={handleSend}>{t('submit')}</button>
+        </div>
       </div>
+      {loading && <PandaLoadingView />}
     </div>
   );
 };
