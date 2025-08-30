@@ -1,20 +1,18 @@
 import React from "react";
-
-
-import { LastNameItem } from "./types";
 import { useTranslation } from "react-i18next";
 import ActiveSurname from '../surname/ActiveSurname';
 import "./SurnameList.css";
+import { SurnameItem } from "@/types/restRespEntities";
 
 
 interface SurnameListProps {
-  items: LastNameItem[];
+  items: SurnameItem[];
   selected?: string | null;
   onSubmit?: (lastName: string) => void;
 }
 
 const SurnameList: React.FC<SurnameListProps> = ({ items, selected, onSubmit }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedSurname, setSelectedSurname] = React.useState<string | null>(selected ?? null);
   const [activeSurname, setActiveSurname] = React.useState<string | null>(null);
 
@@ -24,8 +22,8 @@ const SurnameList: React.FC<SurnameListProps> = ({ items, selected, onSubmit }) 
 
   if (!items || items.length === 0) return null;
 
-  // 获取当前语言环境
-  const lang = typeof window !== 'undefined' ? (window.localStorage.getItem('i18nextLng') || 'zh') : 'zh';
+  // 获取当前语言环境，使用i18n API更准确
+  const currentLanguage = i18n.language || 'en';
 
   return (
     <div className="surname-list-root">
@@ -35,13 +33,13 @@ const SurnameList: React.FC<SurnameListProps> = ({ items, selected, onSubmit }) 
             <input
               type="radio"
               name="surname-radio"
-              value={item.lastName}
-              checked={selectedSurname === item.lastName}
+              value={item.name}
+              checked={selectedSurname === item.name}
               onChange={() => {
-                if (selectedSurname === item.lastName) {
+                if (selectedSurname === item.name) {
                   setSelectedSurname(null);
                 } else {
-                  setSelectedSurname(item.lastName);
+                  setSelectedSurname(item.name);
                 }
               }}
             />
@@ -50,13 +48,16 @@ const SurnameList: React.FC<SurnameListProps> = ({ items, selected, onSubmit }) 
             <div
               className="surname-item-card"
               style={{ cursor: 'pointer' }}
-              onClick={() => setActiveSurname(item.lastName)}
+              onClick={() => setActiveSurname(item.name)}
             >
               <div className="surname-item-card-pinyin">{item.pinyin}</div>
-              <div className="surname-item-card-lastname">{item.lastName}</div>
+              <div className="surname-item-card-lastname">{item.name}</div>
             </div>
             <div className="surname-item-explanation">
-              {lang.startsWith('zh') ? item.explanation.zh : item.explanation.en}
+              {currentLanguage.startsWith('zh') 
+                ? (item.explanation_cn || `姓氏"${item.name}"为中国古老姓氏之一`) 
+                : (item.explanation_en || item.explanation_cn || `The surname '${item. name}' is one of the ancient surnames in China`)
+              }
             </div>
           </div>
         </div>
@@ -75,12 +76,15 @@ const SurnameList: React.FC<SurnameListProps> = ({ items, selected, onSubmit }) 
       {activeSurname && (
         <ActiveSurname
           item={(() => {
-            const found = items.find(i => i.lastName === activeSurname);
+            const found = items.find(i => i.name === activeSurname);
             if (found) {
               return {
-                surname: found.lastName,
-                pinyin: found.pinyin,
-                desc: found.explanation
+                surname: found.name,
+                pinyin: found.pinyin || '',
+                desc: {
+                  zh: found.explanation_cn || '',
+                  en: found.explanation_en || ''
+                }
               };
             }
             return { surname: activeSurname, pinyin: '', desc: { zh: '', en: '' } };

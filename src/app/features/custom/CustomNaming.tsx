@@ -5,6 +5,10 @@ import "./CustomNaming.css";
 import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
 import Login from "../login/Login";
 import { GoogleUser } from "@/types/auth";
+import { getFreedomNaming } from "@/services/aiNaming";
+import PandaLoadingView from "@/components/PandaLoadingView";
+import { CustomNameItem } from "@/types/restRespEntities";
+import CustomNameList from "./CustomNameList";
 
 export default function CustomNaming() {
   const { t } = useTranslation();
@@ -14,7 +18,10 @@ export default function CustomNaming() {
   const [name, setName] = useState<string>(cacheObj.name ?? "");
   const [desc, setDesc] = useState<string>(cacheObj.desc ?? "");
   const [showLogin, setShowLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<GoogleUser | null>(null);
+  const [namingResults, setNamingResults] = useState<CustomNameItem[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
       return () => {
@@ -52,15 +59,19 @@ export default function CustomNaming() {
   const handleSubmit = () => {
     // 验证名称合法性
     if (!name.trim()) {
-      alert(t('nameRequired'));
+      alert(t('name Required'));
       return;
     }
     
     // 名称长度检查
-    if (name.length < 2 || name.length > 30) {
-      alert(t('nameLength'));
+    if (name.length < 2 || name.length > 100) {
+      alert(t('name Length'));
       return;
     }
+    
+    // 隐藏之前的结果
+    setShowResults(false);
+    setNamingResults([]);
     
     // 检查是否已登录
     const authCache = getCachedGoogleAuth();
@@ -69,16 +80,41 @@ export default function CustomNaming() {
       setShowLogin(true);
       return;
     }
-    
-    // 已登录，继续提交流程
-    alert(`提交内容：姓名：${name}，描述：${desc}`);
+
+    handleLoginSuccess();
   };
   
   // 处理登录成功
-  const handleLoginSuccess = (loginUser: GoogleUser) => {
+  const handleLoginSuccess = () => {
     setShowLogin(false);
-    // 登录成功后继续提交
-    alert(`提交内容：姓名：${name}，描述：${desc}`);
+
+    // 已登录，检测是否还有积分
+    // TODO: 积分不够，则提示充值
+
+    // 积分够，则调用ai命名接口
+    setLoading(true);
+    getFreedomNaming({
+      name: name.trim(),
+      desc: desc.trim()
+    }).then(result => {
+      console.log('AI自由命名结果:', result);
+      setLoading(false);
+      if (result.success && result.names && result.names.length > 0) {
+        // 使用API返回的命名数据
+        setNamingResults(result.names);
+        setShowResults(true);
+      } else {
+        // 处理错误情况
+        console.error("AI自由命名失败:", result.message);
+        // 可以添加错误提示
+        alert(t('namingFailed', 'AI命名失败，请稍后重试'));
+      }
+    }).catch(error => {
+      console.error('AI自由命名错误:', error);
+      setLoading(false);
+      alert(t('namingError', 'AI命名出错，请稍后重试'));
+    });
+    
   };
 
   return (
@@ -119,17 +155,34 @@ export default function CustomNaming() {
         </div>
         {/* 第四行提交按钮 */}
         <div className="custom-naming-submit-row">
-          <button className="custom-naming-submit-btn custom-naming-btn" onClick={handleSubmit}>
+          <button 
+            className="custom-naming-submit-btn custom-naming-btn" 
+            onClick={handleSubmit}
+            disabled={loading}
+          >
             {t('submit')}
           </button>
         </div>
+        
+        {/* 命名结果显示行 */}
+        {showResults && namingResults.length > 0 && (
+          <div className="custom-naming-row custom-naming-row-results">
+            <div className="custom-naming-results-inner">
+              <h3 className="custom-naming-results-title">{t('customNamingResults', '为您推荐的名字')}</h3>
+              <CustomNameList items={namingResults} />
+            </div>
+          </div>
+        )}
       </div>
+      
+      {/* 加载动画 - 全屏显示 */}
+      {loading && <PandaLoadingView />}
       
       {/* 登录弹窗 */}
       {showLogin && (
         <Login 
           isOpen={showLogin} 
-          onClose={() => setShowLogin(false)}  
+          onClose={handleLoginSuccess}  
         />
       )}
     </div>

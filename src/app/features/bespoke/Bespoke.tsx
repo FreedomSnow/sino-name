@@ -5,9 +5,14 @@ import "./Bespoke.css";
 import UserInfoForm from "./UserInfoForm";
 import Surname from '../surname/Surname';
 import LastNameForm from './LastNameForm';
-import { LastNameItem } from "./types";
 import SurnameList from './SurnameList';
 import { CACHE_KEYS } from "@/app/cacheKeys";
+import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
+import Login from "../login/Login";
+import { GoogleUser } from "@/types/auth";
+import { SurnameItem } from "@/types/restRespEntities";
+import { UserInfoData } from "./UserInfoForm";
+import { set } from "date-fns";
 
 
 export default function BespokePage() {
@@ -23,7 +28,11 @@ export default function BespokePage() {
   const [userSurname, setUserSurname] = useState<string|null>(cacheObj.userSurname ?? null);
   // LastNameForm结果
   const [lastName, setLastName] = useState<string|null>(cacheObj.lastName ?? null);
-  const [lastNameResult, setLastNameResult] = useState<LastNameItem[] | null>(cacheObj.lastNameResult ?? null);
+  const [lastNameResult, setLastNameResult] = useState<SurnameItem[] | null>(cacheObj.lastNameResult ?? null);
+  // 记录UserInfoForm的onSubmit中返回的信息
+  const [userFormData, setUserFormData] = useState<UserInfoData | null>(cacheObj.userFormData ?? null);
+  // 记录从哪个方法调用的setShowLogin
+  const [loginSource, setLoginSource] = useState<string>(cacheObj.loginSource ?? '');
 
   // 页面首次显示时设置 hasShown 为 true
   useEffect(() => {
@@ -42,10 +51,12 @@ export default function BespokePage() {
         userSurname,
         lastName,
         lastNameResult,
+        userFormData,
+        loginSource
       };
       window.localStorage.setItem(CACHE_KEYS.bespokePage, JSON.stringify(cacheData));
     };
-  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName, lastNameResult]);
+  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName, lastNameResult, userFormData, loginSource]);
 
   // 聊天动画相关状态
   const [showWelcomeMsg, setShowWelcomeMsg] = useState(false);
@@ -56,10 +67,58 @@ export default function BespokePage() {
   // LastNameForm弹窗状态
   const [showLastNameForm, setShowLastNameForm] = useState(false);
 
+  const [showLogin, setShowLogin] = useState(false);
+  
   // Mike定制按钮点击
   const handleMikePick = () => {
+    // 检查是否登录
+    const authCache = getCachedGoogleAuth();
+    if (!authCache || !authCache.user || !authCache.tokens) {
+      // 未登录，显示登录弹窗
+      console.log('用户未登录或token失效');
+      setLoginSource('mikePick');
+      setShowLogin(true);
+      return;
+    }
+
     setShowLastNameForm(true);
   };
+
+  // Mike定制按钮点击
+  const handleSendUserInfo = () => {
+    // 检查是否登录
+    const authCache = getCachedGoogleAuth();
+    if (!authCache || !authCache.user || !authCache.tokens) {
+      // 未登录，显示登录弹窗
+      console.log('用户未登录或token失效');
+      setLoginSource('userInfoForm');
+      setShowLogin(true);
+      return;
+    }
+    
+    handleLoginSuccess();
+  };
+
+  // 处理登录成功
+  const handleLoginSuccess = () => {
+    setShowLogin(false);
+    // 登录成功后判断积分是否够用，如果不够则提示充值
+    // TODO: 积分不够，则提示充值
+
+    // 积分够
+    if (loginSource === 'mikePick') {
+      // 如果是从 MikePick 调用的，则打开 LastNameForm 弹窗
+      setShowLastNameForm(true);
+    } else if (loginSource === 'userInfoForm') {
+      // 如果是从 UserInfoForm 调用的，则调用ai接口
+      getNameList();
+    }
+    setLoginSource('');
+  };
+
+  const getNameList = async () => {
+    // TODO: 调用AI命名接口
+  }
 
   // 更多按钮弹窗状态
   const [showMorePopup, setShowMorePopup] = useState(false);
@@ -213,7 +272,10 @@ export default function BespokePage() {
             )}
             {showUserInfoForm && (
               <div className="user-info-form">
-                <UserInfoForm lastName={lastName ?? undefined} onSubmit={() => {}} />
+                <UserInfoForm lastName={lastName ?? undefined} onSubmit={(data) => { 
+                  setUserFormData(data); 
+                  handleSendUserInfo(); 
+                }} />
               </div>
             )}
           </>
@@ -252,6 +314,15 @@ export default function BespokePage() {
             />
           </div>
         </div>
+      )}
+
+
+      {/* 登录弹窗 */}
+      {showLogin && (
+        <Login 
+          isOpen={showLogin} 
+          onClose={ handleLoginSuccess}  
+        />
       )}
     </div>
   );

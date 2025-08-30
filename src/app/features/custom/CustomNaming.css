@@ -1,18 +1,14 @@
-/* 提交按钮居中包裹行 */
-.custom-naming-submit-row {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 /* 页面整体居中布局 */
 .custom-naming-root {
   height: 100%;
   width: 100%;
   min-height: 100vh;
-  overflow: hidden !important;
   position: relative;
   background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 50px; /* 底部留出空间 */
 }
 
 .custom-naming-title {
@@ -29,15 +25,45 @@
 }
 
 .custom-naming-main {
-  width: 80%;
-  height: 100%;
+  width: 90%;
+  max-height: calc(100vh - 140px); /* 减去标题和一些间距的高度 */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 0 auto;
+  margin: 0 20px 20px 20px;
   gap: 20px;
-  /* background: red; */
+  overflow-y: auto; /* 添加垂直滚动 */
+  padding-right: 10px; /* 为滚动条预留空间 */
+  padding-bottom: 30px; /* 底部添加一些内边距 */
 }
+
+/* 滚动条样式优化 */
+.custom-naming-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-naming-main::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.custom-naming-main::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.custom-naming-main::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .custom-naming-main {
+    width: 90%;
+    max-height: calc(100vh - 100px);
+  }
+}
+
 /* 每行控件左对齐 */
 .custom-naming-row {
   width: 100%;
@@ -104,12 +130,18 @@
   box-sizing: border-box;
   transition: min-height 0.2s;
   height: auto;
-  /* 默认一行，内容多时自动高度 */
   display: block;
   white-space: pre-wrap;
   word-break: break-all;
 }
 
+/* 提交按钮居中包裹行 */
+.custom-naming-submit-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 /* 描述输入框字数统计 */
 .custom-naming-desc-count {
   font-size: 12px;
@@ -134,3 +166,56 @@
 .custom-naming-submit-btn:hover {
   background: #0056b3;
 }
+/* 加载动画容器 */
+.custom-naming-loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+/* 禁用状态的提交按钮 */
+.custom-naming-submit-btn:disabled {
+  background: #b3d1ff;
+  cursor: not-allowed;
+}
+
+/* 命名结果部分样式 */
+.custom-naming-results {
+  width: 80%;
+  margin: 30px auto;
+}
+
+/* 在main内显示的结果行样式 */
+.custom-naming-row-results {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-naming-results-inner {
+  width: 100%;
+  background: #f7f8fa;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+
+.custom-naming-results-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+

@@ -189,6 +189,7 @@ export const GoogleLoginButton = ({
       window.dispatchEvent(event);
     } catch (error) {
       console.error('后端验证失败:', error);
+      alert('后端认证失败，请稍后重试');
       const event = new CustomEvent('backend-auth-error', { detail: error });
       window.dispatchEvent(event);
     }

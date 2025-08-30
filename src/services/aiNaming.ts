@@ -1,0 +1,152 @@
+import { AI_REST_CONFIG } from '@/config/aiRestConfig';
+import { SurnameItem, CustomNameItem } from '@/types/restRespEntities';
+
+interface SurnameRequest {
+  lang: string;
+  lastName: string;
+}
+
+interface SurnameResponse {
+  success: boolean;
+  message?: string;
+  surnames?: SurnameItem[];
+}
+
+// API 返回的姓氏项目接口
+interface ApiSurnameItem {
+  name?: string;
+  pinyin?: string;
+  explanation_cn?: string;
+  explanation_en?: string;
+}
+
+/**
+ * 调用AI姓氏接口
+ * @param data 请求参数
+ * @param token 授权token
+ * @returns 命名结果
+ */
+export async function getSurname(
+  data: SurnameRequest,
+  token: string = '',
+): Promise<SurnameResponse> {
+  try {
+    console.log('调用AI接口，参数:', data, 'Token:', token);
+    // 确保URL格式正确，添加斜杠检查
+    const baseUrl = AI_REST_CONFIG.BACKEND.BASE_URL;
+    const endpoint = AI_REST_CONFIG.BACKEND.ENDPOINTS.LAST_NAMING;
+    const url = baseUrl + (baseUrl.endsWith('/') || endpoint.startsWith('/') ? '' : '/') + endpoint;
+    
+    console.log('完整请求URL:', url);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer braveray`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`请求失败: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('AI命名接口返回结果:', result);
+
+    // 确保返回结果符合预期的格式
+    return {
+      success: true,
+      surnames: Array.isArray(result.data) ? result.data.map((item: ApiSurnameItem): SurnameItem => ({
+        name: item.name || '',
+        pinyin: item.pinyin || '',
+        explanation_cn: item.explanation_cn || '',
+        explanation_en: item.explanation_en || ''
+      })) : []
+    };
+  } catch (error) {
+    console.error('AI命名接口调用失败:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : '未知错误',
+      surnames: []
+    };
+  }
+}
+
+// 自由命名请求参数接口
+interface FreedomNamingRequest {
+  name: string;
+  desc: string;
+}
+
+// 自由命名响应接口
+interface FreedomNamingResponse {
+  success: boolean;
+  message?: string;
+  names?: CustomNameItem[];
+}
+
+// API 返回的自定义命名项目接口
+interface ApiCustomNameItem {
+  name?: string;
+  pinyin?: string;
+  source_cn?: string;
+  source_en?: string;
+}
+
+/**
+ * 调用AI自由命名接口
+ * @param data 请求参数，包含姓名和描述
+ * @param token 授权token，默认使用'braveray'
+ * @returns 命名结果
+ */
+export async function getFreedomNaming(
+  data: FreedomNamingRequest,
+  token: string = 'braveray',
+): Promise<FreedomNamingResponse> {
+  try {
+    console.log('调用AI自由命名接口，参数:', data, 'Token:', token);
+    // 确保URL格式正确，添加斜杠检查
+    const baseUrl = AI_REST_CONFIG.BACKEND.BASE_URL;
+    const endpoint = AI_REST_CONFIG.BACKEND.ENDPOINTS.CUSTOM_NAMING;
+    const url = baseUrl + (baseUrl.endsWith('/') || endpoint.startsWith('/') ? '' : '/') + endpoint;
+    
+    console.log('完整请求URL:', url);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`请求失败: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('AI自由命名接口返回结果:', result);
+
+    // 确保返回结果符合预期的格式
+    return {
+      success: true,
+      names: Array.isArray(result.data) ? result.data.map((item: ApiCustomNameItem): CustomNameItem => ({
+        name: item.name || '',
+        pinyin: item.pinyin || '',
+        source_cn: item.source_cn || '',
+        source_en: item.source_en || ''
+      })) : []
+    };
+  } catch (error) {
+    console.error('AI自由命名接口调用失败:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : '未知错误',
+      names: []
+    };
+  }
+}

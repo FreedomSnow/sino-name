@@ -1,0 +1,35 @@
+/* 熊猫加载动画样式 */
+.panda-loading-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.panda-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.panda-loading-img {
+  width: auto;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.panda-loading-text {
+  font-size: 18px;
+  color: #666;
+  text-align: center;
+}
