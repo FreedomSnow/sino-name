@@ -25,9 +25,9 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
     try {
       // 调用AI命名接口
       const result = await getSurname({
-        lang: t('languageCode'), // 可以从i18n中获取当前语言
+        lang: "", // 可以从i18n中获取当前语言
         lastName: lastName.trim()
-      }, ""); // token参数可以根据实际情况从配置或状态中获取
+      });
       
       if (result.success && result.surnames && result.surnames.length > 0) {
         // 使用API返回的姓氏数据

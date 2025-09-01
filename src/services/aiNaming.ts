@@ -1,79 +1,7 @@
+import { APP_CONFIG } from '@/config/appConfig';
 import { AI_REST_CONFIG } from '@/config/aiRestConfig';
 import { SurnameItem, NameItem } from '@/types/restRespEntities';
-
-interface SurnameRequest {
-  lang: string;
-  lastName: string;
-}
-
-interface SurnameResponse {
-  success: boolean;
-  message?: string;
-  surnames?: SurnameItem[];
-}
-
-// API 返回的姓氏项目接口
-interface ApiSurnameItem {
-  name?: string;
-  pinyin?: string;
-  explanation_cn?: string;
-  explanation_en?: string;
-}
-
-/**
- * 调用AI姓氏接口
- * @param data 请求参数
- * @param token 授权token
- * @returns 命名结果
- */
-export async function getSurname(
-  data: SurnameRequest,
-  token: string = '',
-): Promise<SurnameResponse> {
-  try {
-    console.log('调用AI接口，参数:', data, 'Token:', token);
-    // 确保URL格式正确，添加斜杠检查
-    const baseUrl = AI_REST_CONFIG.BACKEND.BASE_URL;
-    const endpoint = AI_REST_CONFIG.BACKEND.ENDPOINTS.FAMILY_NAMING;
-    const url = baseUrl + (baseUrl.endsWith('/') || endpoint.startsWith('/') ? '' : '/') + endpoint;
-    
-    console.log('完整请求URL:', url);
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer braveray`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error(`请求失败: ${response.status} ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    console.log('AI命名接口返回结果:', result);
-
-    // 确保返回结果符合预期的格式
-    return {
-      success: true,
-      surnames: Array.isArray(result.data) ? result.data.map((item: ApiSurnameItem): SurnameItem => ({
-        name: item.name || '',
-        pinyin: item.pinyin || '',
-        explanation_cn: item.explanation_cn || '',
-        explanation_en: item.explanation_en || ''
-      })) : []
-    };
-  } catch (error) {
-    console.error('AI命名接口调用失败:', error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : '未知错误',
-      surnames: []
-    };
-  }
-}
+import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
 
 // 自由命名请求参数接口
 interface FreedomNamingRequest {
@@ -104,10 +32,9 @@ interface ApiCustomNameItem {
  */
 export async function getFreedomNaming(
   data: FreedomNamingRequest,
-  token: string = 'braveray',
 ): Promise<FreedomNamingResponse> {
   try {
-    console.log('调用AI自由命名接口，参数:', data, 'Token:', token);
+    console.log('调用AI自由命名接口，参数:', data);
     // 确保URL格式正确，添加斜杠检查
     const baseUrl = AI_REST_CONFIG.BACKEND.BASE_URL;
     const endpoint = AI_REST_CONFIG.BACKEND.ENDPOINTS.CUSTOM_NAMING;
@@ -115,10 +42,15 @@ export async function getFreedomNaming(
     
     console.log('完整请求URL:', url);
     
+    const authCache = getCachedGoogleAuth();
+    const token = authCache?.tokens?.access_token || '';
+
+    console.log('token:', token);
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `${APP_CONFIG.APP.NAME} ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -147,6 +79,82 @@ export async function getFreedomNaming(
       success: false,
       message: error instanceof Error ? error.message : '未知错误',
       names: []
+    };
+  }
+}
+
+interface SurnameRequest {
+  lang: string;
+  lastName: string;
+}
+
+interface SurnameResponse {
+  success: boolean;
+  message?: string;
+  surnames?: SurnameItem[];
+}
+
+// API 返回的姓氏项目接口
+interface ApiSurnameItem {
+  name?: string;
+  pinyin?: string;
+  explanation_cn?: string;
+  explanation_en?: string;
+}
+
+/**
+ * 调用AI姓氏接口
+ * @param data 请求参数
+ * @param token 授权token
+ * @returns 命名结果
+ */
+export async function getSurname(
+  data: SurnameRequest,
+): Promise<SurnameResponse> {
+  try {
+    console.log('调用AI接口，参数:', data);
+    // 确保URL格式正确，添加斜杠检查
+    const baseUrl = AI_REST_CONFIG.BACKEND.BASE_URL;
+    const endpoint = AI_REST_CONFIG.BACKEND.ENDPOINTS.FAMILY_NAMING;
+    const url = baseUrl + (baseUrl.endsWith('/') || endpoint.startsWith('/') ? '' : '/') + endpoint;
+    
+    console.log('完整请求URL:', url);
+
+    const authCache = getCachedGoogleAuth();
+    const token = authCache?.tokens?.access_token || '';
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': APP_CONFIG.APP.NAME + ` ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`请求失败: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('AI命名接口返回结果:', result);
+
+    // 确保返回结果符合预期的格式
+    return {
+      success: true,
+      surnames: Array.isArray(result.data) ? result.data.map((item: ApiSurnameItem): SurnameItem => ({
+        name: item.name || '',
+        pinyin: item.pinyin || '',
+        explanation_cn: item.explanation_cn || '',
+        explanation_en: item.explanation_en || ''
+      })) : []
+    };
+  } catch (error) {
+    console.error('AI命名接口调用失败:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : '未知错误',
+      surnames: []
     };
   }
 }
@@ -184,21 +192,23 @@ interface ApiFullNameItem {
  */
 export async function getBespokeNaming(
   data: BespokeNamingRequest,
-  token: string = 'braveray',
 ): Promise<BespokeNamingResponse> {
   try {
-    console.log('调用AI定制全名接口，参数:', data, 'Token:', token);
+    console.log('调用AI定制全名接口，参数:', data);
     // 确保URL格式正确，添加斜杠检查
     const baseUrl = AI_REST_CONFIG.BACKEND.BASE_URL;
     const endpoint = AI_REST_CONFIG.BACKEND.ENDPOINTS.FULL_NAMING;
     const url = baseUrl + (baseUrl.endsWith('/') || endpoint.startsWith('/') ? '' : '/') + endpoint;
     
     console.log('完整请求URL:', url);
+
+    const authCache = getCachedGoogleAuth();
+    const token = authCache?.tokens?.access_token || '';
     
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': APP_CONFIG.APP.NAME + ` ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
