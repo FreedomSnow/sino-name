@@ -2,10 +2,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import ActiveSurname from '../surname/ActiveSurname';
 import "./CustomNameList.css";
-import { CustomNameItem } from "@/types/restRespEntities";
+import { NameItem } from "@/types/restRespEntities";
 
 const CustomNameList: React.FC<{
-  items: CustomNameItem[];
+  items: NameItem[];
 }> = ({ items }) => {
   const { t, i18n } = useTranslation();
   const [activeName, setActiveName] = React.useState<string | null>(null);
@@ -17,6 +17,7 @@ const CustomNameList: React.FC<{
 
   return (
     <div className="custom-name-list-root">
+      <h3 className="custom-name-results-title">{t('nameResultsTitle')}</h3>
       {items.map((item, idx) => (
         <div className="custom-name-list-item" key={idx}>
           <div className="custom-name-item-main">
@@ -31,8 +32,8 @@ const CustomNameList: React.FC<{
           </div>
           <div className="custom-name-item-source">
             {currentLanguage.startsWith('zh') 
-              ? (item.source_cn || ``) 
-              : (item.source_en || item.source_cn || ``)
+              ? (item.explanation_cn || ``) 
+              : (item.explanation_en || item.explanation_cn || ``)
             }
           </div>
         </div>
@@ -46,8 +47,8 @@ const CustomNameList: React.FC<{
                 surname: found.name,
                 pinyin: found.pinyin || '',
                 desc: {
-                  zh: found.source_cn || '',
-                  en: found.source_en || ''
+                  zh: found.explanation_cn || '',
+                  en: found.explanation_en || ''
                 }
               };
             }

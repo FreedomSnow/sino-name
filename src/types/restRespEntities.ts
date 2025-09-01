@@ -6,9 +6,9 @@ export interface SurnameItem {
     explanation_en?: string;
 }
 
-export interface CustomNameItem {
+export interface NameItem {
     name: string;
     pinyin?: string;
-    source_cn?: string;
-    source_en?: string;
+    explanation_cn?: string;
+    explanation_en?: string;
 }
