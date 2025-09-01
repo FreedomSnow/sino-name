@@ -6,13 +6,14 @@ import UserInfoForm from "./UserInfoForm";
 import Surname from '../surname/Surname';
 import LastNameForm from './LastNameForm';
 import SurnameList from './SurnameList';
+import CustomNameList from '../custom/CustomNameList';
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
 import Login from "../login/Login";
-import { GoogleUser } from "@/types/auth";
-import { SurnameItem } from "@/types/restRespEntities";
+import { SurnameItem, NameItem } from "@/types/restRespEntities";
 import { UserInfoData } from "./UserInfoForm";
-import { set } from "date-fns";
+import { getBespokeNaming } from "@/services/aiNaming";
+import PandaLoadingView from "@/components/PandaLoadingView";
 
 
 export default function BespokePage() {
@@ -32,7 +33,10 @@ export default function BespokePage() {
   // 记录UserInfoForm的onSubmit中返回的信息
   const [userFormData, setUserFormData] = useState<UserInfoData | null>(cacheObj.userFormData ?? null);
   // 记录从哪个方法调用的setShowLogin
-  const [loginSource, setLoginSource] = useState<string>(cacheObj.loginSource ?? '');
+  const [loginSource, setLoginSource] = useState('');
+  // 全名结果相关状态
+  const [fullNameResults, setFullnameResults] = useState<NameItem[]>(cacheObj.fullNameResults ?? []);
+  const [showFullNameResults, setShowFullNameResults] = useState(cacheObj.showFullNameResults ?? false);
 
   // 页面首次显示时设置 hasShown 为 true
   useEffect(() => {
@@ -52,11 +56,13 @@ export default function BespokePage() {
         lastName,
         lastNameResult,
         userFormData,
-        loginSource
+        loginSource,
+        fullNameResults,
+        showFullNameResults
       };
       window.localStorage.setItem(CACHE_KEYS.bespokePage, JSON.stringify(cacheData));
     };
-  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName, lastNameResult, userFormData, loginSource]);
+  }, [hasShown, selectedSurname, isShowBottomBar, userSurname, lastName, lastNameResult, userFormData, loginSource, fullNameResults, showFullNameResults]);
 
   // 聊天动画相关状态
   const [showWelcomeMsg, setShowWelcomeMsg] = useState(false);
@@ -68,15 +74,18 @@ export default function BespokePage() {
   const [showLastNameForm, setShowLastNameForm] = useState(false);
 
   const [showLogin, setShowLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
   
   // Mike定制按钮点击
   const handleMikePick = () => {
     // 检查是否登录
+    const source = 'mikePick';
+    setLoginSource(source);
+    
     const authCache = getCachedGoogleAuth();
     if (!authCache || !authCache.user || !authCache.tokens) {
       // 未登录，显示登录弹窗
       console.log('用户未登录或token失效');
-      setLoginSource('mikePick');
       setShowLogin(true);
       return;
     }
@@ -86,38 +95,90 @@ export default function BespokePage() {
 
   // Mike定制按钮点击
   const handleSendUserInfo = () => {
+    // 验证信息合法性
+    if (!userFormData || !userFormData.givenName.trim()) {
+      alert(t('userInfoRequired', '用户信息必填'));
+      return;
+    }
+
     // 检查是否登录
+    // 记录调用来源为 userInfoForm
+    const source = 'userInfoForm';
+    setLoginSource(source);
+    
     const authCache = getCachedGoogleAuth();
     if (!authCache || !authCache.user || !authCache.tokens) {
       // 未登录，显示登录弹窗
       console.log('用户未登录或token失效');
-      setLoginSource('userInfoForm');
       setShowLogin(true);
       return;
     }
-    
-    handleLoginSuccess();
+
+    setShowFullNameResults(false);
+    setFullnameResults([]);
+
+    handleLoginSuccess(source);
   };
 
   // 处理登录成功
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (source = loginSource) => {
     setShowLogin(false);
     // 登录成功后判断积分是否够用，如果不够则提示充值
     // TODO: 积分不够，则提示充值
 
+    console.log('登录成功，准备调用AI命名接口，loginSource:', source);
     // 积分够
-    if (loginSource === 'mikePick') {
+    if (source === 'mikePick') {
       // 如果是从 MikePick 调用的，则打开 LastNameForm 弹窗
       setShowLastNameForm(true);
-    } else if (loginSource === 'userInfoForm') {
+    } else if (source === 'userInfoForm') {
       // 如果是从 UserInfoForm 调用的，则调用ai接口
       getNameList();
     }
+
     setLoginSource('');
   };
 
   const getNameList = async () => {
-    // TODO: 调用AI命名接口
+    // 调用AI命名接口
+    if (userSurname == null || !userFormData) {
+      console.error('用户表单数据缺失');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      // 准备请求参数
+      const authCache = getCachedGoogleAuth();
+      const token = authCache?.tokens?.access_token || 'braveray';
+      
+      const requestData = {
+        surname: userSurname || '',
+        givenName: userFormData.givenName,
+        gender: userFormData.gender,
+        birth: userFormData.birth,
+        classicReference: userFormData.classic,
+        description: userFormData.note
+      };
+      
+      // 调用接口
+      const result = await getBespokeNaming(requestData, token);
+      
+      if (result.success && result.names && result.names.length > 0) {
+        console.log('获取到AI命名结果:', result.names);
+        // TODO: 显示命名结果
+        setFullnameResults(result.names);
+        setShowFullNameResults(true);
+      } else {
+        console.error('AI命名失败:', result.message);
+        alert(t('namingFailed', '命名失败，请稍后重试'));
+      }
+    } catch (error) {
+      console.error('AI命名请求错误:', error);
+      alert(t('namingError', '命名出错，请稍后重试'));
+    } finally {
+      setLoading(false);
+    }
   }
 
   // 更多按钮弹窗状态
@@ -272,10 +333,16 @@ export default function BespokePage() {
             )}
             {showUserInfoForm && (
               <div className="user-info-form">
-                <UserInfoForm lastName={lastName ?? undefined} onSubmit={(data) => { 
+                <UserInfoForm lastName={lastName ?? undefined} onSubmit={(data) => {
+                  console.log('UserInfoForm onSubmit data:', data); 
                   setUserFormData(data); 
                   handleSendUserInfo(); 
                 }} />
+              </div>
+            )}
+            {showFullNameResults && (
+              <div className="full-name-results">
+                <CustomNameList items={fullNameResults} />
               </div>
             )}
           </>
@@ -316,14 +383,15 @@ export default function BespokePage() {
         </div>
       )}
 
-
       {/* 登录弹窗 */}
       {showLogin && (
         <Login 
           isOpen={showLogin} 
-          onClose={ handleLoginSuccess}  
+          onClose={() => handleLoginSuccess()}  
         />
       )}
+
+      {loading && <PandaLoadingView />}
     </div>
   );
 }

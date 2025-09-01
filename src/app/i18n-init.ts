@@ -1,4 +1,5 @@
 
+import Title from "antd/es/skeleton/Title";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -9,7 +10,6 @@ const resources = {
       title: "Sino Name - AI智能起名 | 百家姓定制 | 宝宝取名 | 专业中文英文名字生成",
       mainTitle: "Sino Name - AI智能起名平台",
       mainSubtitle: "AI智能起名 · 百家姓 · 定制专属名字",
-      // ...existing code...
       langZh: "中文",
       langEn: "English",
       contact: "联系我们",
@@ -76,6 +76,7 @@ const resources = {
       edit: "编辑",
       submit: "提交",
       fullName: "姓名",
+      nameResultsTitle: "为您推荐的名字",
       // Welcome
       welcome_title: "欢迎来到Sino Name!",
       welcomeDesc: `我们是高端中文命名平台，提供以下专业服务：<br><br><b>自主命名服务</b>：请详述您的需求（信息越完整越好），我们将据此生成个性化中文名<br><b>深度定制姓名</b>：带您体验纯正中式命名流程，融合传统习俗，打造契合您特质的中文名<br><b>中华姓氏库</b>：详解中国姓氏体系，涵盖发音、书写及源流<br><b>生辰命理分析</b>：根据您的出生日期，提供五行八字等传统命理解读`,
@@ -151,7 +152,6 @@ const resources = {
       title: "Sino Name - AI-powered Naming | Surname Customization | Baby Name | Professional Chinese & English Name Generator",
       mainTitle: "Sino Name - AI-powered Naming Platform",
       mainSubtitle: "AI Naming · Surname Database · Custom Name Generation",
-      // ...existing code...
       langZh: "中文",
       langEn: "English",
       contact: "Contact Us",
@@ -218,6 +218,7 @@ const resources = {
       edit: "Edit",
       submit: "Submit",
       fullName: "Name",
+      nameResultsTitle: "Recommended Names for You",
       // Welcome
       welcome_title: "Welcome to Sino Name!",
       welcomeDesc: `We are a premier Chinese naming platform offering these professional services:
@@ -258,7 +259,7 @@ const resources = {
       formBirthDesc: "Birth helps us calculate your Chinese zodiac, Bazi, lucky stone, guardian deity, etc.",
       formClassicLabel: "Classic Reference",
       formClassicAny: "Any",
-      formClassicShijing: "Shijing",
+      formClassicShijing: "Classic of Poetry",
       formClassicPoetry: "Ancient Poetry",
       formNoteLabel: "Other Notes",
       formNotePlaceholder: "Please fill in if you have special requirements",

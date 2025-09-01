@@ -7,7 +7,7 @@ import Login from "../login/Login";
 import { GoogleUser } from "@/types/auth";
 import { getFreedomNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
-import { CustomNameItem } from "@/types/restRespEntities";
+import { NameItem } from "@/types/restRespEntities";
 import CustomNameList from "./CustomNameList";
 
 export default function CustomNaming() {
@@ -20,7 +20,7 @@ export default function CustomNaming() {
   const [showLogin, setShowLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<GoogleUser | null>(null);
-  const [namingResults, setNamingResults] = useState<CustomNameItem[]>([]);
+  const [namingResults, setNamingResults] = useState<NameItem[]>([]);
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
@@ -168,7 +168,6 @@ export default function CustomNaming() {
         {showResults && namingResults.length > 0 && (
           <div className="custom-naming-row custom-naming-row-results">
             <div className="custom-naming-results-inner">
-              <h3 className="custom-naming-results-title">{t('customNamingResults', '为您推荐的名字')}</h3>
               <CustomNameList items={namingResults} />
             </div>
           </div>

@@ -12,7 +12,9 @@ export const AI_REST_CONFIG = {
             // 自定义命名端点
             CUSTOM_NAMING: '/api/ai/naming/freedom-name',
             // 生成姓氏端点
-            LAST_NAMING: '/api/ai/naming/family-name',
+            FAMILY_NAMING: '/api/ai/naming/family-name',
+            // 生成全名端点
+            FULL_NAMING: '/api/ai/naming/full-name',
         }
     },
 };
