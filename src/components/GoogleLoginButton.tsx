@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
 import { cacheGoogleAuth } from '@/utils/cacheGoogleAuth';
-import { GoogleUser, OAuthTokens } from '@/types/auth';
+import { UserInfo, OAuthTokens } from '@/types/auth';
 // 导入已存在的Google类型定义
 import '@/types/google'; // 这会引入Google类型定义
 
@@ -15,7 +15,7 @@ declare global {
 }
 
 interface GoogleLoginButtonProps {
-  onLogin?: (user: GoogleUser) => void;
+  onLogin?: (user: UserInfo) => void;
 }
 
 export const GoogleLoginButton = ({
@@ -120,7 +120,7 @@ export const GoogleLoginButton = ({
       const payload = JSON.parse(atob(token.split('.')[1]));
       console.log('Google 登录用户信息payload:', payload);
 
-      const user: GoogleUser = {
+      const user: UserInfo = {
         name: payload.name,
         email: payload.email,
         avatar: payload.avatar,
@@ -168,7 +168,7 @@ export const GoogleLoginButton = ({
 
       // 后端返回结构兼容处理
       const userRaw = info.user;
-      const user: GoogleUser = {
+      const user: UserInfo = {
         name: userRaw?.username || data.google_info?.name || '',
         email: userRaw?.email || '',
         avatar: userRaw?.avatar || data.google_info?.picture || '',

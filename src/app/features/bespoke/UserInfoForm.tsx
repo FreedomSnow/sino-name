@@ -15,9 +15,9 @@ interface UserInfoFormProps {
 export interface UserInfoData {
   lastName: string;
   givenName: string;
-  gender: '男' | '女' | '保密';
+  gender: '男' | '女' | '';
   birth: string;
-  classic: '随意' | '诗经' | '古诗词';
+  classic: '' | '诗经' | '古诗词';
   note: string;
 }
 
@@ -29,9 +29,9 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
   const initialForm: UserInfoData = {
     lastName: '',
     givenName: '',
-    gender: '保密',
+    gender: '',
     birth: '',
-    classic: '随意',
+    classic: '',
     note: '',
   };
   const [form, setForm] = useState<UserInfoData>(() => {
@@ -113,7 +113,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
         <div className="user-info-form-radio-group">
           <label><input type="radio" name="gender" value="男" checked={form.gender === '男'} onChange={() => handleRadioChange('gender', '男')} /> {t('formGenderMale')}</label>
           <label><input type="radio" name="gender" value="女" checked={form.gender === '女'} onChange={() => handleRadioChange('gender', '女')} /> {t('formGenderFemale')}</label>
-          <label><input type="radio" name="gender" value="保密" checked={form.gender === '保密'} onChange={() => handleRadioChange('gender', '保密')} /> {t('formGenderSecret')}</label>
+          <label><input type="radio" name="gender" value="" checked={form.gender === ''} onChange={() => handleRadioChange('gender', '保密')} /> {t('formGenderSecret')}</label>
         </div>
       </div>
       <div className="birth user-info-form-group" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
@@ -137,7 +137,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
       <div className="user-info-form-group">
         <label>{t('formClassicLabel')}</label>
         <div className="user-info-form-radio-group">
-          <label><input type="radio" name="classic" value="随意" checked={form.classic === '随意'} onChange={() => handleRadioChange('classic', '随意')} /> {t('formClassicAny')}</label>
+          <label><input type="radio" name="classic" value="" checked={form.classic === ''} onChange={() => handleRadioChange('classic', '')} /> {t('formClassicAny')}</label>
           <label><input type="radio" name="classic" value="诗经" checked={form.classic === '诗经'} onChange={() => handleRadioChange('classic', '诗经')} /> {t('formClassicShijing')}</label>
           <label><input type="radio" name="classic" value="古诗词" checked={form.classic === '古诗词'} onChange={() => handleRadioChange('classic', '古诗词')} /> {t('formClassicPoetry')}</label>
         </div>

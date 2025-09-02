@@ -1,13 +1,13 @@
 import React from 'react';
-import { GoogleUser } from '@/types/auth';
+import { UserInfo } from '@/types/auth';
 
 interface Props {
-  user: GoogleUser;
+  user: UserInfo;
   size?: number;
   onClick?: () => void;
 }
 
-const GoogleAvatarButton: React.FC<Props> = ({ user, size = 40, onClick }) => {
+const UserAvatarButton: React.FC<Props> = ({ user, size = 40, onClick }) => {
   let content: React.ReactNode;
   if (user.avatar) {
     content = (
@@ -103,11 +103,11 @@ const GoogleAvatarButton: React.FC<Props> = ({ user, size = 40, onClick }) => {
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      aria-label="Google 用户头像"
+      aria-label="用户头像"
     >
       {content}
     </button>
   );
 };
 
-export default GoogleAvatarButton;
+export default UserAvatarButton;

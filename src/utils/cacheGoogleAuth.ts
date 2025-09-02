@@ -1,9 +1,9 @@
-import { GoogleUser, OAuthTokens } from '@/types/auth';
+import { UserInfo, OAuthTokens } from '@/types/auth';
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import React, { useState, useEffect } from 'react';
 
 export interface GoogleAuthCache {
-  user: GoogleUser;
+  user: UserInfo;
   tokens: OAuthTokens | null;
   timestamp: number;
 }
@@ -14,7 +14,7 @@ export type GoogleAuthChangeListener = (cache: GoogleAuthCache | null) => void;
 // 存储所有监听器
 const listeners: Set<GoogleAuthChangeListener> = new Set();
 
-export function cacheGoogleAuth(user: GoogleUser, tokens: OAuthTokens | null = null) {
+export function cacheGoogleAuth(user: UserInfo, tokens: OAuthTokens | null = null) {
   const cache: GoogleAuthCache = {
     user,
     tokens,
