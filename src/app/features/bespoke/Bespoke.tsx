@@ -8,7 +8,7 @@ import LastNameForm from './LastNameForm';
 import SurnameList from './SurnameList';
 import CustomNameList from '../custom/CustomNameList';
 import { CACHE_KEYS } from "@/app/cacheKeys";
-import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
+import { getCachedUserAuth } from "@/utils/cacheUserAuth";
 import Login from "../login/Login";
 import { SurnameItem, NameItem } from "@/types/restRespEntities";
 import { UserInfoData } from "./UserInfoForm";
@@ -82,7 +82,7 @@ export default function BespokePage() {
     const source = 'mikePick';
     setLoginSource(source);
     
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     if (!authCache || !authCache.user || !authCache.tokens) {
       // 未登录，显示登录弹窗
       console.log('用户未登录或token失效');
@@ -106,7 +106,7 @@ export default function BespokePage() {
     const source = 'userInfoForm';
     setLoginSource(source);
     
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     if (!authCache || !authCache.user || !authCache.tokens) {
       // 未登录，显示登录弹窗
       console.log('用户未登录或token失效');
@@ -384,7 +384,11 @@ export default function BespokePage() {
       {showLogin && (
         <Login 
           isOpen={showLogin} 
-          onClose={() => handleLoginSuccess()}  
+          onClose={() => {
+            setTimeout(() => {
+              handleLoginSuccess();
+            }, 500);
+          }}  
         />
       )}
 

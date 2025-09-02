@@ -1,7 +1,7 @@
 import { APP_CONFIG } from '@/config/appConfig';
 import { AI_REST_CONFIG } from '@/config/aiRestConfig';
 import { SurnameItem, NameItem } from '@/types/restRespEntities';
-import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
+import { getCachedUserAuth } from "@/utils/cacheUserAuth";
 
 // 自由命名请求参数接口
 interface FreedomNamingRequest {
@@ -42,7 +42,7 @@ export async function getFreedomNaming(
     
     console.log('完整请求URL:', url);
     
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     const token = authCache?.tokens?.access_token || '';
 
     console.log('token:', token);
@@ -120,7 +120,7 @@ export async function getSurname(
     
     console.log('完整请求URL:', url);
 
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     const token = authCache?.tokens?.access_token || '';
     
     const response = await fetch(url, {
@@ -202,7 +202,7 @@ export async function getBespokeNaming(
     
     console.log('完整请求URL:', url);
 
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     const token = authCache?.tokens?.access_token || '';
     
     const response = await fetch(url, {

@@ -12,16 +12,17 @@ import { useEffect } from "react";
 import Birthday from "./features/birth/Birthday";
 import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
-import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 import UserAvatarButton from '@/components/UserAvatarButton';
-import { useGoogleAuth } from '@/utils/cacheGoogleAuth';
+import { useUserAuth } from '@/utils/cacheUserAuth';
 import type { UserInfo } from '@/types/auth';
-import { clearCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
+import { clearCachedUserAuth } from '@/utils/cacheUserAuth';
 import UserProfile from './features/login/UserProfile';
+import { getUserAuth, logout } from '@/services/tokenService';
+import PandaLoadingView from "@/components/PandaLoadingView";
 
 const TABS = [
-  { key: "naming", icon: "/home.svg", title: "tabNaming" },
   { key: "bespoke", icon: "/bespoke.svg", title: "tabBespoke" },
+  { key: "naming", icon: "/home.svg", title: "tabNaming" },
   { key: "surname", icon: "/surname.svg", title: "tabSurname" },
   { key: "birth", icon: "/birthday.svg", title: "tabBirthday" },
 ];
@@ -49,6 +50,13 @@ export default function Home() {
   const [langList, setLangList] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { t, i18n } = useTranslation();
+
+  const [loading, setLoading] = useState(true);
+
+  // 使用新的 Hook 监听 Google Auth 变化
+  const userAuth = useUserAuth();
+  const [user, setUser] = useState<UserInfo | null>(null);
+
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -58,8 +66,36 @@ export default function Home() {
       if (i18n.language !== targetLang) {
         i18n.changeLanguage(targetLang);
       }
+
+      // 当 userAuth 变化时更新 user
+      if (userAuth && userAuth.user) {
+        setUser(userAuth.user);
+        console.log('User updated from userAuth hook:', userAuth.user);
+      } else if (userAuth === null) {
+        setUser(null);
+        console.log('User cleared from userAuth hook');
+      }
+      
+      // 验证用户登录状态
+      const validateAuth = async () => {
+        try {
+          setLoading(true);
+          const authResult = await getUserAuth();
+          if (authResult && authResult.user) {
+            console.log('用户认证信息有效');
+          } else {
+            console.log('用户未登录或认证信息无效');
+          }
+        } catch (error) {
+          console.error('验证用户认证信息出错:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      validateAuth();
     }
-  }, [i18n]);
+  }, [i18n, userAuth]);
   
   // 点击 tabbar item 的处理
   const handleTabClick = (key: string) => {
@@ -82,21 +118,6 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
-  
-  // 使用新的 Hook 监听 Google Auth 变化
-  const googleAuth = useGoogleAuth();
-  const [user, setUser] = useState<UserInfo | null>(null);
-
-  // 当 googleAuth 变化时更新 user
-  useEffect(() => {
-    if (googleAuth && googleAuth.user) {
-      setUser(googleAuth.user);
-      console.log('User updated from googleAuth hook:', googleAuth.user);
-    } else if (googleAuth === null) {
-      setUser(null);
-      console.log('User cleared from googleAuth hook');
-    }
-  }, [googleAuth]);
 
   // 动态导入组件
   useEffect(() => {
@@ -114,6 +135,13 @@ export default function Home() {
   if (!mounted) {
     // SSR 或 hydration 前只渲染空白，避免 mismatch
     return null;
+  }
+
+  // 显示加载状态
+  if (loading) {
+    return (
+      <PandaLoadingView />
+    );
   }
 
   return (
@@ -168,8 +196,10 @@ export default function Home() {
           onClose={() => setShowUserProfile(false)}
           user={user}
           points={100}
-          onLogout={() => {
-            clearCachedGoogleAuth();
+          onLogout={async () => {
+            console.log('Logging out user');
+            await logout(); // 调用tokenService中的logout函数
+            console.log('User logged out');
             setUser(null);
             setShowUserProfile(false);
           }}
@@ -229,11 +259,11 @@ export default function Home() {
               </div> */}
             </aside>
             <section className="tab-content-v2">
-              {tab === "naming" && (
-                <CustomNamingPage />
-              )}
               {tab === "bespoke" && (
                 <BespokePage />
+              )}
+              {tab === "naming" && (
+                <CustomNamingPage />
               )}
               {tab === "surname" && (
                 <Surname />
