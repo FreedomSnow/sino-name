@@ -25,14 +25,4 @@ export const GOOGLE_AUTH_CONFIG = {
         // 请求的作用域
         SCOPES: ['profile', 'email']
     },
-
-    // 应用配置
-    APP: {
-        // 应用名称
-        NAME: 'Braveray Auth Demo',
-        // 版本
-        VERSION: '1.0.0',
-        // 调试模式
-        DEBUG: true
-    }
 };

@@ -149,9 +149,6 @@ export default function BespokePage() {
     setLoading(true);
     try {
       // 准备请求参数
-      const authCache = getCachedGoogleAuth();
-      const token = authCache?.tokens?.access_token || 'braveray';
-      
       const requestData = {
         surname: userSurname || '',
         givenName: userFormData.givenName,
@@ -162,7 +159,7 @@ export default function BespokePage() {
       };
       
       // 调用接口
-      const result = await getBespokeNaming(requestData, token);
+      const result = await getBespokeNaming(requestData);
       
       if (result.success && result.names && result.names.length > 0) {
         console.log('获取到AI命名结果:', result.names);
