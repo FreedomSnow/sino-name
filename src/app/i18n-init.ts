@@ -23,6 +23,12 @@ const resources = {
       // Login
       login_title: "三方登录",
       login_with: "使用{{provider}}登录",
+      // UserProfile
+      userProfile: "个人信息",
+      email: "邮箱",
+      points: "积分",
+      pointsUnit: "点",
+      logout: "退出登录",
       // OAuth Success/Failed
       loading: "加载中",
       success: "成功",
@@ -49,7 +55,6 @@ const resources = {
       oauth_success_message: "恭喜！您已成功通过Google账号登录。",
       user_information: "用户信息",
       name: "姓名",
-      email: "邮箱",
       avatar: "头像",
       redirecting_in_seconds: "{{seconds}}秒后自动跳转到首页",
       continue_to_app: "继续使用应用",
@@ -165,6 +170,12 @@ const resources = {
       // Login
       login_title: "Social Login",
       login_with: "Login with {{provider}}",
+      // UserProfile
+      userProfile: "User Profile",
+      email: "Email",
+      points: "Points",
+      pointsUnit: "pts",
+      logout: "Logout",
       // OAuth Success/Failed
       loading: "Loading",
       success: "Success",
@@ -191,7 +202,6 @@ const resources = {
       oauth_success_message: "Congratulations! You have successfully logged in with your Google account.",
       user_information: "User Information",
       name: "Name",
-      email: "Email",
       avatar: "Avatar",
       redirecting_in_seconds: "Redirecting to home page in {{seconds}} seconds",
       continue_to_app: "Continue to App",

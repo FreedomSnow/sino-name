@@ -1,5 +1,5 @@
 // 用户信息类型
-export interface GoogleUser {
+export interface UserInfo {
     id?: string;
     name: string;
     email: string;
@@ -17,6 +17,6 @@ export interface OAuthTokens {
 // 认证状态类型
 export interface AuthState {
     isAuthenticated: boolean;
-    user: GoogleUser | null;
+    user: UserInfo | null;
     tokens: OAuthTokens | null;
 }

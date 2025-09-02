@@ -1,0 +1,165 @@
+.user-profile-root {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.user-profile-container {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.user-profile-title {
+  color: #036aff;
+  font-size: 19px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #141414, rgb(154,60,152), #036aff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.user-profile-close-btn {
+  width: 32px !important;
+  height: 32px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.user-profile-close-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.user-profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 我们不再需要这个样式，因为 UserAvatarButton 有自己的样式
+.user-profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+  border: 2px solid #e0e0ff;
+} */
+
+.user-profile-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 8px 0;
+}
+
+.user-profile-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.user-profile-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-profile-info-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.user-profile-info-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.user-profile-points {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-profile-points-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #f59f00;
+}
+
+.user-profile-points-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.user-profile-logout-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.user-profile-logout-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-profile-logout-btn:hover {
+  background: #d32f2f;
+}
+
+@media (max-width: 480px) {
+  .user-profile-container {
+    width: 90%;
+    padding: 24px 16px 16px 16px;
+  }
+  
+  /* 已由 UserAvatarButton 的 size 属性控制
+  .user-profile-avatar {
+    width: 60px;
+    height: 60px;
+  } */
+  
+  .user-profile-name {
+    font-size: 18px;
+  }
+}

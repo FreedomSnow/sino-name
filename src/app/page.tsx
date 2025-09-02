@@ -13,10 +13,11 @@ import Birthday from "./features/birth/Birthday";
 import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
-import GoogleAvatarButton from '@/components/GoogleAvatarButton';
+import UserAvatarButton from '@/components/UserAvatarButton';
 import { useGoogleAuth } from '@/utils/cacheGoogleAuth';
-import type { GoogleUser } from '@/types/auth';
+import type { UserInfo } from '@/types/auth';
 import { clearCachedGoogleAuth } from '@/utils/cacheGoogleAuth';
+import UserProfile from './features/login/UserProfile';
 
 const TABS = [
   { key: "naming", icon: "/home.svg", title: "tabNaming" },
@@ -79,11 +80,12 @@ export default function Home() {
   };
   const [showContactUs, setShowContactUs] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showUserProfile, setShowUserProfile] = useState(false);
   const [ContactUs, setContactUs] = useState<React.ComponentType<{ isOpen: boolean; onClose: () => void; lang?: string }> | null>(null);
   
   // 使用新的 Hook 监听 Google Auth 变化
   const googleAuth = useGoogleAuth();
-  const [user, setUser] = useState<GoogleUser | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
 
   // 当 googleAuth 变化时更新 user
   useEffect(() => {
@@ -141,9 +143,8 @@ export default function Home() {
           </div>
           <button className="contact-btn-v2" onClick={() => setShowContactUs(true)}>{t("contact")}</button>
           {(user && (user.avatar || user.name || user.email)) ? (
-            <GoogleAvatarButton user={user} size={40} onClick={() => {
-              clearCachedGoogleAuth();
-              setUser(null);
+            <UserAvatarButton user={user} size={40} onClick={() => {
+              setShowUserProfile(true);
             }}/>
           ) : (
             <></>
@@ -157,6 +158,21 @@ export default function Home() {
           isOpen={showContactUs} 
           onClose={() => setShowContactUs(false)} 
           lang={i18n.language} 
+        />
+      )}
+      
+      {/* UserProfile 弹窗 */}
+      {user && showUserProfile && (
+        <UserProfile 
+          isOpen={showUserProfile}
+          onClose={() => setShowUserProfile(false)}
+          user={user}
+          points={100}
+          onLogout={() => {
+            clearCachedGoogleAuth();
+            setUser(null);
+            setShowUserProfile(false);
+          }}
         />
       )}
       {/* 下半部分 */}

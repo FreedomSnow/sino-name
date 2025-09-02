@@ -1,5 +1,5 @@
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
-import { GoogleUser, OAuthTokens } from '@/types/auth';
+import { UserInfo, OAuthTokens } from '@/types/auth';
 
 // Google One Tap 回调响应类型
 interface GoogleSignInResponse {
@@ -8,7 +8,7 @@ interface GoogleSignInResponse {
 
 class GoogleAuthService {
     private static instance: GoogleAuthService;
-    private currentUser: GoogleUser | null = null;
+    private currentUser: UserInfo | null = null;
     private oauthTokens: OAuthTokens | null = null;
     private isAuthenticated: boolean = false;
 
@@ -85,7 +85,7 @@ class GoogleAuthService {
     /**
      * 解析 JWT Token
      */
-    private parseJwt(token: string): GoogleUser {
+    private parseJwt(token: string): UserInfo {
         try {
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -211,7 +211,7 @@ class GoogleAuthService {
     /**
      * 获取当前用户
      */
-    public getCurrentUser(): GoogleUser | null {
+    public getCurrentUser(): UserInfo | null {
         return this.currentUser;
     }
 

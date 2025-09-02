@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import "./CustomNaming.css";
 import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
 import Login from "../login/Login";
-import { GoogleUser } from "@/types/auth";
+import { UserInfo } from "@/types/auth";
 import { getFreedomNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
 import { NameItem } from "@/types/restRespEntities";
@@ -19,7 +19,7 @@ export default function CustomNaming() {
   const [desc, setDesc] = useState<string>(cacheObj.desc ?? "");
   const [showLogin, setShowLogin] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<GoogleUser | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
   const [namingResults, setNamingResults] = useState<NameItem[]>([]);
   const [showResults, setShowResults] = useState(false);
 
