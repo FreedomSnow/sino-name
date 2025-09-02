@@ -1,0 +1,22 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgb(190,215,240);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgb(234,214,234);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Logo circle -->
+  <circle cx="300" cy="315" r="100" fill="#036aff"/>
+  <text x="300" y="340" font-family="Arial, sans-serif" font-size="80" font-weight="bold" 
+        text-anchor="middle" fill="white">名</text>
+  
+  <!-- Text content -->
+  <text x="480" y="280" font-family="Arial, sans-serif" font-size="64" font-weight="bold" 
+        fill="#141414">SinoName</text>
+  <text x="480" y="340" font-family="Arial, sans-serif" font-size="36" 
+        fill="#666">中文名字生成器</text>
+  <text x="480" y="390" font-family="Arial, sans-serif" font-size="28" 
+        fill="#666">Professional Chinese Name Generator</text>
+</svg>
