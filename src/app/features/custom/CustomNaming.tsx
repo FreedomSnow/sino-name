@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { useTranslation } from "react-i18next";
 import "./CustomNaming.css";
-import { getCachedGoogleAuth } from "@/utils/cacheGoogleAuth";
+import { getCachedUserAuth } from "@/utils/cacheUserAuth";
 import Login from "../login/Login";
 import { UserInfo } from "@/types/auth";
 import { getFreedomNaming } from "@/services/aiNaming";
@@ -35,7 +35,7 @@ export default function CustomNaming() {
   
   // 初始化时检查登录状态
   useEffect(() => {
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     if (authCache && authCache.user) {
       setUser(authCache.user);
     }
@@ -74,7 +74,7 @@ export default function CustomNaming() {
     setNamingResults([]);
     
     // 检查是否已登录
-    const authCache = getCachedGoogleAuth();
+    const authCache = getCachedUserAuth();
     if (!authCache || !authCache.user) {
       // 未登录，显示登录弹窗
       setShowLogin(true);
@@ -107,12 +107,12 @@ export default function CustomNaming() {
         // 处理错误情况
         console.error("AI自由命名失败:", result.message);
         // 可以添加错误提示
-        alert(t('namingFailed', 'AI命名失败，请稍后重试'));
+        alert(t('namingFailed', '命名失败，请稍后重试'));
       }
     }).catch(error => {
       console.error('AI自由命名错误:', error);
       setLoading(false);
-      alert(t('namingError', 'AI命名出错，请稍后重试'));
+      alert(t('namingError', '命名出错，请稍后重试'));
     });
     
   };
@@ -181,7 +181,11 @@ export default function CustomNaming() {
       {showLogin && (
         <Login 
           isOpen={showLogin} 
-          onClose={handleLoginSuccess}  
+          onClose={() => {
+            setTimeout(() => {
+              handleLoginSuccess();
+            }, 500);
+          }}  
         />
       )}
     </div>
