@@ -23,17 +23,24 @@ export async function refreshToken(refreshToken: string): Promise<OAuthTokens | 
     }
 
     const data = await response.json();
-    
-    if (!data.access_token) {
+    console.log('刷新令牌响应:', data);
+    if (data.success === false) {
+      console.error('刷新令牌失败:', data.message);
+      return null;
+    }
+
+    const respData = data.data || {};
+    // 确保 access_token 存在
+    if (!respData.access_token) {
       console.error('刷新令牌响应中没有 access_token');
       return null;
     }
 
     // 返回新的令牌信息
     return {
-      access_token: data.access_token,
+      access_token: respData.access_token,
       refresh_token: refreshToken, // 保留原来的 refresh_token
-      expires_in: data.expires_in || 3600, // 默认过期时间为 1 小时
+      expires_in: respData.expires_in || 3600, // 默认过期时间为 1 小时
     };
   } catch (error) {
     console.error('刷新令牌出错:', error);
@@ -55,11 +62,13 @@ export async function getUserAuth(): Promise<UserAuthCache | null> {
   }
 
   const { user, tokens } = authCache;
-  const currentTime = Date.now();
-  const tokenTimestamp = authCache.timestamp || 0;
-  
+  const now = new Date();
+  const currentTime = now.getTime();
+  console.log(`getUserAuth, currentTime: ${currentTime}, expires_in: ${tokens.expires_in}`);
+
   // 2. 检查 access_token 是否有效
-  if (tokens.access_token && tokenTimestamp + tokens.expires_in * 1000 > currentTime) {
+  // tokens.expires_in 存储的是 UTC 时间戳
+  if (tokens.access_token && tokens.expires_in > currentTime) {
     // access_token 有效，直接返回
     console.log('使用现有的有效 access_token');
     return authCache;

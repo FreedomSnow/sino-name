@@ -1,7 +1,8 @@
 import { APP_CONFIG } from '@/config/appConfig';
 import { AI_REST_CONFIG } from '@/config/aiRestConfig';
 import { SurnameItem, NameItem } from '@/types/restRespEntities';
-import { getCachedUserAuth } from "@/utils/cacheUserAuth";
+import { getUserAuth } from "@/services/tokenService";
+import { getErrorMessage, getErrorCode, HTTP_STATUS } from '@/app/features/error-handler/errorCodes';
 
 // 自由命名请求参数接口
 interface FreedomNamingRequest {
@@ -14,6 +15,7 @@ interface FreedomNamingResponse {
   success: boolean;
   message?: string;
   names?: NameItem[];
+  code?: number; // 服务器返回的错误码
 }
 
 // API 返回的自定义命名项目接口
@@ -42,10 +44,20 @@ export async function getFreedomNaming(
     
     console.log('完整请求URL:', url);
     
-    const authCache = getCachedUserAuth();
+    console.log('开始获取用户认证信息...');
+    let authCache;
+    try {
+      authCache = await getUserAuth();
+      console.log('获取用户认证信息完成:', authCache ? '成功' : '失败');
+    } catch (authError) {
+      console.error('获取用户认证信息时出错:', authError);
+      authCache = null;
+    }
+    
     const token = authCache?.tokens?.access_token || '';
+    console.log('token值:', token);
 
-    console.log('token:', token);
+    console.log('准备发送请求...');
 
     const response = await fetch(url, {
       method: 'POST',
@@ -71,14 +83,30 @@ export async function getFreedomNaming(
         pinyin: item.pinyin || '',
         explanation_cn: item.explanation_cn || '',
         explanation_en: item.explanation_en || ''
-      })) : []
+      })) : [],
+      code: result.code || HTTP_STATUS.OK // 使用标准的成功状态码
     };
   } catch (error) {
     console.error('AI自由命名接口调用失败:', error);
+    let errorCode = HTTP_STATUS.INTERNAL_SERVER_ERROR; // 默认服务器错误码
+    let errorMessage = getErrorMessage(errorCode);
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      // 尝试从错误消息中提取状态码
+      const statusMatch = error.message.match(/请求失败: (\d+)/);
+      if (statusMatch && statusMatch[1]) {
+        const statusCode = parseInt(statusMatch[1]);
+        errorCode = getErrorCode(statusCode);
+        errorMessage = getErrorMessage(errorCode, error.message);
+      }
+    }
+    
     return {
       success: false,
-      message: error instanceof Error ? error.message : '未知错误',
-      names: []
+      message: errorMessage,
+      names: [],
+      code: errorCode
     };
   }
 }
@@ -92,6 +120,7 @@ interface SurnameResponse {
   success: boolean;
   message?: string;
   surnames?: SurnameItem[];
+  code?: number; // 服务器返回的错误码
 }
 
 // API 返回的姓氏项目接口
@@ -120,8 +149,20 @@ export async function getSurname(
     
     console.log('完整请求URL:', url);
 
-    const authCache = getCachedUserAuth();
+    console.log('开始获取用户认证信息...');
+    let authCache;
+    try {
+      authCache = await getUserAuth();
+      console.log('获取用户认证信息完成:', authCache ? '成功' : '失败');
+    } catch (authError) {
+      console.error('获取用户认证信息时出错:', authError);
+      authCache = null;
+    }
+    
     const token = authCache?.tokens?.access_token || '';
+    console.log('token值:', token);
+    
+    console.log('准备发送请求...');
     
     const response = await fetch(url, {
       method: 'POST',
@@ -147,14 +188,30 @@ export async function getSurname(
         pinyin: item.pinyin || '',
         explanation_cn: item.explanation_cn || '',
         explanation_en: item.explanation_en || ''
-      })) : []
+      })) : [],
+      code: result.code || HTTP_STATUS.OK // 使用标准的成功状态码
     };
   } catch (error) {
     console.error('AI命名接口调用失败:', error);
+    let errorCode = HTTP_STATUS.INTERNAL_SERVER_ERROR; // 默认服务器错误码
+    let errorMessage = getErrorMessage(errorCode);
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      // 尝试从错误消息中提取状态码
+      const statusMatch = error.message.match(/请求失败: (\d+)/);
+      if (statusMatch && statusMatch[1]) {
+        const statusCode = parseInt(statusMatch[1]);
+        errorCode = getErrorCode(statusCode);
+        errorMessage = getErrorMessage(errorCode, error.message);
+      }
+    }
+    
     return {
       success: false,
-      message: error instanceof Error ? error.message : '未知错误',
-      surnames: []
+      message: errorMessage,
+      surnames: [],
+      code: errorCode
     };
   }
 }
@@ -174,6 +231,7 @@ interface BespokeNamingResponse {
   success: boolean;
   message?: string;
   names?: NameItem[];
+  code?: number; // 服务器返回的错误码
 }
 
 // API 返回的定制全名项目接口
@@ -202,8 +260,20 @@ export async function getBespokeNaming(
     
     console.log('完整请求URL:', url);
 
-    const authCache = getCachedUserAuth();
+    console.log('开始获取用户认证信息...');
+    let authCache;
+    try {
+      authCache = await getUserAuth();
+      console.log('获取用户认证信息完成:', authCache ? '成功' : '失败');
+    } catch (authError) {
+      console.error('获取用户认证信息时出错:', authError);
+      authCache = null;
+    }
+    
     const token = authCache?.tokens?.access_token || '';
+    console.log('token值:', token);
+    
+    console.log('准备发送请求...');
     
     const response = await fetch(url, {
       method: 'POST',
@@ -229,14 +299,30 @@ export async function getBespokeNaming(
         pinyin: item.pinyin || '',
         explanation_cn: item.explanation_cn || '',
         explanation_en: item.explanation_en || ''
-      })) : []
+      })) : [],
+      code: result.code || HTTP_STATUS.OK // 使用标准的成功状态码
     };
   } catch (error) {
     console.error('AI定制全名接口调用失败:', error);
+    let errorCode = HTTP_STATUS.INTERNAL_SERVER_ERROR; // 默认服务器错误码
+    let errorMessage = getErrorMessage(errorCode);
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      // 尝试从错误消息中提取状态码
+      const statusMatch = error.message.match(/请求失败: (\d+)/);
+      if (statusMatch && statusMatch[1]) {
+        const statusCode = parseInt(statusMatch[1]);
+        errorCode = getErrorCode(statusCode);
+        errorMessage = getErrorMessage(errorCode, error.message);
+      }
+    }
+    
     return {
       success: false,
-      message: error instanceof Error ? error.message : '未知错误',
-      names: []
+      message: errorMessage,
+      names: [],
+      code: errorCode
     };
   }
 }
