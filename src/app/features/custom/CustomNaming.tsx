@@ -57,6 +57,7 @@ export default function CustomNaming() {
   };
 
   const handleSubmit = () => {
+    console.log('提交自由命名:', { name, desc });
     // 验证名称合法性
     if (!name.trim()) {
       alert(t('name Required'));
@@ -81,40 +82,41 @@ export default function CustomNaming() {
       return;
     }
 
-    handleLoginSuccess();
+    handleLoginSuccess(true);
   };
   
   // 处理登录成功
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (isAiRequest = false) => {
     setShowLogin(false);
 
     // 已登录，检测是否还有积分
     // TODO: 积分不够，则提示充值
 
     // 积分够，则调用ai命名接口
-    setLoading(true);
-    getFreedomNaming({
-      name: name.trim(),
-      desc: desc.trim()
-    }).then(result => {
-      console.log('AI自由命名结果:', result);
-      setLoading(false);
-      if (result.success && result.names && result.names.length > 0) {
-        // 使用API返回的命名数据
-        setNamingResults(result.names);
-        setShowResults(true);
-      } else {
-        // 处理错误情况
-        console.error("AI自由命名失败:", result.message);
-        // 可以添加错误提示
-        alert(t('namingFailed', '命名失败，请稍后重试'));
-      }
-    }).catch(error => {
-      console.error('AI自由命名错误:', error);
-      setLoading(false);
-      alert(t('namingError', '命名出错，请稍后重试'));
-    });
-    
+    if (isAiRequest) {
+      setLoading(true);
+      getFreedomNaming({
+        name: name.trim(),
+        desc: desc.trim()
+      }).then(result => {
+        console.log('AI自由命名结果:', result);
+        setLoading(false);
+        if (result.success && result.names && result.names.length > 0) {
+          // 使用API返回的命名数据
+          setNamingResults(result.names);
+          setShowResults(true);
+        } else {
+          // 处理错误情况
+          console.error("AI自由命名失败:", result.message);
+          // 可以添加错误提示
+          alert(t('namingFailed', '命名失败，请稍后重试'));
+        }
+      }).catch(error => {
+        console.error('AI自由命名错误:', error);
+        setLoading(false);
+        alert(t('namingError', '命名出错，请稍后重试'));
+      });
+    }
   };
 
   return (

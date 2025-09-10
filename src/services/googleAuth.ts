@@ -112,6 +112,7 @@ class GoogleAuthService {
             }
 
             const data = await response.json();
+            console.log('[authenticateWithBackend] data:', data);
             
             if (data.success) {
                 this.oauthTokens = {

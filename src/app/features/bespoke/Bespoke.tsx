@@ -128,15 +128,15 @@ export default function BespokePage() {
 
     console.log('登录成功，准备调用AI命名接口，loginSource:', source);
     // 积分够
-    if (source === 'mikePick') {
-      // 如果是从 MikePick 调用的，则打开 LastNameForm 弹窗
-      setShowLastNameForm(true);
-    } else if (source === 'userInfoForm') {
-      // 如果是从 UserInfoForm 调用的，则调用ai接口
-      getNameList();
-    }
+    // if (source === 'mikePick') {
+    //   // 如果是从 MikePick 调用的，则打开 LastNameForm 弹窗
+    //   setShowLastNameForm(true);
+    // } else if (source === 'userInfoForm') {
+    //   // 如果是从 UserInfoForm 调用的，则调用ai接口
+    //   getNameList();
+    // }
 
-    setLoginSource('');
+    // setLoginSource('');
   };
 
   const getNameList = async () => {
