@@ -15,7 +15,6 @@ import Welcome from "./features/welcome/Welcome";
 import UserAvatarButton from '@/components/UserAvatarButton';
 import { useUserAuth } from '@/utils/cacheUserAuth';
 import type { UserInfo } from '@/types/auth';
-import { clearCachedUserAuth } from '@/utils/cacheUserAuth';
 import UserProfile from './features/login/UserProfile';
 import { getUserAuth, logout } from '@/services/tokenService';
 import PandaLoadingView from "@/components/PandaLoadingView";
@@ -45,7 +44,7 @@ if (typeof window !== 'undefined') {
 }
 
 export default function Home() {
-  const [tab, setTab] = useState("home");
+  const [tab, setTab] = useState("bespoke");
   const [collapsed, setCollapsed] = useState(false);
   const [langList, setLangList] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -210,7 +209,7 @@ export default function Home() {
         {showWelcome ? (
           <Welcome handleStart={() => {
             setShowWelcome(false);
-            setTab('naming');
+            setTab('bespoke');
           }} />
         ) : (
           <>

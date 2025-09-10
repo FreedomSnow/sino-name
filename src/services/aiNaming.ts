@@ -2,7 +2,7 @@ import { APP_CONFIG } from '@/config/appConfig';
 import { AI_REST_CONFIG } from '@/config/aiRestConfig';
 import { SurnameItem, NameItem } from '@/types/restRespEntities';
 import { getUserAuth } from "@/services/tokenService";
-import { getErrorMessage, getErrorCode, HTTP_STATUS } from '@/app/features/error-handler/errorCodes';
+import { getErrorMessage, getErrorCode, HTTP_STATUS } from '@/app/error/errorCodes';
 
 // 自由命名请求参数接口
 interface FreedomNamingRequest {

@@ -110,6 +110,7 @@ export async function logout(): Promise<boolean> {
 
     const access_token = authCache.tokens.access_token;
 
+    // 调用后端API登出
     console.log('Logging out with access token:', access_token);
     const response = await fetch(`${TOKEN_CONFIG.BACKEND.BASE_URL}${TOKEN_CONFIG.BACKEND.ENDPOINTS.LOGOUT}`, {
       method: 'POST',
@@ -117,6 +118,16 @@ export async function logout(): Promise<boolean> {
         'Authorization': `${APP_CONFIG.APP.NAME} ${access_token}`
       },
     });
+
+    // 调用Google登出方法
+    try {
+      const { googleAuthService } = await import('./googleAuth');
+      await googleAuthService.signOut();
+      console.log('Google 登出成功');
+    } catch (googleError) {
+      console.error('Google 登出失败:', googleError);
+      // 继续执行，不中断流程
+    }
 
     clearCachedUserAuth();
     if (!response.ok) {
