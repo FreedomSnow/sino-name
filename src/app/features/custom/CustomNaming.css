@@ -162,9 +162,19 @@
   cursor: pointer;
   transition: background 0.2s;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .custom-naming-submit-btn:hover {
   background: #0056b3;
+}
+
+/* 按钮内图标样式 */
+.custom-naming-btn-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
 }
 /* 加载动画容器 */
 .custom-naming-loading-container {

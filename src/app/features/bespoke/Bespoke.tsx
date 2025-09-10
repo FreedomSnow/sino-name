@@ -10,6 +10,7 @@ import CustomNameList from '../custom/CustomNameList';
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { getCachedUserAuth } from "@/utils/cacheUserAuth";
 import Login from "../login/Login";
+import OrderPage from "../order/OrderPage";
 import { SurnameItem, NameItem } from "@/types/restRespEntities";
 import { UserInfoData } from "./UserInfoForm";
 import { getBespokeNaming } from "@/services/aiNaming";
@@ -74,6 +75,7 @@ export default function BespokePage() {
   const [showLastNameForm, setShowLastNameForm] = useState(false);
 
   const [showLogin, setShowLogin] = useState(false);
+  const [showOrderPage, setShowOrderPage] = useState(false);
   const [loading, setLoading] = useState(false);
   
   // Mike定制按钮点击
@@ -93,7 +95,7 @@ export default function BespokePage() {
     setShowLastNameForm(true);
   };
 
-  // Mike定制按钮点击
+  // 发送用户信息
   const handleSendUserInfo = () => {
     // 验证信息合法性
     if (!userFormData || !userFormData.givenName.trim()) {
@@ -117,26 +119,26 @@ export default function BespokePage() {
     setShowFullNameResults(false);
     setFullnameResults([]);
 
-    handleLoginSuccess(source);
+    handleLoginSuccess(source, false);
   };
 
   // 处理登录成功
-  const handleLoginSuccess = (source = loginSource) => {
+  const handleLoginSuccess = (source = loginSource, isLoginCallback = true) => {
     setShowLogin(false);
     // 登录成功后判断积分是否够用，如果不够则提示充值
     // TODO: 积分不够，则提示充值
 
     console.log('登录成功，准备调用AI命名接口，loginSource:', source);
     // 积分够
-    // if (source === 'mikePick') {
-    //   // 如果是从 MikePick 调用的，则打开 LastNameForm 弹窗
-    //   setShowLastNameForm(true);
-    // } else if (source === 'userInfoForm') {
-    //   // 如果是从 UserInfoForm 调用的，则调用ai接口
-    //   getNameList();
-    // }
+    if (source === 'mikePick') {
+      // 如果是从 MikePick 调用的，则打开 LastNameForm 弹窗
+      setShowLastNameForm(true);
+    } else if (source === 'userInfoForm' && !isLoginCallback) {
+      // 如果是从 UserInfoForm 调用的，则调用ai接口
+      getNameList();
+    }
 
-    // setLoginSource('');
+    setLoginSource('');
   };
 
   const getNameList = async () => {
@@ -167,12 +169,24 @@ export default function BespokePage() {
         setFullnameResults(result.names);
         setShowFullNameResults(true);
       } else {
-        console.error('AI命名失败:', result.message);
-        alert(t('namingFailed', '命名失败，请稍后重试'));
+        console.error(`AI自由命名失败, code: ${result.code}, message: ${result.message}`);
+        if (result.code === 401) {
+          // 401错误，尝试获取用户认证信息
+          import('@/services/tokenService').then(({ logout }) => {
+            logout();
+            alert(t('errorUnauthorized'));
+          });
+        } else if (result.code === 403) {
+          // 403错误，显示订单页面
+          setShowOrderPage(true);
+        } else {
+          // 其他错误码
+          alert(t('errorNormal'));
+        }
       }
     } catch (error) {
       console.error('AI命名请求错误:', error);
-      alert(t('namingError', '命名出错，请稍后重试'));
+      alert(t('errorNormal'));
     } finally {
       setLoading(false);
     }
@@ -268,6 +282,7 @@ export default function BespokePage() {
                 className="bespoke-mike-pick-btn"
                 onClick={handleMikePick}
               >
+                <img src="/pay.svg" alt="pay" className="bespoke-btn-icon" />
                 {t("bespokeMikeCustom")}
               </button>
             </div>
@@ -389,6 +404,14 @@ export default function BespokePage() {
               handleLoginSuccess();
             }, 500);
           }}  
+        />
+      )}
+
+      {/* 订单页面 */}
+      {showOrderPage && (
+        <OrderPage 
+          isOpen={showOrderPage} 
+          onClose={() => setShowOrderPage(false)}  
         />
       )}
 

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import "./CustomNaming.css";
 import { getCachedUserAuth } from "@/utils/cacheUserAuth";
 import Login from "../login/Login";
+import OrderPage from "@/app/features/order/OrderPage";
 import { UserInfo } from "@/types/auth";
 import { getFreedomNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
@@ -18,6 +19,7 @@ export default function CustomNaming() {
   const [name, setName] = useState<string>(cacheObj.name ?? "");
   const [desc, setDesc] = useState<string>(cacheObj.desc ?? "");
   const [showLogin, setShowLogin] = useState(false);
+  const [showOrderPage, setShowOrderPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
   const [namingResults, setNamingResults] = useState<NameItem[]>([]);
@@ -107,14 +109,25 @@ export default function CustomNaming() {
           setShowResults(true);
         } else {
           // 处理错误情况
-          console.error("AI自由命名失败:", result.message);
-          // 可以添加错误提示
-          alert(t('namingFailed', '命名失败，请稍后重试'));
+          console.error(`AI自由命名失败, code: ${result.code}, message: ${result.message}`);
+          if (result.code === 401) {
+            // 401错误，尝试获取用户认证信息
+            import('@/services/tokenService').then(({ logout }) => {
+              logout();
+              alert(t('errorUnauthorized'));
+            });
+          } else if (result.code === 403) {
+            // 403错误，显示订单页面
+            setShowOrderPage(true);
+          } else {
+            // 其他错误码
+            alert(t('errorNormal'));
+          }
         }
       }).catch(error => {
         console.error('AI自由命名错误:', error);
         setLoading(false);
-        alert(t('namingError', '命名出错，请稍后重试'));
+        alert(t('errorNormal'));
       });
     }
   };
@@ -162,6 +175,7 @@ export default function CustomNaming() {
             onClick={handleSubmit}
             disabled={loading}
           >
+            <img src="/pay.svg" alt="pay" className="custom-naming-btn-icon" />
             {t('submit')}
           </button>
         </div>
@@ -188,6 +202,14 @@ export default function CustomNaming() {
               handleLoginSuccess();
             }, 500);
           }}  
+        />
+      )}
+      
+      {/* 订单页面 */}
+      {showOrderPage && (
+        <OrderPage 
+          isOpen={showOrderPage} 
+          onClose={() => setShowOrderPage(false)}  
         />
       )}
     </div>

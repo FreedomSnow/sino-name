@@ -153,7 +153,10 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
           rows={3}
         />
       </div>
-      <button className="user-info-form-submit" type="submit">{t('submit')}</button>
+      <button className="user-info-form-submit" type="submit">
+        <img src="/pay.svg" alt="pay" className="user-info-form-btn-icon" />
+        {t('submit')}
+      </button>
       </form>
     </ConfigProvider>
   );
