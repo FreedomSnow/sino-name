@@ -3,7 +3,7 @@ import { CACHE_KEYS } from "@/app/cacheKeys";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
 import "./CustomNaming.css";
-import { getCachedUserAuth } from "@/utils/cacheUserAuth";
+import { getCachedUserAuth } from "@/cache/cacheUserAuth";
 import Login from "../login/Login";
 import OrderPage from "@/app/features/order/OrderPage";
 // 不再需要 UserInfo 类型
@@ -11,7 +11,7 @@ import { getFreedomNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
 import { NameItem } from "@/types/restRespEntities";
 import CustomNameList from "./CustomNameList";
-import { HTTP_STATUS, NAMING_ERRORS } from "@/app/error/errorCodes";
+import { HTTP_STATUS } from "@/app/error/errorCodes";
 
 export default function CustomNaming() {
   const { t } = useTranslation();
@@ -111,12 +111,11 @@ export default function CustomNaming() {
           // 处理错误情况
           console.error(`AI自由命名失败, code: ${result.code}, message: ${result.message}`);
           if (result.code === HTTP_STATUS.UNAUTHORIZED) {
-            // 401错误，尝试获取用户认证信息
             import('@/services/tokenService').then(({ logout }) => {
               logout();
               alert(t('errorUnauthorized'));
             });
-          } else if (result.code === NAMING_ERRORS.NOT_ENOUGH_POINTS) {
+          } else if (result.code === HTTP_STATUS.NOT_ENOUGH_POINTS) {
             // 403错误，显示订单页面
             setShowOrderPage(true);
           } else {
@@ -198,10 +197,13 @@ export default function CustomNaming() {
         <Login 
           isOpen={showLogin} 
           onClose={() => {
+            setShowLogin(false);
+          }} 
+          onLogin={() => {
             setTimeout(() => {
               handleLoginSuccess();
             }, 500);
-          }}  
+          }} 
         />
       )}
       

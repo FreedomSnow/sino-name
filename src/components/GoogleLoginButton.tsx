@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
-import { cacheUserAuth } from '@/utils/cacheUserAuth';
+import { cacheUserAuth } from '@/cache/cacheUserAuth';
 import { UserInfo, OAuthTokens } from '@/types/auth';
 // 导入已存在的Google类型定义
 import '@/types/google'; // 这会引入Google类型定义

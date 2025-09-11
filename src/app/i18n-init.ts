@@ -307,7 +307,7 @@ const resources = {
       birthdayFlowerLabel: "Lunar Birthday Flower",
       birthdayBaziLabel: "Lunar Bazi (Five Elements & Eight Characters)",
       // Error
-      errorUnauthorized: "Authorization expired, please log in again",
+      errorUnauthorized: "Authorization expired, please login again",
       errorTooManyRequests: "Too many requests, please try again later",
       errorNormal: "Request failed, please try again later",
     }
