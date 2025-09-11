@@ -12,7 +12,6 @@ interface UserProfileProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserInfo;
-  points?: number;
   onLogout: () => void;
 }
 
@@ -20,7 +19,6 @@ const UserProfile: FC<UserProfileProps> = ({
   isOpen, 
   onClose, 
   user, 
-  points = 0,
   onLogout 
 }) => {
   const { t, ready } = useTranslation();
@@ -82,7 +80,7 @@ const UserProfile: FC<UserProfileProps> = ({
           <div className="user-profile-info-item">
             <span className="user-profile-info-label">{t('points')}</span>
             <div className="user-profile-points">
-              <span className="user-profile-points-value">{points}</span>
+              <span className="user-profile-points-value">{user.points || 0}</span>
               <span className="user-profile-points-label">{t('pointsUnit')}</span>
             </div>
           </div>

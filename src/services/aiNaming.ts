@@ -2,7 +2,7 @@ import { APP_CONFIG } from '@/config/appConfig';
 import { AI_REST_CONFIG } from '@/config/aiRestConfig';
 import { SurnameItem, NameItem } from '@/types/restRespEntities';
 import { getUserAuth } from "@/services/tokenService";
-import { getErrorMessage, getErrorCode, HTTP_STATUS } from '@/app/error/errorCodes';
+import { getErrorMessage, HTTP_STATUS } from '@/app/error/errorCodes';
 
 // 自由命名请求参数接口
 interface FreedomNamingRequest {
@@ -16,6 +16,7 @@ interface FreedomNamingResponse {
   message?: string;
   names?: NameItem[];
   code?: number; // 服务器返回的错误码
+  points: number; // 用来解析返回值中的"remaining_uses"，非负整数，默认为0
 }
 
 // API 返回的自定义命名项目接口
@@ -84,7 +85,8 @@ export async function getFreedomNaming(
         explanation_cn: item.explanation_cn || '',
         explanation_en: item.explanation_en || ''
       })) : [],
-      code: result.code || HTTP_STATUS.OK // 使用标准的成功状态码
+      code: result.code || HTTP_STATUS.OK, // 使用标准的成功状态码
+      points: result.remaining_uses !== undefined ? result.remaining_uses : 0 // 解析remaining_uses字段
     };
   } catch (error) {
     console.error('AI自由命名接口调用失败:', error);
@@ -97,7 +99,7 @@ export async function getFreedomNaming(
       const statusMatch = error.message.match(/请求失败: (\d+)/);
       if (statusMatch && statusMatch[1]) {
         const statusCode = parseInt(statusMatch[1]);
-        errorCode = getErrorCode(statusCode);
+        errorCode = statusCode;
         errorMessage = getErrorMessage(errorCode, error.message);
       }
     }
@@ -106,7 +108,8 @@ export async function getFreedomNaming(
       success: false,
       message: errorMessage,
       names: [],
-      code: errorCode
+      code: errorCode,
+      points: 0 // 发生错误时默认为0
     };
   }
 }
@@ -121,6 +124,7 @@ interface SurnameResponse {
   message?: string;
   surnames?: SurnameItem[];
   code?: number; // 服务器返回的错误码
+  points: number; // 用来解析返回值中的"remaining_uses"，非负整数，默认为0
 }
 
 // API 返回的姓氏项目接口
@@ -189,7 +193,8 @@ export async function getSurname(
         explanation_cn: item.explanation_cn || '',
         explanation_en: item.explanation_en || ''
       })) : [],
-      code: result.code || HTTP_STATUS.OK // 使用标准的成功状态码
+      code: result.code || HTTP_STATUS.OK, // 使用标准的成功状态码
+      points: result.remaining_uses !== undefined ? result.remaining_uses : 0 // 解析remaining_uses字段
     };
   } catch (error) {
     console.error('AI命名接口调用失败:', error);
@@ -202,7 +207,7 @@ export async function getSurname(
       const statusMatch = error.message.match(/请求失败: (\d+)/);
       if (statusMatch && statusMatch[1]) {
         const statusCode = parseInt(statusMatch[1]);
-        errorCode = getErrorCode(statusCode);
+        errorCode = statusCode;
         errorMessage = getErrorMessage(errorCode, error.message);
       }
     }
@@ -211,7 +216,8 @@ export async function getSurname(
       success: false,
       message: errorMessage,
       surnames: [],
-      code: errorCode
+      code: errorCode,
+      points: 0 // 发生错误时默认为0
     };
   }
 }
@@ -232,6 +238,7 @@ interface BespokeNamingResponse {
   message?: string;
   names?: NameItem[];
   code?: number; // 服务器返回的错误码
+  points: number; // 用来解析返回值中的"remaining_uses"，非负整数，默认为0
 }
 
 // API 返回的定制全名项目接口
@@ -300,7 +307,8 @@ export async function getBespokeNaming(
         explanation_cn: item.explanation_cn || '',
         explanation_en: item.explanation_en || ''
       })) : [],
-      code: result.code || HTTP_STATUS.OK // 使用标准的成功状态码
+      code: result.code || HTTP_STATUS.OK, // 使用标准的成功状态码
+      points: result.remaining_uses !== undefined ? result.remaining_uses : 0 // 解析remaining_uses字段
     };
   } catch (error) {
     console.error('AI定制全名接口调用失败:', error);
@@ -313,7 +321,7 @@ export async function getBespokeNaming(
       const statusMatch = error.message.match(/请求失败: (\d+)/);
       if (statusMatch && statusMatch[1]) {
         const statusCode = parseInt(statusMatch[1]);
-        errorCode = getErrorCode(statusCode);
+        errorCode = statusCode;
         errorMessage = getErrorMessage(errorCode, error.message);
       }
     }
@@ -322,7 +330,8 @@ export async function getBespokeNaming(
       success: false,
       message: errorMessage,
       names: [],
-      code: errorCode
+      code: errorCode,
+      points: 0 // 发生错误时默认为0
     };
   }
 }

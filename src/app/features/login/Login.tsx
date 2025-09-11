@@ -10,13 +10,14 @@ import { GoogleLoginButton } from '@/components/GoogleLoginButton';
 interface LoginProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogin: () => void;
 }
 
 const SOCIALS = [
   { key: 'google', label: 'Google', icon: '/icon-google.svg' },
 ];
 
-const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
+const Login: FC<LoginProps> = ({ isOpen, onClose, onLogin }) => {
   const { t, ready } = useTranslation();
 
   if (!isOpen) return null;
@@ -83,7 +84,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
           
           <div className="google-login-button-container">
             <GoogleLoginButton onLogin={() => {
-              onClose();
+              onLogin();
             }} />
           </div>
         </div>

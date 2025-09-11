@@ -1,5 +1,5 @@
 import { OAuthTokens } from '@/types/auth';
-import { getCachedUserAuth, cacheUserAuth, clearCachedUserAuth, UserAuthCache } from '@/utils/cacheUserAuth';
+import { getCachedUserAuth, cacheUserAuth, clearCachedUserAuth, UserAuthCache } from '@/cache/cacheUserAuth';
 import { APP_CONFIG } from '@/config/appConfig';
 import { TOKEN_CONFIG } from '@/config/tokenConfig';
 

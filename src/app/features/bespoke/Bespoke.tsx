@@ -8,15 +8,14 @@ import LastNameForm from './LastNameForm';
 import SurnameList from './SurnameList';
 import CustomNameList from '../custom/CustomNameList';
 import { CACHE_KEYS } from "@/app/cacheKeys";
-import { getCachedUserAuth } from "@/utils/cacheUserAuth";
+import { getCachedUserAuth } from "@/cache/cacheUserAuth";
 import Login from "../login/Login";
 import OrderPage from "../order/OrderPage";
 import { SurnameItem, NameItem } from "@/types/restRespEntities";
 import { UserInfoData } from "./UserInfoForm";
 import { getBespokeNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
-import { HTTP_STATUS, NAMING_ERRORS } from "@/app/error/errorCodes";
-
+import { HTTP_STATUS } from "@/app/error/errorCodes";
 
 export default function BespokePage() {
 
@@ -177,7 +176,7 @@ export default function BespokePage() {
             logout();
             alert(t('errorUnauthorized'));
           });
-        } else if (result.code === NAMING_ERRORS.NOT_ENOUGH_POINTS) {
+        } else if (result.code === HTTP_STATUS.NOT_ENOUGH_POINTS) {
           // 403错误，显示订单页面
           setShowOrderPage(true);
         } else {
@@ -400,7 +399,10 @@ export default function BespokePage() {
       {showLogin && (
         <Login 
           isOpen={showLogin} 
-          onClose={() => {
+          onClose={() => {   
+            setShowLogin(false); 
+          }}
+          onLogin={() => {
             setTimeout(() => {
               handleLoginSuccess();
             }, 500);

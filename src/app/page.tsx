@@ -13,7 +13,7 @@ import Birthday from "./features/birth/Birthday";
 import { CACHE_KEYS } from "./cacheKeys";
 import Welcome from "./features/welcome/Welcome";
 import UserAvatarButton from '@/components/UserAvatarButton';
-import { useUserAuth } from '@/utils/cacheUserAuth';
+import { useUserAuth } from '@/cache/cacheUserAuth';
 import type { UserInfo } from '@/types/auth';
 import UserProfile from './features/login/UserProfile';
 import { getUserAuth, logout } from '@/services/tokenService';
@@ -212,7 +212,6 @@ export default function Home() {
           isOpen={showUserProfile}
           onClose={() => setShowUserProfile(false)}
           user={user}
-          points={100}
           onLogout={async () => {
             console.log('Logging out user');
             await logout(); // 调用tokenService中的logout函数

@@ -6,7 +6,7 @@ import "./LastNameForm.css";
 import { getSurname } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
 import OrderPage from "../order/OrderPage";
-import { HTTP_STATUS, NAMING_ERRORS } from "@/app/error/errorCodes";
+import { HTTP_STATUS } from "@/app/error/errorCodes";
 
 interface LastNameFormProps {
   onClose: () => void;
@@ -37,14 +37,14 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
         if (onResult) onResult(lastName.trim(), result.surnames);
       } else {
         // 处理错误情况
-        console.error(`AI自由命名失败, code: ${result.code}, message: ${result.message}`);
+        console.error(`AI生成失败, code: ${result.code}, message: ${result.message}`);
         if (result.code === HTTP_STATUS.UNAUTHORIZED) {
           // 401错误，尝试获取用户认证信息
           import('@/services/tokenService').then(({ logout }) => {
             logout();
             alert(t('errorUnauthorized'));
           });
-        } else if (result.code === NAMING_ERRORS.NOT_ENOUGH_POINTS) {
+        } else if (result.code === HTTP_STATUS.NOT_ENOUGH_POINTS) {
           // 403错误，显示订单页面
           setShowOrderPage(true);
         } else {
