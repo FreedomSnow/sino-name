@@ -15,6 +15,7 @@ import { SurnameItem, NameItem } from "@/types/restRespEntities";
 import { UserInfoData } from "./UserInfoForm";
 import { getBespokeNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
+import { HTTP_STATUS, NAMING_ERRORS } from "@/app/error/errorCodes";
 
 
 export default function BespokePage() {
@@ -170,13 +171,13 @@ export default function BespokePage() {
         setShowFullNameResults(true);
       } else {
         console.error(`AI自由命名失败, code: ${result.code}, message: ${result.message}`);
-        if (result.code === 401) {
+        if (result.code === HTTP_STATUS.UNAUTHORIZED) {
           // 401错误，尝试获取用户认证信息
           import('@/services/tokenService').then(({ logout }) => {
             logout();
             alert(t('errorUnauthorized'));
           });
-        } else if (result.code === 403) {
+        } else if (result.code === NAMING_ERRORS.NOT_ENOUGH_POINTS) {
           // 403错误，显示订单页面
           setShowOrderPage(true);
         } else {
