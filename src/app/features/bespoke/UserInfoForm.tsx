@@ -4,6 +4,7 @@ import zhCN from 'antd/es/locale/zh_CN';
 import enUS from 'antd/es/locale/en_US';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
+import Image from 'next/image';
 import './UserInfoForm.css';
 import { CACHE_KEYS } from "@/app/cacheKeys";
 
@@ -154,7 +155,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
         />
       </div>
       <button className="user-info-form-submit" type="submit">
-        <img src="/pay.svg" alt="pay" className="user-info-form-btn-icon" />
+        <Image src="/pay.svg" alt="pay" className="user-info-form-btn-icon" width={24} height={24} />
         {t('submit')}
       </button>
       </form>

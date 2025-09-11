@@ -260,7 +260,7 @@ export default function Home() {
                   onClick={() => handleTabClick("settings")}
                 >
                   <div className="tabbar-item-inner">
-                    <img src="/settings.svg" alt={t("settings")} className="tabbar-icon" />
+                    <Image src="/settings.svg" alt={t("settings")} className="tabbar-icon" width={24} height={24} />
                     <span
                       className="tabbar-title"
                       style={{

@@ -55,8 +55,8 @@ class GoogleAuthService {
         try {
             console.log('🔐 Google 登录成功，开始处理...');
             
-            // 解析 JWT ID Token
-            const payload = this.parseJwt(response.credential);
+            // 解析 JWT ID Token 但不使用结果
+            this.parseJwt(response.credential);
             
             // 与后端认证
             await this.authenticateWithBackend(response.credential);

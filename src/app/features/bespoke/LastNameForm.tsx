@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Image from "next/image";
+// 不再需要 Image 组件
 import { SurnameItem } from "@/types/restRespEntities";
 import { useTranslation } from "react-i18next";
 import "./LastNameForm.css";
@@ -79,7 +79,7 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onResult }) => {
             placeholder={t('formLastNamePlaceholder')}
             autoFocus
           />
-          <button className="lastnameform-btn" onClick={handleSend}>{t('submit')}</button>
+          <button className="lastnameform-btn" onClick={() => handleSend()}>{t('submit')}</button>
         </div>
       </div>
       {loading && <PandaLoadingView />}

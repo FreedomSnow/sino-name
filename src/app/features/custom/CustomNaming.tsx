@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 import "./CustomNaming.css";
 import { getCachedUserAuth } from "@/utils/cacheUserAuth";
 import Login from "../login/Login";
 import OrderPage from "@/app/features/order/OrderPage";
-import { UserInfo } from "@/types/auth";
+// 不再需要 UserInfo 类型
 import { getFreedomNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
 import { NameItem } from "@/types/restRespEntities";
@@ -21,7 +22,7 @@ export default function CustomNaming() {
   const [showLogin, setShowLogin] = useState(false);
   const [showOrderPage, setShowOrderPage] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<UserInfo | null>(null);
+  // 不再使用 user 状态，改为直接从 getCachedUserAuth 获取
   const [namingResults, setNamingResults] = useState<NameItem[]>([]);
   const [showResults, setShowResults] = useState(false);
 
@@ -37,10 +38,8 @@ export default function CustomNaming() {
   
   // 初始化时检查登录状态
   useEffect(() => {
-    const authCache = getCachedUserAuth();
-    if (authCache && authCache.user) {
-      setUser(authCache.user);
-    }
+    // 只检查登录状态，不再设置用户信息
+    getCachedUserAuth();
   }, []);
   
   
@@ -175,7 +174,7 @@ export default function CustomNaming() {
             onClick={handleSubmit}
             disabled={loading}
           >
-            <img src="/pay.svg" alt="pay" className="custom-naming-btn-icon" />
+            <Image src="/pay.svg" alt="pay" className="custom-naming-btn-icon" width={24} height={24} />
             {t('submit')}
           </button>
         </div>

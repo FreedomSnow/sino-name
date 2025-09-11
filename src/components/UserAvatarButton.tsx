@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { UserInfo } from '@/types/auth';
 
 interface Props {
@@ -11,12 +12,12 @@ const UserAvatarButton: React.FC<Props> = ({ user, size = 40, onClick }) => {
   let content: React.ReactNode;
   if (user.avatar) {
     content = (
-      <img
+      <Image
         src={user.avatar}
         alt="avatar"
+        width={size}
+        height={size}
         style={{
-          width: size,
-          height: size,
           borderRadius: '50%',
           objectFit: 'cover',
           background: '#eee',

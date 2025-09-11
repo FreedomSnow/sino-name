@@ -1,6 +1,6 @@
 import { UserInfo, OAuthTokens } from '@/types/auth';
 import { CACHE_KEYS } from "@/app/cacheKeys";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface UserAuthCache {
   user: UserInfo;
