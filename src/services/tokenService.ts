@@ -1,4 +1,4 @@
-import { UserInfo, OAuthTokens } from '@/types/auth';
+import { OAuthTokens } from '@/types/auth';
 import { getCachedUserAuth, cacheUserAuth, clearCachedUserAuth, UserAuthCache } from '@/utils/cacheUserAuth';
 import { APP_CONFIG } from '@/config/appConfig';
 import { TOKEN_CONFIG } from '@/config/tokenConfig';
@@ -18,7 +18,14 @@ export async function refreshToken(refreshToken: string): Promise<OAuthTokens | 
     });
 
     if (!response.ok) {
-      console.error('刷新令牌失败:', await response.text());
+      const errorText = await response.text();
+      console.error('刷新令牌失败:', errorText);
+      
+      // 如果是401未授权，说明refresh_token已过期
+      if (response.status === 401) {
+        console.log('refresh_token已过期，需要重新登录');
+      }
+      
       return null;
     }
 
@@ -26,6 +33,12 @@ export async function refreshToken(refreshToken: string): Promise<OAuthTokens | 
     console.log('刷新令牌响应:', data);
     if (data.success === false) {
       console.error('刷新令牌失败:', data.message);
+      
+      // 如果是令牌过期错误，记录详细信息
+      if (data.error === 'UNAUTHORIZED' || data.message?.includes('过期')) {
+        console.log('refresh_token已过期，需要重新登录');
+      }
+      
       return null;
     }
 
@@ -86,8 +99,20 @@ export async function getUserAuth(): Promise<UserAuthCache | null> {
   const newTokens = await refreshToken(tokens.refresh_token);
   
   if (!newTokens) {
-    console.log('刷新令牌失败');
-    clearCachedUserAuth()
+    console.log('刷新令牌失败，清除本地缓存并引导用户重新登录');
+    clearCachedUserAuth();
+    
+    // 触发自定义事件，通知UI层需要重新登录
+    if (typeof window !== 'undefined') {
+      const event = new CustomEvent('token-refresh-failed', { 
+        detail: { 
+          message: '登录已过期，请重新登录',
+          reason: 'refresh_token_expired'
+        } 
+      });
+      window.dispatchEvent(event);
+    }
+    
     return null;
   }
   
