@@ -93,6 +93,24 @@ export default function Home() {
       };
       
       validateAuth();
+      
+      // 监听令牌刷新失败事件
+      const handleTokenRefreshFailed = (event: CustomEvent) => {
+        console.log('收到令牌刷新失败事件:', event.detail);
+        setUser(null); // 清除用户状态
+        setLoading(false); // 停止加载状态
+        
+        // 显示友好的错误提示
+        const message = event.detail?.message || '登录已过期，请重新登录';
+        alert(message);
+      };
+      
+      window.addEventListener('token-refresh-failed', handleTokenRefreshFailed as EventListener);
+      
+      // 清理事件监听器
+      return () => {
+        window.removeEventListener('token-refresh-failed', handleTokenRefreshFailed as EventListener);
+      };
     }
   }, [i18n, userAuth]);
   
@@ -242,7 +260,7 @@ export default function Home() {
                   onClick={() => handleTabClick("settings")}
                 >
                   <div className="tabbar-item-inner">
-                    <img src="/settings.svg" alt={t("settings")} className="tabbar-icon" />
+                    <Image src="/settings.svg" alt={t("settings")} className="tabbar-icon" width={24} height={24} />
                     <span
                       className="tabbar-title"
                       style={{

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React from 'react';
 import type { FC } from 'react';
 import Image from 'next/image';
 import './Login.css';
@@ -82,7 +82,7 @@ const Login: FC<LoginProps> = ({ isOpen, onClose }) => {
           ))} */}
           
           <div className="google-login-button-container">
-            <GoogleLoginButton onLogin={(user) => {
+            <GoogleLoginButton onLogin={() => {
               onClose();
             }} />
           </div>

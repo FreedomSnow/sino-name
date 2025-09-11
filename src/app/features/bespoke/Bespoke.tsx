@@ -282,7 +282,7 @@ export default function BespokePage() {
                 className="bespoke-mike-pick-btn"
                 onClick={handleMikePick}
               >
-                <img src="/pay.svg" alt="pay" className="bespoke-btn-icon" />
+                <Image src="/pay.svg" alt="pay" className="bespoke-btn-icon" width={24} height={24} />
                 {t("bespokeMikeCustom")}
               </button>
             </div>

@@ -279,7 +279,6 @@ OAuth错误 → 后端错误处理 → 重定向到/oauth-error → 显示错误
 ```bash
 # ==================== Google OAuth配置 ====================
 GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 # ==================== NextAuth配置 ====================
 NEXTAUTH_URL=http://localhost:3001
