@@ -1,0 +1,165 @@
+.birthday-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.birthday-label {
+  font-weight: 500;
+  color: #333;
+  min-width: 80px;
+}
+
+.birthday-picker {
+  flex: 1;
+  max-width: 200px;
+}
+
+.birthday-query-btn {
+  padding: 6px 16px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.birthday-query-btn:hover {
+  background: #40a9ff;
+}
+
+.birthday-query-btn:active {
+  background: #096dd9;
+}
+
+/* 后缀图标容器 */
+.birthday-suffix-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+/* 清除按钮 */
+.birthday-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  outline: none;
+  padding: 0;
+  font-weight: normal;
+  line-height: 12px;
+  text-align: center;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.birthday-clear-btn:hover {
+  background-color: #ff4d4f !important;
+  transform: scale(1.1) !important;
+}
+
+.birthday-clear-btn:not(:hover) {
+  background-color: #d9d9d9 !important;
+  transform: scale(1) !important;
+}
+
+/* 日历图标 */
+.birthday-calendar-icon {
+  color: #1890ff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.birthday-calendar-icon:hover {
+  color: #40a9ff;
+}
+
+.birthday-calendar-icon:active {
+  color: #096dd9;
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+  .birthday-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .birthday-label {
+    min-width: auto;
+  }
+
+  .birthday-picker {
+    width: 100%;
+    max-width: none;
+  }
+
+  .birthday-query-btn {
+    width: 100%;
+  }
+}
+
+/* 暗色主题支持 */
+@media (prefers-color-scheme: dark) {
+  .birthday-label {
+    color: #fff;
+  }
+
+  .birthday-query-btn {
+    background: #177ddc;
+  }
+
+  .birthday-query-btn:hover {
+    background: #1890ff;
+  }
+
+  .birthday-clear-btn {
+    background-color: #595959;
+  }
+
+  .birthday-clear-btn:hover {
+    background-color: #ff4d4f !important;
+  }
+}
+
+/* 禁用状态 */
+.birthday-query-btn:disabled {
+  background: #d9d9d9;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.birthday-query-btn:disabled:hover {
+  background: #d9d9d9;
+}
+
+/* 焦点状态 */
+.birthday-query-btn:focus-visible {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+}
+
+.birthday-clear-btn:focus-visible {
+  outline: 2px solid #ff4d4f;
+  outline-offset: 2px;
+}
+
+.birthday-calendar-icon:focus-visible {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
