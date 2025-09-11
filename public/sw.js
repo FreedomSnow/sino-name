@@ -6,7 +6,7 @@ const API_CACHE = 'api-v1.0.0'
 // 需要缓存的静态资源
 const STATIC_FILES = [
   '/',
-  '/favicon.ico',
+  '/favicon.svg',
   '/icon.png',
   '/apple-touch-icon.png',
   '/manifest.json',
