@@ -125,6 +125,7 @@ export const GoogleLoginButton = ({
         email: payload.email,
         avatar: payload.avatar,
         provider: payload.provider || 'google',
+        points: payload.points || 0,
       };
 
       // 先触发前端登录成功事件
@@ -173,6 +174,7 @@ export const GoogleLoginButton = ({
         email: userRaw?.email || '',
         avatar: userRaw?.avatar || data.google_info?.picture || '',
         provider: userRaw?.auth_provider || '',
+        points: userRaw?.remaining_uses || 0,
       };
       const tokens: OAuthTokens = {
         access_token: info.access_token,

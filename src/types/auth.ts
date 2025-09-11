@@ -5,6 +5,7 @@ export interface UserInfo {
     email: string;
     avatar?: string;
     provider?: string;
+    points: number;
 }
 
 // OAuth 令牌类型

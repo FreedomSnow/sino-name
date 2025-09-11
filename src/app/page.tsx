@@ -212,7 +212,6 @@ export default function Home() {
           isOpen={showUserProfile}
           onClose={() => setShowUserProfile(false)}
           user={user}
-          points={100}
           onLogout={async () => {
             console.log('Logging out user');
             await logout(); // 调用tokenService中的logout函数
