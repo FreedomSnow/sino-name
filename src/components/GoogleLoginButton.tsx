@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { GOOGLE_AUTH_CONFIG } from '@/config/googleAuth';
-import { cacheUserAuth } from '@/cache/cacheUserAuth';
+import { cacheUserAuth, clearCachedUserAuth } from '@/cache/cacheUserAuth';
 import { UserInfo, OAuthTokens } from '@/types/auth';
 // 导入已存在的Google类型定义
 import '@/types/google'; // 这会引入Google类型定义
@@ -137,6 +137,7 @@ export const GoogleLoginButton = ({
       // 后端认证
       authenticateWithBackend(token).catch(error => {
         console.error('后端认证失败:', error);
+        clearCachedUserAuth();
       });
     } catch (error) {
       console.error('处理 Google 登录响应失败:', error);
@@ -164,7 +165,7 @@ export const GoogleLoginButton = ({
       const data = await response.json();
       console.log('后端验证成功:', data);
 
-      const info = data.data.data
+      const info = data.data
       console.log('后端验证成功, 用户信息:', info);
 
       // 后端返回结构兼容处理

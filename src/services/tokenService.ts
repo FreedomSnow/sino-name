@@ -1,5 +1,5 @@
-import { OAuthTokens } from '@/types/auth';
-import { getCachedUserAuth, cacheUserAuth, clearCachedUserAuth, UserAuthCache } from '@/cache/cacheUserAuth';
+import { OAuthTokens, UserAuthInfo, UserInfo } from '@/types/auth';
+import { getCachedUserAuth, cacheUserAuth, clearCachedUserAuth } from '@/cache/cacheUserAuth';
 import { APP_CONFIG } from '@/config/appConfig';
 import { TOKEN_CONFIG } from '@/config/tokenConfig';
 
@@ -7,7 +7,7 @@ import { TOKEN_CONFIG } from '@/config/tokenConfig';
  * 刷新 OAuth 令牌
  * 使用 refresh_token 获取新的 access_token
  */
-export async function refreshToken(refreshToken: string): Promise<OAuthTokens | null> {
+export async function refreshToken(refreshToken: string): Promise<UserAuthInfo | null> {
   try {
     const response = await fetch(`${TOKEN_CONFIG.BACKEND.BASE_URL}${TOKEN_CONFIG.BACKEND.ENDPOINTS.REFRESH_TOKEN}`, {
       method: 'POST',
@@ -49,11 +49,29 @@ export async function refreshToken(refreshToken: string): Promise<OAuthTokens | 
       return null;
     }
 
-    // 返回新的令牌信息
-    return {
+    // 后端返回结构兼容处理
+    const userRaw = respData.user;
+    console.log('令牌用户信息:', userRaw);
+    const user: UserInfo = {
+      name: userRaw?.username || data.google_info?.name || '',
+      email: userRaw?.email || '',
+      avatar: userRaw?.avatar || data.google_info?.picture || '',
+      provider: userRaw?.auth_provider || '',
+      points: userRaw?.remaining_uses || 0,
+    };
+    const tokens: OAuthTokens = {
       access_token: respData.access_token,
-      refresh_token: refreshToken, // 保留原来的 refresh_token
-      expires_in: respData.expires_in || 3600, // 默认过期时间为 1 小时
+      refresh_token: refreshToken,
+      expires_in: respData.expires_in
+    };
+
+    // 保存到本地存储
+    cacheUserAuth(user, tokens);
+
+    // 返回更新后的UserAuthInfo
+    return {
+      user: user,
+      tokens: tokens
     };
   } catch (error) {
     console.error('刷新令牌出错:', error);
@@ -65,7 +83,7 @@ export async function refreshToken(refreshToken: string): Promise<OAuthTokens | 
  * 获取用户认证信息
  * 如果令牌有效则直接返回，如果过期则尝试刷新
  */
-export async function getUserAuth(): Promise<UserAuthCache | null> {
+export async function getUserAuth(): Promise<UserAuthInfo | null> {
   // 1. 获取缓存的认证信息
   const authCache = getCachedUserAuth();
   if (!authCache || !authCache.user || !authCache.tokens) {
@@ -96,9 +114,9 @@ export async function getUserAuth(): Promise<UserAuthCache | null> {
   
   // 4. 使用 refresh_token 获取新的令牌
   console.log('access_token 已过期，尝试刷新令牌');
-  const newTokens = await refreshToken(tokens.refresh_token);
+  const refreshedAuth = await refreshToken(tokens.refresh_token);
   
-  if (!newTokens) {
+  if (!refreshedAuth) {
     console.log('刷新令牌失败，清除本地缓存并引导用户重新登录');
     clearCachedUserAuth();
     
@@ -116,8 +134,8 @@ export async function getUserAuth(): Promise<UserAuthCache | null> {
     return null;
   }
   
-  // 缓存新的令牌
-  cacheUserAuth(user, newTokens);
+  // 缓存新的用户认证信息
+  // cacheUserAuth(refreshedAuth.user, refreshedAuth.tokens);
   console.log('令牌刷新成功');
   
   // 返回更新后的认证信息
