@@ -92,7 +92,13 @@ export default function CustomNaming() {
     setShowLogin(false);
 
     // 已登录，检测是否还有积分
-    // TODO: 积分不够，则提示充值
+    // 积分不够，则提示充值
+    const authCache = getCachedUserAuth();
+    if (authCache && authCache.user && authCache.user.points < 1) {
+      console.log('积分不够:', authCache.user.points);
+      setShowOrderPage(true)
+      return;
+    }
 
     // 积分够，则调用ai命名接口
     if (isAiRequest) {

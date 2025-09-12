@@ -150,6 +150,8 @@ const resources = {
       birthdayLunarLabel: "农历生日是",
       birthdayFlowerLabel: "农历生辰花",
       birthdayBaziLabel: "农历生辰五行八字",
+      // Points
+      buyPoints: "购买积分",
       // Error
       errorUnauthorized: "授权过期，请重新登录",
       errorTooManyRequests: "请求过于频繁，请稍后再试",
@@ -306,6 +308,8 @@ const resources = {
       birthdayLunarLabel: "Lunar Date is",
       birthdayFlowerLabel: "Lunar Birthday Flower",
       birthdayBaziLabel: "Lunar Bazi (Five Elements & Eight Characters)",
+      // Points
+      buyPoints: "Purchase points",
       // Error
       errorUnauthorized: "Authorization expired, please login again",
       errorTooManyRequests: "Too many requests, please try again later",
