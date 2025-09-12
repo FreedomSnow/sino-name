@@ -1,24 +1,17 @@
-import { UserInfo, OAuthTokens } from '@/types/auth';
+import { UserInfo, OAuthTokens, UserAuthInfo } from '@/types/auth';
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { useState, useEffect } from 'react';
 
-export interface UserAuthCache {
-  user: UserInfo;
-  tokens: OAuthTokens | null;
-  timestamp: number;
-}
-
 // 定义监听器类型
-export type UserAuthChangeListener = (cache: UserAuthCache | null) => void;
+export type UserAuthChangeListener = (cache: UserAuthInfo | null) => void;
 
 // 存储所有监听器
 const listeners: Set<UserAuthChangeListener> = new Set();
 
 export function cacheUserAuth(user: UserInfo, tokens: OAuthTokens | null = null) {
-  const cache: UserAuthCache = {
+  const cache: UserAuthInfo = {
     user,
     tokens,
-    timestamp: Date.now(),
   };
   localStorage.setItem(CACHE_KEYS.googleAuth, JSON.stringify(cache));
   
@@ -26,11 +19,11 @@ export function cacheUserAuth(user: UserInfo, tokens: OAuthTokens | null = null)
   notifyListeners(cache);
 }
 
-export function getCachedUserAuth(): UserAuthCache | null {
+export function getCachedUserAuth(): UserAuthInfo | null {
   const raw = localStorage.getItem(CACHE_KEYS.googleAuth);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as UserAuthCache;
+    return JSON.parse(raw) as UserAuthInfo;
   } catch {
     return null;
   }
@@ -45,7 +38,7 @@ export function clearCachedUserAuth() {
 }
 
 // 通知所有监听器
-function notifyListeners(cache: UserAuthCache | null) {
+function notifyListeners(cache: UserAuthInfo | null) {
   listeners.forEach(listener => {
     try {
       listener(cache);
@@ -80,7 +73,7 @@ export function removeUserAuthListener(listener: UserAuthChangeListener): void {
 
 // React Hook 用于监听用户认证状态变化
 export function useUserAuth() {
-  const [userAuth, setUserAuth] = useState<UserAuthCache | null>(() => {
+  const [userAuth, setUserAuth] = useState<UserAuthInfo | null>(() => {
     // 只在客户端执行
     if (typeof window !== 'undefined') {
       return getCachedUserAuth();

@@ -21,3 +21,9 @@ export interface AuthState {
     user: UserInfo | null;
     tokens: OAuthTokens | null;
 }
+
+// 用户认证缓存类型
+export interface UserAuthInfo {
+  user: UserInfo;
+  tokens: OAuthTokens | null;
+}
