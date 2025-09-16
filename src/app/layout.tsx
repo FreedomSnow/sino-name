@@ -5,7 +5,7 @@ import Providers from "./providers";
 import WebVitals from './seo/WebVitals'
 import ServiceWorkerRegister from './seo/ServiceWorkerRegister'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true
@@ -126,13 +126,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN"
+      suppressHydrationWarning={true} >
       <head>
         {/* 预加载关键资源 */}
         <link rel="preload" href="/icon.png" as="image" type="image/png" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-        
+
         {/* 结构化数据 */}
         <script
           type="application/ld+json"
@@ -162,7 +163,7 @@ export default function RootLayout({
                   },
                   "featureList": [
                     "个性化中文名字生成",
-                    "传统文化结合现代需求", 
+                    "传统文化结合现代需求",
                     "多种起名方式选择",
                     "生辰八字起名",
                     "姓氏定制服务",
@@ -217,7 +218,7 @@ export default function RootLayout({
                     {
                       "@type": "SearchAction",
                       "target": {
-                        "@type": "EntryPoint", 
+                        "@type": "EntryPoint",
                         "urlTemplate": "https://sinoname.com/?q={search_term_string}"
                       },
                       "query-input": "required name=search_term_string"
@@ -254,7 +255,7 @@ export default function RootLayout({
                         "priceCurrency": "CNY"
                       },
                       {
-                        "@type": "Offer", 
+                        "@type": "Offer",
                         "itemOffered": {
                           "@type": "Service",
                           "name": "生辰八字起名",
