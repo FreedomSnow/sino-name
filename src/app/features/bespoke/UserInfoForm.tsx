@@ -114,7 +114,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({ lastName, onSubmit }) => {
         <div className="user-info-form-radio-group">
           <label><input type="radio" name="gender" value="男" checked={form.gender === '男'} onChange={() => handleRadioChange('gender', '男')} /> {t('formGenderMale')}</label>
           <label><input type="radio" name="gender" value="女" checked={form.gender === '女'} onChange={() => handleRadioChange('gender', '女')} /> {t('formGenderFemale')}</label>
-          <label><input type="radio" name="gender" value="" checked={form.gender === ''} onChange={() => handleRadioChange('gender', '保密')} /> {t('formGenderSecret')}</label>
+          <label><input type="radio" name="gender" value="" checked={form.gender === ''} onChange={() => handleRadioChange('gender', '')} /> {t('formGenderSecret')}</label>
         </div>
       </div>
       <div className="birth user-info-form-group" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
