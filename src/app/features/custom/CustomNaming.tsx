@@ -5,7 +5,7 @@ import Image from "next/image";
 import "./CustomNaming.css";
 import { getCachedUserAuth } from "@/cache/cacheUserAuth";
 import Login from "../login/Login";
-import OrderPage from "@/app/features/order/OrderPage";
+import PayPage from "@/app/features/pay/PayPage";
 // 不再需要 UserInfo 类型
 import { getFreedomNaming } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
@@ -215,9 +215,9 @@ export default function CustomNaming() {
       
       {/* 订单页面 */}
       {showOrderPage && (
-        <OrderPage 
-          isOpen={showOrderPage} 
-          onClose={() => setShowOrderPage(false)}  
+        <PayPage
+          isOpen={showOrderPage}
+          onClose={() => setShowOrderPage(false)}
         />
       )}
     </div>
