@@ -10,7 +10,7 @@ import CustomNameList from '../custom/CustomNameList';
 import { CACHE_KEYS } from "@/app/cacheKeys";
 import { getCachedUserAuth } from "@/cache/cacheUserAuth";
 import Login from "../login/Login";
-import OrderPage from "../order/OrderPage";
+import PayPage from "../pay/PayPage";
 import { SurnameItem, NameItem } from "@/types/restRespEntities";
 import { UserInfoData } from "./UserInfoForm";
 import { getBespokeNaming, getSurname } from "@/services/aiNaming";
@@ -451,9 +451,9 @@ export default function BespokePage() {
 
       {/* 订单页面 */}
       {showOrderPage && (
-        <OrderPage 
-          isOpen={showOrderPage} 
-          onClose={() => setShowOrderPage(false)}  
+        <PayPage
+          isOpen={showOrderPage}
+          onClose={() => setShowOrderPage(false)}
         />
       )}
 

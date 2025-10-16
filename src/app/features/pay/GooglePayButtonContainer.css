@@ -1,0 +1,10 @@
+.googlepay-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.googlepay-button-container > * {
+  min-width: 220px;
+}

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import "./LastNameForm.css";
 import { getSurname } from "@/services/aiNaming";
 import PandaLoadingView from "@/components/PandaLoadingView";
-import OrderPage from "../order/OrderPage";
+import PayPage from "../pay/PayPage";
 import { HTTP_STATUS } from "@/app/error/errorCodes";
 
 interface LastNameFormProps {
@@ -49,9 +49,9 @@ const LastNameForm: React.FC<LastNameFormProps> = ({ onClose, onSend }) => {
       
       {/* 订单页面 */}
       {showOrderPage && (
-        <OrderPage 
-          isOpen={showOrderPage} 
-          onClose={() => setShowOrderPage(false)}  
+        <PayPage
+          isOpen={showOrderPage}
+          onClose={() => setShowOrderPage(false)}
         />
       )}
     </div>
