@@ -6,6 +6,9 @@ import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { PAYPAL_CONFIG } from '@/config/paypalConfig';
 
+const UNIT_PRICE = 0.99;  
+const UNIT_COUNT = 10; 
+
 interface OrderPageProps {
   isOpen: boolean;
   onClose: () => void;
@@ -68,8 +71,8 @@ declare global {
 
 const OrderPage: React.FC<OrderPageProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
-  const [quantity, setQuantity] = useState(1);
-  const [points, setPoints] = useState(10);
+  const [quantity, setQuantity] = useState(UNIT_PRICE);
+  const [points, setPoints] = useState(UNIT_COUNT);
   const currency = '$'; // 默认美元符号
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
@@ -181,26 +184,29 @@ const OrderPage: React.FC<OrderPageProps> = ({ isOpen, onClose }) => {
 
   // 根据数量计算积分
   useEffect(() => {
-    // 假设 1 美元 = 10 积分
-    setPoints(quantity * 10);
+    // 计算积分并四舍五入到最接近的10的倍数
+    const calculatedPoints = (quantity / UNIT_PRICE) * UNIT_COUNT;
+    const roundedPoints = Math.round(calculatedPoints / 10) * 10;
+    setPoints(roundedPoints);
   }, [quantity]);
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
+    const value = parseFloat(e.target.value);
     if (!isNaN(value) && value > 0) {
-      setQuantity(value);
+      // 将值四舍五入到两位小数
+      setQuantity(Math.round(value * 100) / 100);
     } else {
-      setQuantity(1); // 如果输入无效，设置为1
+      setQuantity(UNIT_PRICE); // 如果输入无效，设置为0.99
     }
   };
 
   const increaseQuantity = () => {
-    setQuantity(prev => prev + 1);
+    setQuantity(prev => Math.round((prev + UNIT_PRICE) * 100) / 100);
   };
 
   const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(prev => prev - 1);
+    if (quantity >= UNIT_PRICE) {
+      setQuantity(prev => Math.round((prev - UNIT_PRICE) * 100) / 100);
     }
   };
 
@@ -223,9 +229,10 @@ const OrderPage: React.FC<OrderPageProps> = ({ isOpen, onClose }) => {
               <input
                 type="number"
                 className="order-page-input"
-                value={quantity}
+                value={quantity.toFixed(2)}
                 onChange={handleQuantityChange}
-                min="1"
+                min={UNIT_PRICE}
+                step={UNIT_PRICE}
               />
               <button className="order-page-btn" onClick={increaseQuantity}>+</button>
             </div>
