@@ -184,3 +184,37 @@
 .order-page-buy-btn:active {
   transform: translateY(1px);
 }
+
+/* 支付方式选择器样式 */
+.payment-provider-selector {
+  margin-bottom: 16px;
+}
+
+.payment-tabs {
+  display: flex;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.payment-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-tab:hover {
+  background-color: #e8e8e8;
+}
+
+.payment-tab.active {
+  background-color: #1890ff;
+  color: white;
+}

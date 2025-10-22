@@ -4,10 +4,15 @@ import React, { useState, useEffect } from 'react';
 import './PayPage.css';
 import Image from 'next/image';
 import PaypalButtonContainer from './PaypalButtonContainer';
+import GooglePayButtonContainer from './GooglePayButtonContainer';
 import { useTranslation } from 'react-i18next';
+import { PaymentProvider } from '@/types/payment';
 
 const UNIT_PRICE = 0.99;
 const UNIT_COUNT = 10;
+
+// 🎯 配置切换 - 只需要改这一行即可切换支付方式
+const CURRENT_PAYMENT_PROVIDER = PaymentProvider.GOOGLE_PAY; // 或 PaymentProvider.PAYPAL
 
 interface PayPageProps {
   isOpen: boolean;
@@ -28,6 +33,13 @@ const PayPage: React.FC<PayPageProps> = ({ isOpen, onClose }) => {
     setPoints(roundedPoints);
   }, [quantity]);
 
+  // 🔧 添加一个 effect 确保弹窗打开时状态正确
+  useEffect(() => {
+    if (isOpen && quantity <= 0) {
+      setQuantity(UNIT_PRICE);
+    }
+  }, [isOpen]);
+
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
     if (!isNaN(value) && value > 0) {
@@ -39,6 +51,34 @@ const PayPage: React.FC<PayPageProps> = ({ isOpen, onClose }) => {
 
   const increaseQuantity = () => setQuantity((prev) => Math.round((prev + UNIT_PRICE) * 100) / 100);
   const decreaseQuantity = () => setQuantity((prev) => Math.round(Math.max(prev - UNIT_PRICE, UNIT_PRICE) * 100) / 100);
+
+  // 🎯 渲染支付按钮的函数 - 根据配置自动选择
+  const renderPaymentButton = () => {
+    const commonProps = {
+      amount: quantity,
+      points: points,
+      onProcessing: (processing: boolean) => setPaymentProcessing(processing),
+      onSuccess: () => {
+        setPaymentSuccess(true);
+        setTimeout(() => {
+          setPaymentSuccess(false);
+          onClose();
+        }, 2000);
+      },
+      onError: (err: Error) => {
+        console.error('Payment container error', err);
+        // 这里可以展示错误提示
+      }
+    };
+
+    switch (CURRENT_PAYMENT_PROVIDER) {
+      case PaymentProvider.GOOGLE_PAY:
+        return <GooglePayButtonContainer {...commonProps} />;
+      case PaymentProvider.PAYPAL:
+      default:
+        return <PaypalButtonContainer {...commonProps} />;
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -93,22 +133,7 @@ const PayPage: React.FC<PayPageProps> = ({ isOpen, onClose }) => {
               )}
             </div>
           ) : (
-            <PaypalButtonContainer
-              amount={quantity}
-              points={points}
-              onProcessing={(processing) => setPaymentProcessing(processing)}
-              onSuccess={() => {
-                setPaymentSuccess(true);
-                setTimeout(() => {
-                  setPaymentSuccess(false);
-                  onClose();
-                }, 2000);
-              }}
-              onError={(err) => {
-                console.error('PayPal container error', err);
-                // 这里可以展示错误提示
-              }}
-            />
+            renderPaymentButton()
           )}
         </div>
       </div>
