@@ -28,10 +28,10 @@ interface GoogleAccounts {
 
 interface GooglePaymentMethodSpecification {
   type: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   tokenizationSpecification: {
     type: string;
-    parameters: Record<string, any>;
+    parameters: Record<string, unknown>;
   };
 }
 
@@ -63,7 +63,7 @@ interface GooglePaymentDataRequest {
 interface GooglePaymentData {
   paymentMethodData: {
     type: string;
-    info: Record<string, any>;
+    info: Record<string, unknown>;
     tokenizationData: {
       type: string;
       token: string;

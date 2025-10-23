@@ -105,7 +105,7 @@ export const createGooglePaymentDataRequest = (
 
 export const processGooglePayment = (
   paymentData: GooglePaymentData
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
   console.log("Processing payment:", paymentData);
 

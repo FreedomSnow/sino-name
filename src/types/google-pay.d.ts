@@ -1,9 +1,9 @@
 export interface PaymentMethodSpecification {
   type: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   tokenizationSpecification: {
     type: string;
-    parameters: Record<string, any>;
+    parameters: Record<string, unknown>;
   };
 }
 
@@ -26,7 +26,7 @@ export interface TransactionInfo {
 export interface PaymentData {
   paymentMethodData: {
     type: string;
-    info: Record<string, any>;
+    info: Record<string, unknown>;
     tokenizationData: {
       type: string;
       token: string;

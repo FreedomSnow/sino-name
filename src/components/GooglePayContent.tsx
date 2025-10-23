@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface GooglePayContentProps {
     isLoading: boolean;
@@ -13,6 +13,27 @@ export const GooglePayContent: React.FC<GooglePayContentProps> = ({
     isAvailable,
     containerRef
 }) => {
+    // 🔍 渲染日志
+    console.log('🔍 GooglePayContent render:', {
+        isLoading,
+        error,
+        isAvailable,
+        hasContainerRef: !!containerRef,
+        hasContainer: !!containerRef.current,
+        containerChildren: containerRef.current?.children.length || 0,
+        timestamp: new Date().toISOString()
+    });
+
+    useEffect(() => {
+        console.log('🔍 GooglePayContent mounted/updated:', {
+            isLoading,
+            error,
+            isAvailable,
+            hasContainer: !!containerRef.current,
+            timestamp: new Date().toISOString()
+        });
+    }, [isLoading, error, isAvailable, containerRef]);
+
     if (isLoading) {
         return (
             <div className="google-pay-loading">
