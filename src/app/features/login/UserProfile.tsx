@@ -80,7 +80,7 @@ const UserProfile: FC<UserProfileProps> = ({
           <div className="user-profile-info-item">
             <span className="user-profile-info-label">{t('points')}</span>
             <div className="user-profile-points">
-              <span className="user-profile-points-value">{user.points || 0}</span>
+              <span className="user-profile-points-value">{Math.max(user.points || 0, 0)}</span>
               <span className="user-profile-points-label">{t('pointsUnit')}</span>
             </div>
           </div>

@@ -3,4 +3,4 @@ export enum PaymentProvider {
   PAYPAL = "paypal",
 }
 
-export const CURRENT_PAYMENT_PROVIDER = PaymentProvider.GOOGLE_PAY;
+export const CURRENT_PAYMENT_PROVIDER = PaymentProvider.PAYPAL;
